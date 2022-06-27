@@ -13,9 +13,6 @@ export class Student {
         try {
             if (this.isAlreadyUpdating) return;
 
-            console.log(Student.updateTimeout);
-            console.log(Student.lastseenTimeout);
-
             console.log("[Student] Update Active Students");
 
             this.isAlreadyUpdating = true;
@@ -23,8 +20,8 @@ export class Student {
             const students = (await COLLECTIONS.students
                 .find({
                     $and: [
-                        { last_seen: { $lt: Student.lastseenTimeout } },
-                        { matrix_updated_at: { $gt: Student.updateTimeout } },
+                        { last_seen: { $gt: Student.lastseenTimeout } },
+                        { matrix_updated_at: { $lt: Student.updateTimeout } },
                     ],
                 })
                 .project({ id: 1 })

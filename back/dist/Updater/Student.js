@@ -44,15 +44,13 @@ class Student {
             try {
                 if (this.isAlreadyUpdating)
                     return;
-                console.log(Student.updateTimeout);
-                console.log(Student.lastseenTimeout);
                 console.log("[Student] Update Active Students");
                 this.isAlreadyUpdating = true;
                 const students = (yield shared_1.COLLECTIONS.students
                     .find({
                     $and: [
-                        { last_seen: { $lt: Student.lastseenTimeout } },
-                        { matrix_updated_at: { $gt: Student.updateTimeout } },
+                        { last_seen: { $gt: Student.lastseenTimeout } },
+                        { matrix_updated_at: { $lt: Student.updateTimeout } },
                     ],
                 })
                     .project({ id: 1 })

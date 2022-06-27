@@ -20,9 +20,13 @@ export const statusHandler = async (request: FastifyRequest, reply: FastifyReply
 
         const activeUpdatePendingCount = await COLLECTIONS.students.count({
             $and: [
-                { last_seen: { $lt: Student.lastseenTimeout } },
-                { matrix_updated_at: { $gt: Student.updateTimeout } },
+                { last_seen: { $gt: Student.lastseenTimeout } },
+                { matrix_updated_at: { $lt: Student.updateTimeout } },
             ],
+        });
+
+        const updateInTheLastDay = await COLLECTIONS.students.count({
+            matrix_updated_at: { $gt: Student.updateTimeout },
         });
 
         const inactiveUpdatePendingCount = await COLLECTIONS.students.count({
@@ -46,6 +50,7 @@ export const statusHandler = async (request: FastifyRequest, reply: FastifyReply
             inactiveUpdatePendingCount,
             totalStudent,
             stalkingStudent,
+            updateInTheLastDay,
             dataSize: dbStats.dataSize,
             storageSize: dbStats.storageSize,
             projectsCount: projectsCount - 1,
