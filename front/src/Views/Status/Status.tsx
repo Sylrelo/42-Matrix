@@ -121,6 +121,8 @@ const StatusView = () => {
                         <LineDebug label="Queue" message={status.pendingRequest} />
                         <LineDebug label="Active student update" message={status.activeUpdatePendingCount} />
                         <LineDebug label="Inactive student update" message={status.inactiveUpdatePendingCount} />
+                        <LineDebug label="Updated in the last 24h" message={status.updateInTheLastDay} />
+                        <LineDebug label="Recently seen" message={status.recentlySeen} />
                     </div>
                     <div className="h-5 w-5" />
 
