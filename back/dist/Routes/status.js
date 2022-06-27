@@ -51,8 +51,8 @@ const statusHandler = (request, reply) => __awaiter(void 0, void 0, void 0, func
         const recentlySeen = yield shared_1.COLLECTIONS.students.count({ last_seen: { $gt: Student_1.Student.lastseenTimeout } });
         const activeUpdatePendingCount = yield shared_1.COLLECTIONS.students.count({
             $and: [
-                { last_seen: { $gt: Student_1.Student.lastseenTimeout } },
-                { matrix_updated_at: { $lt: Student_1.Student.updateTimeout } },
+                { last_seen: { $lt: Student_1.Student.lastseenTimeout } },
+                { matrix_updated_at: { $gt: Student_1.Student.updateTimeout } },
             ],
         });
         const inactiveUpdatePendingCount = yield shared_1.COLLECTIONS.students.count({

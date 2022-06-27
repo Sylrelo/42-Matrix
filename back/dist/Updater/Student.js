@@ -44,13 +44,15 @@ class Student {
             try {
                 if (this.isAlreadyUpdating)
                     return;
+                console.log(Student.updateTimeout);
+                console.log(Student.lastseenTimeout);
                 console.log("[Student] Update Active Students");
                 this.isAlreadyUpdating = true;
                 const students = (yield shared_1.COLLECTIONS.students
                     .find({
                     $and: [
-                        { last_seen: { $gt: Student.lastseenTimeout } },
-                        { matrix_updated_at: { $lt: Student.updateTimeout } },
+                        { last_seen: { $lt: Student.lastseenTimeout } },
+                        { matrix_updated_at: { $gt: Student.updateTimeout } },
                     ],
                 })
                     .project({ id: 1 })
@@ -130,7 +132,7 @@ class Student {
     GetAllStudents() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log('Student.GetAllStudents');
+                console.log("Student.GetAllStudents");
                 const students = yield shared_1.default.api.getAll("achievements/218/users?filter[primary_campus_id]=9", 100, 1, 30);
                 console.log(`Student's count : `, students.length);
                 const transaction = [];

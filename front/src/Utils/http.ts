@@ -4,7 +4,7 @@ import LocalStore from "./storage";
 let API_URL = "http://localhost:8080/api/";
 
 export let REDIRECT_URL =
-    "https://api.intra.42.fr/oauth/authorize?client_id=c3ba6739be539848debd6680644822083fea302a2da448a8e0c66b9521e7ceb9&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2F&response_type=code";
+    "https://api.intra.42.fr/oauth/authorize?client_id=78203081c23848d53d5d1fad26e1c2ccbc7bc388788f54a71235d4103547e0e7&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2F&response_type=code";
 
 if (document.location.href.includes("42.slopez.dev")) {
     API_URL = "https://42.slopez.dev/api/";

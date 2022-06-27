@@ -20,8 +20,8 @@ export const statusHandler = async (request: FastifyRequest, reply: FastifyReply
 
         const activeUpdatePendingCount = await COLLECTIONS.students.count({
             $and: [
-                { last_seen: { $gt: Student.lastseenTimeout } },
-                { matrix_updated_at: { $lt: Student.updateTimeout } },
+                { last_seen: { $lt: Student.lastseenTimeout } },
+                { matrix_updated_at: { $gt: Student.updateTimeout } },
             ],
         });
 

@@ -13,6 +13,9 @@ export class Student {
         try {
             if (this.isAlreadyUpdating) return;
 
+            console.log(Student.updateTimeout);
+            console.log(Student.lastseenTimeout);
+
             console.log("[Student] Update Active Students");
 
             this.isAlreadyUpdating = true;
@@ -20,16 +23,16 @@ export class Student {
             const students = (await COLLECTIONS.students
                 .find({
                     $and: [
-                        { last_seen: { $gt: Student.lastseenTimeout } },
-                        { matrix_updated_at: { $lt: Student.updateTimeout } },
+                        { last_seen: { $lt: Student.lastseenTimeout } },
+                        { matrix_updated_at: { $gt: Student.updateTimeout } },
                     ],
                 })
                 .project({ id: 1 })
                 .toArray()) as IStudent[];
 
-                if (students.length) {
-                    await this.updateDatabase(students);
-                }
+            if (students.length) {
+                await this.updateDatabase(students);
+            }
         } catch (error) {
             console.error(error);
         } finally {
@@ -56,9 +59,9 @@ export class Student {
                 .limit(15)
                 .toArray()) as IStudent[];
 
-                if (students.length) {
-                    await this.updateDatabase(students);
-                }
+            if (students.length) {
+                await this.updateDatabase(students);
+            }
         } catch (error) {
             console.error(error);
         } finally {
@@ -99,7 +102,7 @@ export class Student {
 
     async GetAllStudents() {
         try {
-            console.log('Student.GetAllStudents');
+            console.log("Student.GetAllStudents");
 
             const students = await shared.api.getAll<IStudent[]>(
                 "achievements/218/users?filter[primary_campus_id]=9",
@@ -108,7 +111,7 @@ export class Student {
                 30
             );
 
-            console.log(`Student's count : `, students.length)
+            console.log(`Student's count : `, students.length);
 
             const transaction: AnyBulkWriteOperation<Document>[] = [];
 
