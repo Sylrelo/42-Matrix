@@ -1,0 +1,54 @@
+import { FastifyReply, FastifyRequest } from "fastify";
+import shared from "../shared";
+import fs from "fs";
+import security from "./security";
+
+export const studentRoute = async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+        //@ts-ignore
+        const studentId = request.params.id;
+
+        const student = await shared.database("Students").where("id", studentId);
+
+        const cursus = await shared.database("Cursus_level").where("student_id", studentId).andWhere("cursus_id", 21);
+
+        const projects = await shared
+            .database("student_projects")
+            .where("student_id", studentId)
+            .andWhere("cursus_id", 21)
+            .join("projects", "projects.id", "student_projects.project_id");
+
+        const asCorrected = await shared
+            .database("correction_cluster")
+            .select("correction_cluster.*", "projects.name")
+            .where("corrected", studentId)
+            .join("projects", "projects.id", "correction_cluster.project_id");
+
+        const asCorrector = await shared
+            .database("correction_cluster")
+            .select("correction_cluster.*", "projects.name")
+            .where("corrector", studentId)
+            .join("projects", "projects.id", "correction_cluster.project_id");
+
+        // await security.checkAuth(request, reply);
+
+        // const cachedResponse = await shared.cache.get("StatusRoute");
+        // if (cachedResponse) {
+        //     reply.send(cachedResponse);
+        // }
+
+        // shared.cache.set("StatusRoute", finalStatus, 10);
+
+        reply.code(200);
+        reply.send({
+            student: student[0],
+            cursus: cursus[0],
+            correctionCluster: { asCorrected, asCorrector },
+            projects,
+        });
+    } catch (error) {
+        console.error(error);
+        reply.code(400);
+        reply.send({ error: "Authotization failure." });
+    }
+};

@@ -1,0 +1,20 @@
+.rc-pagination {
+	display: flex;
+	margin-top: 12px;
+	li {
+		width: 24px;
+		text-align: center;
+		border: 1px solid #354f8b;
+		border-radius: 5px;
+		color: white;
+
+		&:hover {
+			background-color: #354f8b;
+			cursor: pointer;
+		}
+
+		&.rc-pagination-item-active {
+			background-color: #354f8b;
+		}
+	}
+}

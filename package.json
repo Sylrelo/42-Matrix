@@ -1,0 +1,9 @@
+{
+    "name": "matrix_charbo",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+      "update": "cd back && yarn run migrate && yarn install && yarn run build && cd ../front && yarn install && yarn run build && cd ../"
+    }
+  }
+  

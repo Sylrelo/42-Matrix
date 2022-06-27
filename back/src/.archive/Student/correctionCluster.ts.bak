@@ -1,0 +1,88 @@
+import { Knex } from "knex";
+import shared from "../../shared";
+
+const checkUpdate = async () => {
+    try {
+        const needUpdating = await shared
+            .database("Students")
+            .leftJoin("update", "linked_type_id", "=", "Students.id")
+            .where(function () {
+                this.where("update.type", "STUDENT_CORRECTION_CLUSTER").orWhereNull("update.type");
+            })
+            .andWhere(function () {
+                this.whereNull("update._id").orWhere("update.updated_at", "<", new Date().getTime() - 24 * 3600 * 1000);
+            })
+            .orderByRaw("RANDOM()")
+            .limit(1);
+
+        for (const update of needUpdating) {
+            const url = `users/${update.id}/scale_teams/as_corrected?sort=created_at`;
+
+            const scaleTeams = await shared.api.getAllOffset(url, 100, update?.last_page ?? 0);
+
+            update.dataUpdate = {
+                last_page: scaleTeams.page,
+                updated_at: new Date().getTime(),
+                last_id: scaleTeams.lastResultCount,
+            };
+
+            update.dataCorrectionClusters = [];
+
+            for (const scaleTeam of scaleTeams.data) {
+                update.dataCorrectionClusters.push({
+                    id: scaleTeam?.id,
+                    corrected: update.id,
+                    corrector: scaleTeam?.corrector?.id,
+                    created_at: new Date(scaleTeam.created_at).getTime(),
+                    final_mark: scaleTeam.final_mark,
+                    flag_id: scaleTeam?.flag?.id,
+                    project_id: scaleTeam?.team?.project_id,
+                });
+            }
+        }
+
+        await shared.database.transaction(async (trx) => {
+            for (const update of needUpdating) {
+                console.log(update.login, update.updated_at);
+
+                try {
+                    for (const correction of update.dataCorrectionClusters) {
+                        try {
+                            await shared.database("correction_cluster").transacting(trx).insert(correction);
+                            trx.commit;
+                        } catch (error) {
+                            // console.info(error);
+                            trx.rollback;
+                        }
+                    }
+
+                    if (update._id) {
+                        await shared
+                            .database("update")
+                            .transacting(trx)
+                            .update(update.dataUpdate)
+                            .where("_id", update._id);
+                    } else {
+                        await shared
+                            .database("update")
+                            .transacting(trx)
+                            .insert({
+                                ...update.dataUpdate,
+                                type: "STUDENT_CORRECTION_CLUSTER",
+                                linked_type_id: update.id,
+                            });
+                    }
+                    trx.commit;
+                } catch (error) {
+                    trx.rollback;
+                    console.error(error);
+                }
+            }
+        });
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+export default { checkUpdate };
+// export default updateCorrectionCluster;

@@ -1,0 +1,87 @@
+.student-cursus {
+    display: flex;
+    position: relative;
+
+    width: 124px;
+    height: 124px;
+
+    border-radius: 5px;
+
+    border: 2px solid rgb(40, 50, 66);
+    overflow: hidden;
+
+    .savatar {
+        position: absolute;
+
+        width: inherit;
+        height: inherit;
+
+        background-size: cover;
+        background-position: center center;
+
+        border-radius: inherit;
+
+        background-color: rgb(40, 50, 66);
+    }
+
+    .slogin {
+        position: absolute;
+        bottom: 0px;
+        right: 0;
+        // width: inherit;
+        background-color: rgba($color: #000000, $alpha: 0.8);
+
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+
+        text-align: right;
+        border-radius: 10px 0px 0px 0px;
+        padding-left: 6px;
+        padding-right: 6px;
+        // width: 40px;
+        width: fit-content;
+    }
+
+    .smark {
+        position: absolute;
+        top: 0;
+        width: 40px;
+        text-align: center;
+        border-radius: 0px 0px 10px 0px;
+        font-weight: bold;
+        background-color: rgba($color: #000000, $alpha: 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+}
+
+
+.project-search-input {
+    width: 100%;
+    height: 42px;
+    padding: 12px;
+    background-color: rgb(33, 41, 54);
+    margin-top: 8px;
+    margin-bottom: 8px;
+    outline: none;
+    border-radius: 5px;
+}
+
+.project-students-table { 
+    table {
+        width: 100%;
+        text-align: left;
+
+        tr {
+            height: 34px;
+            .avatar-table {
+                    display: block;
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 5px;
+                    background-size: cover;
+                    background-position: center center;
+            }
+        }
+    }
+}

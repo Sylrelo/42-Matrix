@@ -1,0 +1,245 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap");
+
+body {
+    margin: 0;
+    /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;*/
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    color: white;
+    overflow: hidden;
+    /* overflow-x: hidden; */
+    font-family: "Quicksand", sans-serif;
+}
+
+.test {
+    width: 100%;
+    height: 80%;
+    position: relative;
+    overflow: hidden;
+}
+
+.parent-container {
+    display: flex;
+    flex-direction: column;
+    /* background-color: #000055; */
+    width: 100vw;
+    height: calc(100vh - 60px);
+    overflow: hidden;
+}
+
+.interative-container {
+    /* display: none; */
+    position: relative;
+    /* background-color: #00ff0055; */
+    /* height: 300px; */
+    /* height: 100%; */
+    /* width: 100vw; */
+    /* height: 100vh; */
+    /* height: 50%; */
+}
+
+.interface-container {
+    /* display: none; */
+    /* display: flex; */
+    justify-content: center;
+    /* position: relative; */
+    /* z-index: 100; */
+    /* top: 0px; */
+    /* width: 100%;
+    height: 100%; */
+    /* height: 50%; */
+    /* background-color: #ff000055; */
+    /* height: inherit; */
+    /* overflow: hidden; */
+    /* backdrop-filter: blur(20px); */
+}
+
+.cluster-container {
+    /* width: 1280px; */
+    /* height: 50%; */
+    overflow: hidden;
+    display: flex;
+    /* hei */
+    /* height: calc(1920px / 2); */
+    justify-content: center;
+}
+
+.cluster-container table {
+    display: block;
+    text-align: center;
+}
+
+.cluster-container td {
+    font-size: 14px;
+    padding: 8px;
+    width: 128px;
+    height: 128px;
+}
+
+
+.seat {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    margin: 0px;
+    width: 128px;
+    height: 128px;
+}
+
+.seat.unavailable {
+    background-color: red;
+}
+
+.seat:hover {
+    /* background-color: red; */
+    transition: all 0.1s;
+}
+
+.seat.student .loading-placeholder {
+    display: inherit;
+    width: inherit;
+    height: inherit;
+    margin: 0px;
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-image: url("/public/loading.gif");
+    border-radius: inherit;
+}
+
+.seat.student .loading-placeholder > .profile-image {
+    border-radius: inherit;
+    display: inherit;
+    width: inherit;
+    height: inherit;
+    background-size: cover;
+    background-position: center center;
+    margin: 0px;
+    image-rendering: pixelated;
+}
+
+.seat.student.focused {
+    transform: scale(1.2);
+}
+
+.seat.student.disabled {
+    filter: grayscale(100%);
+    opacity: 0.5;
+}
+
+.login {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    text-shadow: 0px 0px 2px black;
+    font-weight: bold;
+}
+
+.location {
+    font-size: 14px;
+}
+
+.location.active {
+    text-shadow: 0px 0px 2px black;
+}
+
+.page-title {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 26px;
+}
+
+.page-subtitle {
+    margin-top: 24px;
+    text-transform: uppercase;
+    font-size: 18px;
+}
+
+.page-subtitle.underlined {
+    border-bottom: 1px solid white;
+    font-weight: bold;
+}
+
+.allo,
+.allo td,
+.allo tr {
+    margin: 0px;
+    padding: 6px;
+    height: fit-content;
+    text-align: left;
+    /* display: table; */
+}
+
+table.allo {
+    display: table;
+    width: 100%;
+}
+
+.allo thead,
+.allo thead tr {
+    background-color: rgb(33, 41, 54);
+}
+
+.allo tr {
+    border: 1px solid rgb(40, 50, 66);
+    height: 56px;
+}
+
+.allo thead td {
+    font-size: 16px;
+    font-weight: bold;
+    height: 66px;
+}
+
+.allo tbody td {
+    font-size: 14px;
+    padding: 10px;
+}
+
+.allo tr:nth-child(even) {
+    background-color: rgb(13, 18, 29);
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.w50p {
+    width: 50%;
+}
+
+.w10p {
+    width: 10%;
+}
+.w5p {
+    width: 5%;
+}
+
+/* .project-table-view {
+    margin: auto;
+}
+
+.project-table-wrapper {
+    position: relative;
+    overflow: auto;
+    border: 1px solid black;
+    white-space: nowrap;
+} */
+
+/* .sticky {
+    position: -webkit-sticky;
+    position: sticky;
+} */
