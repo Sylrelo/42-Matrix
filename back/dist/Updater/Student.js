@@ -31,13 +31,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Student = void 0;
+const security_1 = __importDefault(require("../Routes/security"));
 const shared_1 = __importStar(require("../shared"));
 class Student {
     constructor() {
         this.isAlreadyUpdating = false;
         this.isAlreadyUpdatingInactive = false;
+    }
+    static RouteGetAllStudents(request, reply) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield security_1.default.checkAuth(request, reply);
+                const query = request.query;
+                const students = yield shared_1.COLLECTIONS.students
+                    .find({})
+                    .limit(20)
+                    .skip(query.page * 20)
+                    .toArray();
+                const total = yield shared_1.COLLECTIONS.students.count({});
+                reply.send({ students, total });
+            }
+            catch (error) {
+                console.error(error);
+                reply.code(500);
+                reply.send(error);
+            }
+        });
     }
     UpdateActive() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -85,9 +109,9 @@ class Student {
                     .project({ id: 1 })
                     .limit(50)
                     .toArray());
-                if (students.length) {
+                if (students.length)
                     yield this.updateDatabase(students);
-                }
+                console.log("Student.UpdateInactive : Done.");
             }
             catch (error) {
                 console.error(error);
@@ -100,29 +124,34 @@ class Student {
     UpdateWithCoalition() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log("Student.UpdateWitHCoaltion : Started.");
                 const coalitions = yield shared_1.COLLECTIONS.coalitions
                     .find({})
                     .sort({ matrix_created_at: -1, id: 1 })
-                    .project({ _id: 0, id: 1, color: 1 })
+                    .project({ _id: 0, id: 1, color: 1, cursus_id: 1 })
                     .limit(6)
                     .toArray();
                 for (const coalition of coalitions) {
                     const students = yield shared_1.default.api.getAll(`/coalitions/${coalition.id}/users?`, 100);
                     const bulkOperations = [];
                     for (const student of students) {
+                        let filter = {};
+                        if (coalition.cursus_id === 21) {
+                            filter = { $or: [{ matrix_is_pool: false }, { matrix_is_pool: { $exists: false } }] };
+                        }
+                        else if (coalition.cursus_id === 9) {
+                            filter = { matrix_is_pool: true };
+                        }
                         bulkOperations.push({
                             updateOne: {
-                                filter: {
-                                    id: student.id,
-                                    $or: [{ matrix_is_pool: false }, { matrix_is_pool: { $exists: false } }],
-                                },
+                                filter: Object.assign({ id: student.id }, filter),
                                 update: { $set: Object.assign(Object.assign({}, student), { coalition: coalition }) },
-                                upsert: true,
                             },
                         });
                     }
                     if (bulkOperations.length)
                         yield shared_1.COLLECTIONS.students.bulkWrite(bulkOperations);
+                    console.log("Student.UpdateWitHCoaltion : Done.");
                 }
             }
             catch (error) {
@@ -134,7 +163,7 @@ class Student {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 console.log("Student.GetAllStudents");
-                const students = yield shared_1.default.api.getAll("cursus/21/users?filter[campus_id]=9", 100, 1, 30);
+                const students = yield shared_1.default.api.getAll("achievements/218/users?filter[primary_campus_id]=9", 100, 1, 30);
                 console.log(`Student's count : `, students.length);
                 const transaction = [];
                 for (const student of students) {

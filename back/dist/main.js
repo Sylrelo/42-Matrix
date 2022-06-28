@@ -47,6 +47,7 @@ const shared_1 = __importStar(require("./shared"));
 const status_2 = require("./status");
 const Projects_1 = require("./Updater/Projects");
 const dotenv_1 = __importDefault(require("dotenv"));
+const Student_1 = require("./Updater/Student");
 dotenv_1.default.config({ path: ".env.local" });
 dotenv_1.default.config();
 const fastify = (0, fastify_1.default)({
@@ -61,10 +62,10 @@ fastify.addHook("onResponse", (request, reply) => __awaiter(void 0, void 0, void
 }));
 // fastify.get("/api/student/:id", studentRoute);
 // fastify.get("/api/admin", adminRoute);
+fastify.get("/api/students", Student_1.Student.RouteGetAllStudents);
 fastify.get("/api/locations", App_1.location.Route);
 fastify.get("/api/coalitions", App_1.coalition.Route);
 fastify.get("/api/ranking", ranking_1.RankingRoute);
-// fastify.get("/api/level_ranking", levelRankingHandler);
 fastify.post("/api/auth_42", authenticate_1.authHandler);
 fastify.post("/api/auth_verify", authenticate_1.authVerifyHandler);
 fastify.post("/api/logout", authenticate_1.logoutHandler);
@@ -86,23 +87,19 @@ fastify.get("/api/status", status_1.statusHandler);
         shared_1.default.api.handlePending();
         startJobs();
         console.log("Jobs started.");
-        yield App_1.student.UpdateActive();
-        console.log("Initialisation UpdateActive() done.");
-        if ((yield shared_1.COLLECTIONS.students.count({})) < 400) {
-            yield App_1.student.GetAllStudents();
-            yield App_1.student.UpdateWithCoalition();
-            yield App_1.student.UpdateInactive();
-            console.log("Initialisation GetAllStudents() done.");
-        }
         if ((yield shared_1.COLLECTIONS.coalitions.count({ cursus_id: 21 })) < 3) {
-            yield App_1.coalition.Update(21);
-            console.log("Initialisation coalition.Update(21) done.");
+            App_1.coalition.Update(21);
         }
         if ((yield shared_1.COLLECTIONS.coalitions.count({ cursus_id: 9 })) < 3) {
-            yield App_1.coalition.Update(9);
-            console.log("Initialisation coalition.Update(9) done.");
+            App_1.coalition.Update(9);
         }
-        if ((yield shared_1.COLLECTIONS.projects.count({})) < 1) {
+        if ((yield shared_1.COLLECTIONS.students.count({})) < 400) {
+            yield App_1.student.GetAllStudents();
+            App_1.student.UpdateWithCoalition();
+            App_1.student.UpdateInactive();
+            console.log("Initialisation GetAllStudents() done.");
+        }
+        if ((yield shared_1.COLLECTIONS.projects.count({})) === 0) {
             yield Projects_1.Project.Update();
             console.log("Initialisation project.Update() done.");
         }
@@ -137,7 +134,7 @@ function startJobs() {
     }, 30000);
     setInterval(() => {
         shared_1.default.api.getToken();
-    }, 10000);
+    }, 2000);
 }
 fastify.listen(8080, (err, address) => {
     if (err)

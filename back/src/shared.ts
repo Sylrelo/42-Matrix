@@ -56,6 +56,7 @@ export const COLLECTIONS: {
     logs: Collection;
     projects: Collection;
     seats: Collection;
+    requests: Collection;
 } = {
     students: null,
     coalitions: null,
@@ -63,6 +64,7 @@ export const COLLECTIONS: {
     logs: null,
     projects: null,
     seats: null,
+    requests: null,
 };
 
 export default shared;

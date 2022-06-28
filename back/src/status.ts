@@ -1,4 +1,4 @@
-import shared from "./shared";
+import shared, { COLLECTIONS } from "./shared";
 
 let lastHour = -1;
 

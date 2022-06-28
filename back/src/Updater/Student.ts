@@ -1,5 +1,7 @@
+import { FastifyReply, FastifyRequest } from "fastify";
 import { AnyBulkWriteOperation, Document } from "mongodb";
 import { IStudent } from "../Interfaces/IStudent";
+import security from "../Routes/security";
 import shared, { COLLECTIONS } from "../shared";
 
 export class Student {
@@ -8,6 +10,27 @@ export class Student {
 
     static updateTimeout = new Date().getTime() - 24 * 3600 * 1000;
     static lastseenTimeout = new Date().getTime() - 7 * 24 * 3600 * 1000;
+
+    static async RouteGetAllStudents(request: FastifyRequest, reply: FastifyReply) {
+        try {
+            await security.checkAuth(request, reply);
+
+            const query = request.query as Record<string, any>;
+
+            const students = await COLLECTIONS.students
+                .find({})
+                .limit(20)
+                .skip(query.page * 20)
+                .toArray();
+            const total = await COLLECTIONS.students.count({});
+
+            reply.send({ students, total });
+        } catch (error) {
+            console.error(error);
+            reply.code(500);
+            reply.send(error);
+        }
+    }
 
     async UpdateActive() {
         try {
@@ -56,9 +79,9 @@ export class Student {
                 .limit(50)
                 .toArray()) as IStudent[];
 
-            if (students.length) {
-                await this.updateDatabase(students);
-            }
+            if (students.length) await this.updateDatabase(students);
+
+            console.log("Student.UpdateInactive : Done.");
         } catch (error) {
             console.error(error);
         } finally {
@@ -68,10 +91,11 @@ export class Student {
 
     async UpdateWithCoalition() {
         try {
+            console.log("Student.UpdateWitHCoaltion : Started.");
             const coalitions = await COLLECTIONS.coalitions
                 .find({})
                 .sort({ matrix_created_at: -1, id: 1 })
-                .project({ _id: 0, id: 1, color: 1 })
+                .project({ _id: 0, id: 1, color: 1, cursus_id: 1 })
                 .limit(6)
                 .toArray();
 
@@ -81,19 +105,27 @@ export class Student {
                 const bulkOperations: AnyBulkWriteOperation<Document>[] = [];
 
                 for (const student of students) {
+                    let filter = {};
+
+                    if (coalition.cursus_id === 21) {
+                        filter = { $or: [{ matrix_is_pool: false }, { matrix_is_pool: { $exists: false } }] };
+                    } else if (coalition.cursus_id === 9) {
+                        filter = { matrix_is_pool: true };
+                    }
+
                     bulkOperations.push({
                         updateOne: {
                             filter: {
                                 id: student.id,
-                                $or: [{ matrix_is_pool: false }, { matrix_is_pool: { $exists: false } }],
+                                ...filter,
                             },
                             update: { $set: { ...student, coalition: coalition } },
-                            upsert: true,
                         },
                     });
                 }
 
                 if (bulkOperations.length) await COLLECTIONS.students.bulkWrite(bulkOperations);
+                console.log("Student.UpdateWitHCoaltion : Done.");
             }
         } catch (error) {
             console.error(error);
@@ -104,7 +136,12 @@ export class Student {
         try {
             console.log("Student.GetAllStudents");
 
-            const students = await shared.api.getAll<IStudent[]>("cursus/21/users?filter[campus_id]=9", 100, 1, 30);
+            const students = await shared.api.getAll<IStudent[]>(
+                "achievements/218/users?filter[primary_campus_id]=9",
+                100,
+                1,
+                30
+            );
 
             console.log(`Student's count : `, students.length);
 

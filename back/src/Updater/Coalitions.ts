@@ -67,6 +67,8 @@ export class Coalition {
             }
 
             if (bulkOperations.length) await COLLECTIONS.coalitions.bulkWrite(bulkOperations);
+
+            console.log("Coalition.Update : Done.");
         } catch (error) {
             console.error(error);
         }

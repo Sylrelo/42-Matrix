@@ -25,6 +25,7 @@ exports.COLLECTIONS = {
     logs: null,
     projects: null,
     seats: null,
+    requests: null,
 };
 exports.default = shared;
 //# sourceMappingURL=shared.js.map

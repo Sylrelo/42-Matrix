@@ -4,7 +4,7 @@ import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom"
 import Clusters from "./Views/Cluster/Cluster";
 import Login from "./Views/Login";
 
-import { FiLogOut } from "react-icons/fi";
+import { FiLogOut, FiUsers } from "react-icons/fi";
 
 import { useEffect, useRef } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -24,6 +24,7 @@ import ProjectDetailView from "./Views/Projects/ProjectDetail";
 import ProjectsView from "./Views/Projects/Projects";
 import RankingView from "./Views/Ranking/Ranking";
 import StatusView from "./Views/Status/Status";
+import StudentsView from "./Views/Students/Students";
 
 export const AppBar = () => {
     const [_, setAuth] = useRecoilState(AuthAtom);
@@ -48,14 +49,21 @@ export const AppBar = () => {
                                     className="block py-2 pr-1 pl-1 hover:bg-transparent text-gray-400  hover:bg-gray-700 hover:text-white">
                                     <MapIcon size={36} />
                                 </Link>
-                            </li>{" "}
+                            </li>
+                            <li>
+                                <Link
+                                    to="/students"
+                                    className="block py-2 pr-1 pl-1 hover:bg-transparent text-gray-400  hover:bg-gray-700 hover:text-white">
+                                    <FiUsers size={20} />
+                                </Link>
+                            </li>
                             <li>
                                 <Link
                                     to="/ranking"
                                     className="block py-2 pr-1 pl-1 hover:bg-transparent text-gray-400  hover:bg-gray-700 hover:text-white">
                                     <ListIcon size={26} />
                                 </Link>
-                            </li>{" "}
+                            </li>
                             {!isPool && (
                                 <li>
                                     <Link
@@ -154,6 +162,7 @@ function App() {
                                 <Route path="/projects/:id" element={<ProjectDetailView />} />
                                 <Route path="/status" element={<StatusView />} />
                                 <Route path="/profile/:id" element={<ProfileView />} />
+                                <Route path="/students" element={<StudentsView />} />
                             </>
                         )}
                     </Routes>

@@ -77,6 +77,7 @@ class Coalition {
                 }
                 if (bulkOperations.length)
                     yield shared_1.COLLECTIONS.coalitions.bulkWrite(bulkOperations);
+                console.log("Coalition.Update : Done.");
             }
             catch (error) {
                 console.error(error);

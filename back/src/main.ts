@@ -10,6 +10,7 @@ import shared, { COLLECTIONS } from "./shared";
 import { addMatrixApiRequestStat } from "./status";
 import { Project } from "./Updater/Projects";
 import dotenv from "dotenv";
+import { Student } from "./Updater/Student";
 
 dotenv.config({ path: ".env.local" });
 dotenv.config();
@@ -30,12 +31,12 @@ fastify.addHook("onResponse", async (request, reply) => {
 // fastify.get("/api/student/:id", studentRoute);
 // fastify.get("/api/admin", adminRoute);
 
+fastify.get("/api/students", Student.RouteGetAllStudents);
+
 fastify.get("/api/locations", location.Route);
 fastify.get("/api/coalitions", coalition.Route);
 
 fastify.get("/api/ranking", RankingRoute);
-
-// fastify.get("/api/level_ranking", levelRankingHandler);
 
 fastify.post("/api/auth_42", authHandler);
 fastify.post("/api/auth_verify", authVerifyHandler);
@@ -66,27 +67,22 @@ fastify.get("/api/status", statusHandler);
         startJobs();
         console.log("Jobs started.");
 
-        await student.UpdateActive();
-        console.log("Initialisation UpdateActive() done.");
-
-        if ((await COLLECTIONS.students.count({})) < 400) {
-            await student.GetAllStudents();
-            await student.UpdateWithCoalition();
-            await student.UpdateInactive();
-            console.log("Initialisation GetAllStudents() done.");
-        }
-
         if ((await COLLECTIONS.coalitions.count({ cursus_id: 21 })) < 3) {
-            await coalition.Update(21);
-            console.log("Initialisation coalition.Update(21) done.");
+            coalition.Update(21);
         }
 
         if ((await COLLECTIONS.coalitions.count({ cursus_id: 9 })) < 3) {
-            await coalition.Update(9);
-            console.log("Initialisation coalition.Update(9) done.");
+            coalition.Update(9);
         }
 
-        if ((await COLLECTIONS.projects.count({})) < 1) {
+        if ((await COLLECTIONS.students.count({})) < 400) {
+            await student.GetAllStudents();
+            student.UpdateWithCoalition();
+            student.UpdateInactive();
+            console.log("Initialisation GetAllStudents() done.");
+        }
+
+        if ((await COLLECTIONS.projects.count({})) === 0) {
             await Project.Update();
             console.log("Initialisation project.Update() done.");
         }
@@ -126,7 +122,7 @@ function startJobs() {
 
     setInterval(() => {
         shared.api.getToken();
-    }, 10000);
+    }, 2000);
 }
 
 fastify.listen(8080, (err, address) => {
