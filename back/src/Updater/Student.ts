@@ -101,12 +101,7 @@ export class Student {
         try {
             console.log("Student.GetAllStudents");
 
-            const students = await shared.api.getAll<IStudent[]>(
-                "achievements/218/users?filter[primary_campus_id]=9",
-                100,
-                1,
-                30
-            );
+            const students = await shared.api.getAll<IStudent[]>("cursus/21/users?filter[campus_id]=9", 100, 1, 30);
 
             console.log(`Student's count : `, students.length);
 
