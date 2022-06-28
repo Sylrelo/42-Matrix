@@ -84,7 +84,6 @@ fastify.get("/api/status", status_1.statusHandler);
         shared_1.default.api = new _42_1.default();
         yield shared_1.default.api.getToken();
         shared_1.default.api.handlePending();
-        yield App_1.student.UpdateWithCoalition();
         startJobs();
         console.log("Jobs started.");
         yield App_1.student.UpdateActive();
@@ -122,6 +121,7 @@ function startJobs() {
     // Everyday at 23h42
     node_schedule_1.default.scheduleJob("42 23 * * *", () => {
         App_1.coalition.Update(21);
+        App_1.coalition.Update(9);
     });
     // Every sunday
     node_schedule_1.default.scheduleJob("0 6 * * *", () => {

@@ -62,7 +62,6 @@ fastify.get("/api/status", statusHandler);
         shared.api = new FortyTwo();
         await shared.api.getToken();
         shared.api.handlePending();
-        await student.UpdateWithCoalition();
 
         startJobs();
         console.log("Jobs started.");
@@ -107,6 +106,7 @@ function startJobs() {
     // Everyday at 23h42
     schedule.scheduleJob("42 23 * * *", () => {
         coalition.Update(21);
+        coalition.Update(9);
     });
 
     // Every sunday

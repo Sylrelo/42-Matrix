@@ -53,7 +53,7 @@ export class Student {
                     ],
                 })
                 .project({ id: 1 })
-                .limit(15)
+                .limit(50)
                 .toArray()) as IStudent[];
 
             if (students.length) {
@@ -72,7 +72,7 @@ export class Student {
                 .find({})
                 .sort({ matrix_created_at: -1, id: 1 })
                 .project({ _id: 0, id: 1, color: 1 })
-                .limit(3)
+                .limit(6)
                 .toArray();
 
             for (const coalition of coalitions) {

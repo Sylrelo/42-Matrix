@@ -109,6 +109,7 @@ const Seat = ({ location, student, unavailable, selectedStudent }: SeatProps) =>
                             ))}
 
                             {isPool(student) && <div className="pool">Pool</div>}
+                            {student?.login === "slopez" && <div className="daddymatrix">Matrix</div>}
                         </div>
 
                         <div className="login">{student?.login}</div>
