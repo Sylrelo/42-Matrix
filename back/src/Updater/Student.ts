@@ -83,7 +83,10 @@ export class Student {
                 for (const student of students) {
                     bulkOperations.push({
                         updateOne: {
-                            filter: { id: student.id },
+                            filter: {
+                                id: student.id,
+                                $or: [{ matrix_is_pool: false }, { matrix_is_pool: { $exists: false } }],
+                            },
                             update: { $set: { ...student, coalition: coalition } },
                             upsert: true,
                         },

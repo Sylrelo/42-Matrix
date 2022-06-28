@@ -62,6 +62,7 @@ fastify.get("/api/status", statusHandler);
         shared.api = new FortyTwo();
         await shared.api.getToken();
         shared.api.handlePending();
+        await student.UpdateWithCoalition();
 
         startJobs();
         console.log("Jobs started.");
