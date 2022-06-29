@@ -1,9 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, LinearProgress, TextField } from "@mui/material";
 import dayjs from "dayjs";
 import Pagination from "rc-pagination";
 import Table from "rc-table";
 import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { useRecoilState } from "recoil";
+import { ScrollTopAtom } from "../../Atoms/ScrollTop";
 import { get } from "../../Utils/http";
 import "./style.scss";
 // import "../../../node_modules/rc-select/assets/index.less";
@@ -21,6 +23,10 @@ interface IFilters {
 }
 
 const StudentsView: FC = () => {
+    const [, setScrollToTop] = useRecoilState(ScrollTopAtom);
+
+    const [loading, setLoading] = useState(true);
+
     const [students, setStudents] = useState<any[]>([]);
     const [filters, setFilters] = useState<IFilters>({
         page: 0,
@@ -42,7 +48,6 @@ const StudentsView: FC = () => {
             onClick: () => {
                 const tmp = filters[sortKey];
 
-                console.log(sortKey, tmp);
                 setFilters((old) => ({
                     ...old,
                     loginSort: null,
@@ -77,6 +82,7 @@ const StudentsView: FC = () => {
             {
                 title: "login",
                 dataIndex: "login",
+                width: "256px",
                 render: (login: string, student: any) => (
                     <>
                         <div>{login}</div>
@@ -95,6 +101,7 @@ const StudentsView: FC = () => {
                 align: "center",
                 title: "Promo",
                 dataIndex: "pool_year",
+                width: "64px",
                 render: (year: number, student: any) => (
                     <>
                         <div>{student.pool_month}</div>
@@ -105,12 +112,14 @@ const StudentsView: FC = () => {
             {
                 title: "Last update",
                 dataIndex: "matrix_updated_at",
+                width: "140px",
                 render: (matrix_updated_at: number) =>
                     matrix_updated_at ? dayjs(matrix_updated_at).format("YYYY/MM/DD HH:mm") : "Never",
             },
             {
                 title: "Last seen",
                 dataIndex: "last_seen",
+                width: "140px",
                 render: (last_seen: number) => (last_seen ? dayjs(last_seen).format("YYYY/MM/DD HH:mm") : "Never"),
             },
             {
@@ -155,25 +164,32 @@ const StudentsView: FC = () => {
         clearTimeout(timeoutRef.current as NodeJS.Timeout);
 
         timeoutRef.current = setTimeout(async () => {
-            let queryFilters = [];
+            try {
+                let queryFilters = [];
 
-            if (filters.skillId && filters.skillLevel) {
-                queryFilters.push(`skill_id=${filters.skillId}`);
-                queryFilters.push(`skill_level=${filters.skillLevel}`);
+                setLoading(true);
+                if (filters.skillId && filters.skillLevel) {
+                    queryFilters.push(`skill_id=${filters.skillId}`);
+                    queryFilters.push(`skill_level=${filters.skillLevel}`);
+                }
+
+                if (filters.walletSort) queryFilters.push(`wallet_sort=${filters.walletSort}`);
+                else if (filters.pointSort) queryFilters.push(`point_sort=${filters.pointSort}`);
+                else if (filters.levelSort) queryFilters.push(`level_sort=${filters.levelSort}`);
+                else if (filters.blackholeSort) queryFilters.push(`bh_sort=${filters.blackholeSort}`);
+                else queryFilters.push(`login_sort=${filters.loginSort ?? 1}`);
+
+                const result = await get<any>(`students?page=${filters.page}&${queryFilters.join("&")}`);
+
+                setTotal(result.total);
+
+                setSkills(result.skills.sort());
+                setStudents((result.students ?? []).map((student: any) => ({ ...student, key: student.id })));
+
+                setLoading(false);
+            } catch (error) {
+                console.error(error);
             }
-
-            if (filters.walletSort) queryFilters.push(`wallet_sort=${filters.walletSort}`);
-            else if (filters.pointSort) queryFilters.push(`point_sort=${filters.pointSort}`);
-            else if (filters.levelSort) queryFilters.push(`level_sort=${filters.levelSort}`);
-            else if (filters.blackholeSort) queryFilters.push(`bh_sort=${filters.blackholeSort}`);
-            else queryFilters.push(`login_sort=${filters.loginSort ?? 1}`);
-
-            const result = await get<any>(`students?page=${filters.page}&${queryFilters.join("&")}`);
-
-            setTotal(result.total);
-
-            setSkills(result.skills.sort());
-            setStudents((result.students ?? []).map((student: any) => ({ ...student, key: student.id })));
         }, 250);
     }, [
         filters.page,
@@ -236,7 +252,13 @@ const StudentsView: FC = () => {
                 />
             </div>
 
+            {/* <Box sx={{ width: "100%" }}> */}
+            {/* </Box> */}
             <div className="allo students-table">
+                <div style={{ height: "3px", width: "100%" }}>
+                    {loading && <LinearProgress style={{ width: "100%", height: "3px" }} />}
+                </div>
+
                 <Table
                     style={{ width: "100%" }}
                     //@ts-ignore
@@ -254,7 +276,10 @@ const StudentsView: FC = () => {
                 <Pagination
                     total={total}
                     pageSize={20}
-                    onChange={(page) => setFilters((old) => ({ ...old, page: page - 1 }))}
+                    onChange={(page) => {
+                        setFilters((old) => ({ ...old, page: page - 1 }));
+                        setScrollToTop(new Date().getTime());
+                    }}
                 />
             </div>
         </div>
