@@ -4,6 +4,109 @@ import { IStudent } from "../Interfaces/IStudent";
 import security from "../Routes/security";
 import shared, { COLLECTIONS } from "../shared";
 
+class Route {
+    static baseProject: any[] = [
+        {
+            $match: {
+                $and: [
+                    {
+                        pool_year: { $ne: null },
+                    },
+                    {
+                        pool_year: { $gte: "2017" },
+                    },
+                ],
+            },
+        },
+        {
+            $project: {
+                cursus_users: {
+                    $filter: {
+                        input: "$cursus_users",
+                        as: "cursus",
+                        cond: {
+                            $eq: ["$$cursus.cursus_id", 21],
+                        },
+                    },
+                },
+                pool_year: 1,
+            },
+        },
+    ];
+
+    static async GetNumberOfStudentsPerPromo() {
+        try {
+            const students = await COLLECTIONS.students
+                .aggregate([
+                    ...this.baseProject,
+                    {
+                        $group: {
+                            _id: "$pool_year",
+                            count: { $sum: 1 },
+                        },
+                    },
+                ])
+                .toArray();
+
+            return students;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    static async GetNumberOfBlackholedStudentsPerPromo() {
+        try {
+            const students = await COLLECTIONS.students
+                .aggregate([
+                    ...this.baseProject,
+                    {
+                        $match: {
+                            $and: [
+                                { "cursus_users.blackholed_at": { $exists: true } },
+                                {
+                                    "cursus_users.blackholed_at": {
+                                        $lt: new Date(),
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $group: {
+                            _id: "$pool_year",
+                            count: { $sum: 1 },
+                        },
+                    },
+                ])
+                .toArray();
+
+            return students;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    static async GetBlackholedStatsPerPromo() {
+        try {
+            const students = await Route.GetNumberOfStudentsPerPromo();
+            const blackholed = await Route.GetNumberOfBlackholedStudentsPerPromo();
+            const perPromo = {};
+
+            for (const student of students) {
+                const bh = blackholed.find((bh) => bh._id === student._id);
+                perPromo[student._id] = {
+                    total: student.count,
+                    blackholed: bh?.count ?? 0,
+                    percentage: +(((bh?.count ?? 0) / student.count) * 100).toPrecision(3),
+                };
+            }
+
+            return perPromo;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+}
 export class Student {
     private isAlreadyUpdating: Boolean = false;
     private isAlreadyUpdatingInactive: Boolean = false;
@@ -19,6 +122,8 @@ export class Student {
             const time_start = new Date().getTime();
 
             const skills = await shared.api.getAll<any[]>(`cursus/21/skills?`, 30, 1, 160);
+
+            const perPromoStats = await Route.GetBlackholedStatsPerPromo();
 
             let pipeline = [];
 
@@ -104,7 +209,13 @@ export class Student {
                 .aggregate([...basePipeline, { $group: { _id: null, total: { $sum: 1 } } }])
                 .toArray();
 
-            reply.send({ students, total: total[0].total, skills, time: new Date().getTime() - time_start });
+            reply.send({
+                students,
+                total: total[0].total,
+                skills,
+                time: new Date().getTime() - time_start,
+                perPromoStats,
+            });
         } catch (error) {
             console.error(error);
             reply.code(500);

@@ -73,6 +73,7 @@ fastify.get("/api/projects", Projects_1.Project.GetProjects);
 fastify.get("/api/project/:id", Projects_1.Project.GetProjectDetail);
 fastify.get("/api/status", status_1.statusHandler);
 (() => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         yield shared_1.default.mongo.connect();
         const db = shared_1.default.mongo.db("42matrix");
@@ -88,6 +89,23 @@ fastify.get("/api/status", status_1.statusHandler);
         yield shared_1.default.api.getToken();
         shared_1.default.api.handlePending();
         App_1.student.UpdateActive();
+        const studs = yield shared_1.COLLECTIONS.students.find({ "cursus_users.blackholed_at": { $exists: true } }).toArray();
+        const transaction = [];
+        for (const stud of studs) {
+            const cursuses = (_a = stud.cursus_users) !== null && _a !== void 0 ? _a : [];
+            for (const cursus of cursuses) {
+                if (cursus.blackholed_at)
+                    cursus.blackholed_at = new Date(cursus.blackholed_at);
+            }
+            transaction.push({
+                updateOne: {
+                    filter: { id: stud.id },
+                    update: { $set: { cursus_users: cursuses } },
+                },
+            });
+        }
+        if (transaction.length)
+            yield shared_1.COLLECTIONS.students.bulkWrite(transaction);
         startJobs();
         console.log("Jobs started.");
         App_1.location.Update();

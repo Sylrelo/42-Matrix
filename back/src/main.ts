@@ -11,6 +11,7 @@ import { addMatrixApiRequestStat } from "./status";
 import { Project } from "./Updater/Projects";
 import dotenv from "dotenv";
 import { Student } from "./Updater/Student";
+import { AnyBulkWriteOperation, Document } from "mongodb";
 
 dotenv.config({ path: ".env.local" });
 dotenv.config();
@@ -68,6 +69,23 @@ fastify.get("/api/status", statusHandler);
         shared.api.handlePending();
 
         student.UpdateActive();
+
+        const studs = await COLLECTIONS.students.find({ "cursus_users.blackholed_at": { $exists: true } }).toArray();
+        const transaction: AnyBulkWriteOperation<Document>[] = [];
+        for (const stud of studs) {
+            const cursuses = stud.cursus_users ?? [];
+            for (const cursus of cursuses) {
+                if (cursus.blackholed_at) cursus.blackholed_at = new Date(cursus.blackholed_at);
+            }
+
+            transaction.push({
+                updateOne: {
+                    filter: { id: stud.id },
+                    update: { $set: { cursus_users: cursuses } },
+                },
+            });
+        }
+        if (transaction.length) await COLLECTIONS.students.bulkWrite(transaction);
 
         startJobs();
         console.log("Jobs started.");

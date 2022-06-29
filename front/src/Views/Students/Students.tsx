@@ -40,6 +40,7 @@ const StudentsView: FC = () => {
     });
     const [total, setTotal] = useState(0);
     const [skills, setSkills] = useState([]);
+    const [perPromoStats, setPerPromoStats] = useState({});
 
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -182,10 +183,9 @@ const StudentsView: FC = () => {
                 const result = await get<any>(`students?page=${filters.page}&${queryFilters.join("&")}`);
 
                 setTotal(result.total);
-
                 setSkills(result.skills.sort());
                 setStudents((result.students ?? []).map((student: any) => ({ ...student, key: student.id })));
-
+                setPerPromoStats(result.perPromoStats);
                 setLoading(false);
             } catch (error) {
                 console.error(error);
@@ -204,7 +204,6 @@ const StudentsView: FC = () => {
     return (
         <div className="container mx-auto page-students">
             <div className="page-title"> Students (WIP)</div>
-
             <div className="flex" style={{ width: "500px" }}>
                 <Autocomplete
                     size="small"
@@ -237,10 +236,7 @@ const StudentsView: FC = () => {
                     }}
                 />
             </div>
-
-            {/* */}
-
-            <div className="flex mt-4" style={{ width: "500px" }}>
+            {/*   <div className="flex mt-4" style={{ width: "500px" }}>
                 <Autocomplete
                     disabled={true}
                     size="small"
@@ -250,10 +246,24 @@ const StudentsView: FC = () => {
                     sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="Project name" />}
                 />
+            </div> */}
+            <div className="flex w-full mt-3 mb-3">
+                <div className="grow">
+                    <div>Year</div>
+                    <div>Students</div>
+                    <div>Blackholed</div>
+                    <div>Percentage</div>
+                </div>
+                {Object.entries(perPromoStats).map((v: any) => (
+                    <div key={v[0]} className="grow  text-center">
+                        <div>{v[0]}</div>
+                        <div>{v[1].total}</div>
+                        <div>{v[1].blackholed}</div>
+                        <div>{v[1].percentage}%</div>
+                    </div>
+                ))}
             </div>
-
-            {/* <Box sx={{ width: "100%" }}> */}
-            {/* </Box> */}
+            (stats not yet full for 2017/18 promos)
             <div className="allo students-table">
                 <div style={{ height: "3px", width: "100%" }}>
                     {loading && <LinearProgress style={{ width: "100%", height: "3px" }} />}
@@ -264,13 +274,6 @@ const StudentsView: FC = () => {
                     //@ts-ignore
                     columns={columns}
                     data={students}
-                    // onHeaderRow={(data, index) => {
-                    //     return {
-                    //         onClick: (event) => {
-                    //             console.log(data, event, index);
-                    //         },
-                    //     };
-                    // }}
                 />
 
                 <Pagination
@@ -281,6 +284,7 @@ const StudentsView: FC = () => {
                         setScrollToTop(new Date().getTime());
                     }}
                 />
+                <br />
             </div>
         </div>
     );

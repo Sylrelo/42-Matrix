@@ -38,6 +38,112 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Student = void 0;
 const security_1 = __importDefault(require("../Routes/security"));
 const shared_1 = __importStar(require("../shared"));
+class Route {
+    static GetNumberOfStudentsPerPromo() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const students = yield shared_1.COLLECTIONS.students
+                    .aggregate([
+                    ...this.baseProject,
+                    {
+                        $group: {
+                            _id: "$pool_year",
+                            count: { $sum: 1 },
+                        },
+                    },
+                ])
+                    .toArray();
+                return students;
+            }
+            catch (error) {
+                console.error(error);
+            }
+        });
+    }
+    static GetNumberOfBlackholedStudentsPerPromo() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const students = yield shared_1.COLLECTIONS.students
+                    .aggregate([
+                    ...this.baseProject,
+                    {
+                        $match: {
+                            $and: [
+                                { "cursus_users.blackholed_at": { $exists: true } },
+                                {
+                                    "cursus_users.blackholed_at": {
+                                        $lt: new Date(),
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $group: {
+                            _id: "$pool_year",
+                            count: { $sum: 1 },
+                        },
+                    },
+                ])
+                    .toArray();
+                return students;
+            }
+            catch (error) {
+                console.error(error);
+            }
+        });
+    }
+    static GetBlackholedStatsPerPromo() {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const students = yield Route.GetNumberOfStudentsPerPromo();
+                const blackholed = yield Route.GetNumberOfBlackholedStudentsPerPromo();
+                const perPromo = {};
+                for (const student of students) {
+                    const bh = blackholed.find((bh) => bh._id === student._id);
+                    perPromo[student._id] = {
+                        total: student.count,
+                        blackholed: (_a = bh === null || bh === void 0 ? void 0 : bh.count) !== null && _a !== void 0 ? _a : 0,
+                        percentage: +((((_b = bh === null || bh === void 0 ? void 0 : bh.count) !== null && _b !== void 0 ? _b : 0) / student.count) * 100).toPrecision(3),
+                    };
+                }
+                return perPromo;
+            }
+            catch (error) {
+                console.error(error);
+            }
+        });
+    }
+}
+Route.baseProject = [
+    {
+        $match: {
+            $and: [
+                {
+                    pool_year: { $ne: null },
+                },
+                {
+                    pool_year: { $gte: "2017" },
+                },
+            ],
+        },
+    },
+    {
+        $project: {
+            cursus_users: {
+                $filter: {
+                    input: "$cursus_users",
+                    as: "cursus",
+                    cond: {
+                        $eq: ["$$cursus.cursus_id", 21],
+                    },
+                },
+            },
+            pool_year: 1,
+        },
+    },
+];
 class Student {
     constructor() {
         this.isAlreadyUpdating = false;
@@ -50,6 +156,7 @@ class Student {
                 const query = request.query;
                 const time_start = new Date().getTime();
                 const skills = yield shared_1.default.api.getAll(`cursus/21/skills?`, 30, 1, 160);
+                const perPromoStats = yield Route.GetBlackholedStatsPerPromo();
                 let pipeline = [];
                 if (query.skill_id && query.skill_level) {
                     pipeline.push({
@@ -132,7 +239,13 @@ class Student {
                 const total = yield shared_1.COLLECTIONS.students
                     .aggregate([...basePipeline, { $group: { _id: null, total: { $sum: 1 } } }])
                     .toArray();
-                reply.send({ students, total: total[0].total, skills, time: new Date().getTime() - time_start });
+                reply.send({
+                    students,
+                    total: total[0].total,
+                    skills,
+                    time: new Date().getTime() - time_start,
+                    perPromoStats,
+                });
             }
             catch (error) {
                 console.error(error);
