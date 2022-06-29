@@ -50,13 +50,10 @@ class Student {
                 const query = request.query;
                 const time_start = new Date().getTime();
                 const skills = yield shared_1.default.api.getAll(`cursus/21/skills?`, 30, 1, 160);
-                let matches = {};
+                let pipeline = [];
                 if (query.skill_id && query.skill_level) {
-                    matches["$and"] = [
-                        {
-                            "cursus_users.cursus_id": 21,
-                        },
-                        {
+                    pipeline.push({
+                        $match: {
                             "cursus_users.skills": {
                                 $elemMatch: {
                                     id: +query.skill_id,
@@ -64,16 +61,62 @@ class Student {
                                 },
                             },
                         },
-                    ];
+                    });
                 }
+                const basePipeline = [
+                    {
+                        $match: {
+                            login: { $not: /3b3-/ },
+                        },
+                    },
+                    {
+                        $project: {
+                            cursus_users: {
+                                $filter: {
+                                    input: "$cursus_users",
+                                    as: "cursus",
+                                    cond: {
+                                        $eq: ["$$cursus.cursus_id", 21],
+                                    },
+                                },
+                            },
+                            login: 1,
+                            id: 1,
+                            image_url: 1,
+                            wallet: 1,
+                            correction_point: 1,
+                            first_name: 1,
+                            last_name: 1,
+                            matrix_updated_at: 1,
+                            last_seen: 1,
+                            // projects_users: 1,
+                            pool_year: 1,
+                            pool_month: 1,
+                        },
+                    },
+                    ...pipeline,
+                ];
                 const students = yield shared_1.COLLECTIONS.students
-                    .find(matches)
-                    .limit(20)
-                    .skip(query.page * 20)
-                    .sort({ login: 1 })
+                    .aggregate([
+                    ...basePipeline,
+                    {
+                        $sort: {
+                            login: 1,
+                            // "cursus_users.level": -1,
+                        },
+                    },
+                    {
+                        $skip: query.page * 20,
+                    },
+                    {
+                        $limit: 20,
+                    },
+                ])
                     .toArray();
-                const total = yield shared_1.COLLECTIONS.students.countDocuments(matches);
-                reply.send({ students, total, skills, time: new Date().getTime() - time_start });
+                const total = yield shared_1.COLLECTIONS.students
+                    .aggregate([...basePipeline, { $group: { _id: null, total: { $sum: 1 } } }])
+                    .toArray();
+                reply.send({ students, total: total[0].total, skills, time: new Date().getTime() - time_start });
             }
             catch (error) {
                 console.error(error);
