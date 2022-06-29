@@ -17,6 +17,7 @@ interface IFilters {
     levelSort: null | number;
     walletSort: null | number;
     pointSort: null | number;
+    blackholeSort: null | number;
 }
 
 const StudentsView: FC = () => {
@@ -29,6 +30,7 @@ const StudentsView: FC = () => {
         walletSort: null,
         pointSort: null,
         levelSort: null,
+        blackholeSort: null,
     });
     const [total, setTotal] = useState(0);
     const [skills, setSkills] = useState([]);
@@ -47,6 +49,7 @@ const StudentsView: FC = () => {
                     walletSort: null,
                     levelSort: null,
                     pointSort: null,
+                    blackholeSort: null,
                     [sortKey]: tmp,
                 }));
 
@@ -128,6 +131,7 @@ const StudentsView: FC = () => {
                 onHeaderCell: (data: any) => headerClick(data, "pointSort"),
             },
             {
+                onHeaderCell: (data: any) => headerClick(data, "blackholeSort"),
                 title: "Blackhole",
                 dataIndex: "cursus_users",
                 render: (cursus: any[]) => {
@@ -145,7 +149,7 @@ const StudentsView: FC = () => {
             // { title: "Achievements", render: (_: void, student: any) => student.achievements?.length ?? 0 },
             // { title: "Titles", render: (_: void, student: any) => student.titles_users?.length ?? 0 },
         ];
-    }, [filters.loginSort, filters.walletSort, filters.levelSort, filters.pointSort]);
+    }, [filters.loginSort, filters.walletSort, filters.levelSort, filters.pointSort, filters.blackholeSort]);
 
     useEffect(() => {
         clearTimeout(timeoutRef.current as NodeJS.Timeout);
@@ -161,6 +165,7 @@ const StudentsView: FC = () => {
             if (filters.walletSort) queryFilters.push(`wallet_sort=${filters.walletSort}`);
             else if (filters.pointSort) queryFilters.push(`point_sort=${filters.pointSort}`);
             else if (filters.levelSort) queryFilters.push(`level_sort=${filters.levelSort}`);
+            else if (filters.blackholeSort) queryFilters.push(`bh_sort=${filters.blackholeSort}`);
             else queryFilters.push(`login_sort=${filters.loginSort ?? 1}`);
 
             const result = await get<any>(`students?page=${filters.page}&${queryFilters.join("&")}`);
@@ -170,7 +175,15 @@ const StudentsView: FC = () => {
             setSkills(result.skills.sort());
             setStudents((result.students ?? []).map((student: any) => ({ ...student, key: student.id })));
         }, 250);
-    }, [filters.page, filters.skillLevel, filters.loginSort, filters.walletSort, filters.levelSort, filters.pointSort]);
+    }, [
+        filters.page,
+        filters.skillLevel,
+        filters.loginSort,
+        filters.walletSort,
+        filters.levelSort,
+        filters.pointSort,
+        filters.blackholeSort,
+    ]);
 
     return (
         <div className="container mx-auto page-students">

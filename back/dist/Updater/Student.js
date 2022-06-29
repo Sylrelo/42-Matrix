@@ -109,6 +109,8 @@ class Student {
                     sort["$sort"].correction_point = +query.point_sort;
                 if (query.level_sort)
                     sort["$sort"]["cursus_users.level"] = +query.level_sort;
+                if (query.bh_sort)
+                    sort["$sort"]["cursus_users.blackholed_at"] = +query.bh_sort;
                 const students = yield shared_1.COLLECTIONS.students
                     .aggregate([
                     ...basePipeline,
