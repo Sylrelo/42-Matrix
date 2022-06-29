@@ -131,7 +131,7 @@ class FortyTwo {
         setTimeout(async () => {
             const expireIn = new Date().getTime() / 1000 - this._tokenData?.created_at;
 
-            if (expireIn <= 10) {
+            if (expireIn <= 12) {
                 console.log("Temporarily stopping pending request, token will expire soon.");
                 this.handlePending();
                 return;

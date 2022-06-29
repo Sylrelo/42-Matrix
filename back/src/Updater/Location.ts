@@ -61,22 +61,22 @@ export class Location {
                 30
             );
 
-            apiLocations.push({
-                end_at: "",
-                id: 9999999,
-                begin_at: "",
-                primary: true,
-                host: "z3r5p2",
-                campus_id: 9999999,
-                user: {
-                    pool_month: "june",
-                    pool_year: "2022",
-                    id: 9999999,
-                    login: "pool test",
-                    image_url:
-                        "https://www.gannett-cdn.com/-mm-/e6db794ee53cd5604c71d33cdc4e1c2d8dd1e9f6/c=0-97-3000-1792/local/-/media/2016/05/28/Phoenix/Phoenix/636000630435534109-uscpcent02-6pxapvk0nu0vrw8pa7y-original.jpg",
-                },
-            });
+            // apiLocations.push({
+            //     end_at: "",
+            //     id: 9999999,
+            //     begin_at: "",
+            //     primary: true,
+            //     host: "z3r5p2",
+            //     campus_id: 9999999,
+            //     user: {
+            //         pool_month: "june",
+            //         pool_year: "2022",
+            //         id: 9999999,
+            //         login: "pool test",
+            //         image_url:
+            //             "https://www.gannett-cdn.com/-mm-/e6db794ee53cd5604c71d33cdc4e1c2d8dd1e9f6/c=0-97-3000-1792/local/-/media/2016/05/28/Phoenix/Phoenix/636000630435534109-uscpcent02-6pxapvk0nu0vrw8pa7y-original.jpg",
+            //     },
+            // });
             // apiLocations.push({
             //     end_at: "",
             //     id: 99991,
