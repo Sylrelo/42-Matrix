@@ -85,8 +85,10 @@ fastify.get("/api/status", status_1.statusHandler);
         shared_1.default.api = new _42_1.default();
         yield shared_1.default.api.getToken();
         shared_1.default.api.handlePending();
+        App_1.student.UpdateActive();
         startJobs();
         console.log("Jobs started.");
+        App_1.location.Update();
         if ((yield shared_1.COLLECTIONS.coalitions.count({ cursus_id: 21 })) < 3) {
             App_1.coalition.Update(21);
         }
@@ -131,7 +133,7 @@ function startJobs() {
     });
     setInterval(() => {
         App_1.location.Update();
-    }, 30000);
+    }, 10000);
     setInterval(() => {
         shared_1.default.api.getToken();
     }, 2000);

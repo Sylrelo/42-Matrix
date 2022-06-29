@@ -36,7 +36,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Location = void 0;
-const App_1 = require("../App");
 const security_1 = __importDefault(require("../Routes/security"));
 const shared_1 = __importStar(require("../shared"));
 const utils_1 = require("../utils");
@@ -48,7 +47,7 @@ class Location {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield security_1.default.checkAuth(request, reply);
-                yield App_1.location.Update();
+                // await location.Update();
                 const studentsId = Location.actives.map((location) => location.id);
                 const suplData = (yield shared_1.COLLECTIONS.students
                     .find({ id: { $in: studentsId } })

@@ -156,7 +156,7 @@ const Clusters = () => {
 
         window.addEventListener("resize", _onResize);
 
-        intervalRef.current = setInterval(() => _getLocations(), 28000);
+        intervalRef.current = setInterval(() => _getLocations(), 15000);
 
         return () => {
             window.removeEventListener("resize", _onResize);

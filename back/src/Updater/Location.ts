@@ -26,7 +26,7 @@ export class Location {
     async Route(request: FastifyRequest, reply: FastifyReply) {
         try {
             await security.checkAuth(request, reply);
-            await location.Update();
+            // await location.Update();
 
             const studentsId = Location.actives.map((location) => location.id);
 

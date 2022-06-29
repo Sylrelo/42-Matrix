@@ -1,11 +1,13 @@
 import dayjs from "dayjs";
 import Pagination from "rc-pagination";
+import Select from "rc-select";
 import Table from "rc-table";
 import { FC } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { get } from "../../Utils/http";
 import "./style.scss";
+import "../../../node_modules/rc-select/assets/index.less";
 
 const columns = [
     {
@@ -58,6 +60,7 @@ const StudentsView: FC = () => {
     const [students, setStudents] = useState<any[]>([]);
     const [filters, setFilters] = useState({ page: 0 });
     const [total, setTotal] = useState(0);
+    const [skills, setSkills] = useState([]);
 
     useEffect(() => {
         (async () => {
@@ -65,7 +68,8 @@ const StudentsView: FC = () => {
 
             setTotal(result.total);
 
-            setStudents(result.students ?? []);
+            setSkills(result.skills);
+            setStudents((result.students ?? []).map((student: any) => ({ ...student, key: student.id })));
         })();
     }, [filters.page]);
 
@@ -73,6 +77,16 @@ const StudentsView: FC = () => {
         <div className="container mx-auto">
             <div className="page-title"> Students (WIP)</div>
 
+            {/*       <Select
+                placeholder="Skill"
+                options={skills.map((skill: any) => ({ label: skill.name, value: skill.id }))}
+            />
+
+            <br />
+            <br />
+            <br />
+            <br />
+            <br /> */}
             <div className="allo students-table">
                 <Table style={{ width: "100%" }} columns={columns} data={students} />
 

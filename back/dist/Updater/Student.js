@@ -48,13 +48,14 @@ class Student {
             try {
                 yield security_1.default.checkAuth(request, reply);
                 const query = request.query;
+                const skills = yield shared_1.default.api.getAll(`cursus/21/skills?`, 30, 1, 160);
                 const students = yield shared_1.COLLECTIONS.students
                     .find({})
                     .limit(20)
                     .skip(query.page * 20)
                     .toArray();
                 const total = yield shared_1.COLLECTIONS.students.count({});
-                reply.send({ students, total });
+                reply.send({ students, total, skills });
             }
             catch (error) {
                 console.error(error);
@@ -66,9 +67,9 @@ class Student {
     UpdateActive() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log("[Student] Update Active Students", this.isAlreadyUpdating);
                 if (this.isAlreadyUpdating)
                     return;
-                console.log("[Student] Update Active Students");
                 this.isAlreadyUpdating = true;
                 const students = (yield shared_1.COLLECTIONS.students
                     .find({
@@ -192,9 +193,14 @@ class Student {
                     const studentData = (yield shared_1.default.api.get("users/" + student.id));
                     studentData === null || studentData === void 0 ? true : delete studentData.campus;
                     studentData === null || studentData === void 0 ? true : delete studentData.languages_users;
-                    studentData === null || studentData === void 0 ? true : delete studentData.expertises_users;
                     studentData === null || studentData === void 0 ? true : delete studentData.patroning;
                     studentData === null || studentData === void 0 ? true : delete studentData.patroned;
+                    studentData === null || studentData === void 0 ? true : delete studentData.phone;
+                    studentData === null || studentData === void 0 ? true : delete studentData.usual_first_name;
+                    studentData === null || studentData === void 0 ? true : delete studentData.usual_full_name;
+                    studentData === null || studentData === void 0 ? true : delete studentData.partnerships;
+                    studentData === null || studentData === void 0 ? true : delete studentData.email;
+                    studentData === null || studentData === void 0 ? true : delete studentData.expertises_users;
                     transaction.push({
                         updateOne: {
                             filter: { id: student.id },

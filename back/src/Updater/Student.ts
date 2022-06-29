@@ -17,6 +17,8 @@ export class Student {
 
             const query = request.query as Record<string, any>;
 
+            const skills = await shared.api.getAll<any[]>(`cursus/21/skills?`, 30, 1, 160);
+
             const students = await COLLECTIONS.students
                 .find({})
                 .limit(20)
@@ -24,7 +26,7 @@ export class Student {
                 .toArray();
             const total = await COLLECTIONS.students.count({});
 
-            reply.send({ students, total });
+            reply.send({ students, total, skills });
         } catch (error) {
             console.error(error);
             reply.code(500);
@@ -34,9 +36,9 @@ export class Student {
 
     async UpdateActive() {
         try {
-            if (this.isAlreadyUpdating) return;
+            console.log("[Student] Update Active Students", this.isAlreadyUpdating);
 
-            console.log("[Student] Update Active Students");
+            if (this.isAlreadyUpdating) return;
 
             this.isAlreadyUpdating = true;
 
@@ -174,9 +176,14 @@ export class Student {
 
                 delete studentData?.campus;
                 delete studentData?.languages_users;
-                delete studentData?.expertises_users;
                 delete studentData?.patroning;
                 delete studentData?.patroned;
+                delete studentData?.phone;
+                delete studentData?.usual_first_name;
+                delete studentData?.usual_full_name;
+                delete studentData?.partnerships;
+                delete studentData?.email;
+                delete studentData?.expertises_users;
 
                 transaction.push({
                     updateOne: {

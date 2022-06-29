@@ -64,8 +64,11 @@ fastify.get("/api/status", statusHandler);
         await shared.api.getToken();
         shared.api.handlePending();
 
+        student.UpdateActive();
+
         startJobs();
         console.log("Jobs started.");
+        location.Update();
 
         if ((await COLLECTIONS.coalitions.count({ cursus_id: 21 })) < 3) {
             coalition.Update(21);
@@ -118,7 +121,7 @@ function startJobs() {
 
     setInterval(() => {
         location.Update();
-    }, 30000);
+    }, 10000);
 
     setInterval(() => {
         shared.api.getToken();
