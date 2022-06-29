@@ -9,24 +9,54 @@ import "./style.scss";
 // import "../../../node_modules/rc-select/assets/index.less";
 
 interface IFilters {
+    [index: string]: any;
     page: number;
     skillId: null | number;
     skillLevel: null | number;
     loginSort: null | number;
+    levelSort: null | number;
+    walletSort: null | number;
+    pointSort: null | number;
 }
 
 const StudentsView: FC = () => {
     const [students, setStudents] = useState<any[]>([]);
-    const [filters, setFilters] = useState<IFilters>({ page: 0, skillId: null, skillLevel: null, loginSort: null });
+    const [filters, setFilters] = useState<IFilters>({
+        page: 0,
+        skillId: null,
+        skillLevel: null,
+        loginSort: 1,
+        walletSort: null,
+        pointSort: null,
+        levelSort: null,
+    });
     const [total, setTotal] = useState(0);
     const [skills, setSkills] = useState([]);
 
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    const headerClick = (data: any, fc: any) => {
+    const headerClick = (data: any, sortKey: string) => {
         return {
             onClick: () => {
-                console.log(data, fc);
+                const tmp = filters[sortKey];
+
+                console.log(sortKey, tmp);
+                setFilters((old) => ({
+                    ...old,
+                    loginSort: null,
+                    walletSort: null,
+                    levelSort: null,
+                    pointSort: null,
+                    [sortKey]: tmp,
+                }));
+
+                if (tmp == null) {
+                    setFilters((old) => ({ ...old, [sortKey]: 1 }));
+                } else if (tmp === 1) {
+                    setFilters((old) => ({ ...old, [sortKey]: -1 }));
+                } else if (tmp === -1) {
+                    setFilters((old) => ({ ...old, [sortKey]: null }));
+                }
             },
         };
     };
@@ -52,7 +82,7 @@ const StudentsView: FC = () => {
                         </div>
                     </>
                 ),
-                onHeaderCell: (data: any) => headerClick(data, () => {}),
+                onHeaderCell: (data: any) => headerClick(data, "loginSort"),
 
                 // onHeaderCell: (allo: any) => {
                 //     console.log(allo);
@@ -80,9 +110,23 @@ const StudentsView: FC = () => {
                 dataIndex: "last_seen",
                 render: (last_seen: number) => (last_seen ? dayjs(last_seen).format("YYYY/MM/DD HH:mm") : "Never"),
             },
-            { title: "Level", dataIndex: "cursus_users", render: (cursus: any[]) => cursus?.[0]?.level?.toFixed(2) },
-            { title: "Wallet", dataIndex: "wallet", render: (wallet: string) => wallet + " ₳" },
-            { title: "Points", dataIndex: "correction_point" },
+            {
+                title: "Level",
+                dataIndex: "cursus_users",
+                render: (cursus: any[]) => cursus?.[0]?.level?.toFixed(2),
+                onHeaderCell: (data: any) => headerClick(data, "levelSort"),
+            },
+            {
+                title: "Wallet",
+                dataIndex: "wallet",
+                render: (wallet: string) => wallet + " ₳",
+                onHeaderCell: (data: any) => headerClick(data, "walletSort"),
+            },
+            {
+                title: "Points",
+                dataIndex: "correction_point",
+                onHeaderCell: (data: any) => headerClick(data, "pointSort"),
+            },
             {
                 title: "Blackhole",
                 dataIndex: "cursus_users",
@@ -101,7 +145,7 @@ const StudentsView: FC = () => {
             // { title: "Achievements", render: (_: void, student: any) => student.achievements?.length ?? 0 },
             // { title: "Titles", render: (_: void, student: any) => student.titles_users?.length ?? 0 },
         ];
-    }, []);
+    }, [filters.loginSort, filters.walletSort, filters.levelSort, filters.pointSort]);
 
     useEffect(() => {
         clearTimeout(timeoutRef.current as NodeJS.Timeout);
@@ -114,6 +158,11 @@ const StudentsView: FC = () => {
                 queryFilters.push(`skill_level=${filters.skillLevel}`);
             }
 
+            if (filters.walletSort) queryFilters.push(`wallet_sort=${filters.walletSort}`);
+            else if (filters.pointSort) queryFilters.push(`point_sort=${filters.pointSort}`);
+            else if (filters.levelSort) queryFilters.push(`level_sort=${filters.levelSort}`);
+            else queryFilters.push(`login_sort=${filters.loginSort ?? 1}`);
+
             const result = await get<any>(`students?page=${filters.page}&${queryFilters.join("&")}`);
 
             setTotal(result.total);
@@ -121,7 +170,7 @@ const StudentsView: FC = () => {
             setSkills(result.skills.sort());
             setStudents((result.students ?? []).map((student: any) => ({ ...student, key: student.id })));
         }, 250);
-    }, [filters.page, filters.skillLevel]);
+    }, [filters.page, filters.skillLevel, filters.loginSort, filters.walletSort, filters.levelSort, filters.pointSort]);
 
     return (
         <div className="container mx-auto page-students">

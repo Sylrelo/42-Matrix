@@ -69,15 +69,27 @@ export class Student {
                 ...pipeline,
             ];
 
+            let sort: any = {
+                $sort: {
+                    // login: 1,
+                },
+            };
+
+            if (query.login_sort) sort["$sort"].login = +query.login_sort;
+            if (query.wallet_sort) sort["$sort"].wallet = +query.wallet_sort;
+            if (query.point_sort) sort["$sort"].correction_point = +query.point_sort;
+            if (query.level_sort) sort["$sort"]["cursus_users.level"] = +query.level_sort;
+
             const students = await COLLECTIONS.students
                 .aggregate([
                     ...basePipeline,
-                    {
-                        $sort: {
-                            login: 1,
-                            // "cursus_users.level": -1,
-                        },
-                    },
+                    { ...sort },
+                    // {
+                    //     $sort: {
+                    //         login: 1,
+                    //         // "cursus_users.level": -1,
+                    //     },
+                    // },
                     {
                         $skip: query.page * 20,
                     },
