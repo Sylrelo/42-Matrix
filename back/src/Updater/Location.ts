@@ -53,7 +53,6 @@ export class Location {
     async Update() {
         try {
             const studentLocations: IStudent[] = [];
-            Location.actives = [];
 
             let apiLocations = await shared.api.getAll<ILocation42[]>(
                 "campus/9/locations?filter[active]=true&filter[primary]=true",
@@ -104,6 +103,8 @@ export class Location {
             }
 
             const bulkOperations: AnyBulkWriteOperation<Document>[] = [];
+
+            Location.actives = [];
 
             for (const student of studentLocations) {
                 bulkOperations.push({

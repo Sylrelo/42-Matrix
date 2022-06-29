@@ -71,7 +71,6 @@ class Location {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const studentLocations = [];
-                Location.actives = [];
                 let apiLocations = yield shared_1.default.api.getAll("campus/9/locations?filter[active]=true&filter[primary]=true", 100, 5, 30);
                 apiLocations.push({
                     end_at: "",
@@ -109,6 +108,7 @@ class Location {
                     studentLocations.push(this.createDatabaseStudentObject(location));
                 }
                 const bulkOperations = [];
+                Location.actives = [];
                 for (const student of studentLocations) {
                     bulkOperations.push({
                         updateOne: {
