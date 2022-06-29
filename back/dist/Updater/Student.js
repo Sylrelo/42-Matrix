@@ -48,14 +48,32 @@ class Student {
             try {
                 yield security_1.default.checkAuth(request, reply);
                 const query = request.query;
+                const time_start = new Date().getTime();
                 const skills = yield shared_1.default.api.getAll(`cursus/21/skills?`, 30, 1, 160);
+                let matches = {};
+                if (query.skill_id && query.skill_level) {
+                    matches["$and"] = [
+                        {
+                            "cursus_users.cursus_id": 21,
+                        },
+                        {
+                            "cursus_users.skills": {
+                                $elemMatch: {
+                                    id: +query.skill_id,
+                                    level: { $gte: +query.skill_level },
+                                },
+                            },
+                        },
+                    ];
+                }
                 const students = yield shared_1.COLLECTIONS.students
-                    .find({})
+                    .find(matches)
                     .limit(20)
                     .skip(query.page * 20)
+                    .sort({ login: 1 })
                     .toArray();
-                const total = yield shared_1.COLLECTIONS.students.count({});
-                reply.send({ students, total, skills });
+                const total = yield shared_1.COLLECTIONS.students.countDocuments(matches);
+                reply.send({ students, total, skills, time: new Date().getTime() - time_start });
             }
             catch (error) {
                 console.error(error);

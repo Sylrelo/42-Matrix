@@ -14,19 +14,39 @@ export class Student {
     static async RouteGetAllStudents(request: FastifyRequest, reply: FastifyReply) {
         try {
             await security.checkAuth(request, reply);
-
             const query = request.query as Record<string, any>;
+
+            const time_start = new Date().getTime();
 
             const skills = await shared.api.getAll<any[]>(`cursus/21/skills?`, 30, 1, 160);
 
+            let matches = {};
+
+            if (query.skill_id && query.skill_level) {
+                matches["$and"] = [
+                    {
+                        "cursus_users.cursus_id": 21,
+                    },
+                    {
+                        "cursus_users.skills": {
+                            $elemMatch: {
+                                id: +query.skill_id,
+                                level: { $gte: +query.skill_level },
+                            },
+                        },
+                    },
+                ];
+            }
+
             const students = await COLLECTIONS.students
-                .find({})
+                .find(matches)
                 .limit(20)
                 .skip(query.page * 20)
+                .sort({ login: 1 })
                 .toArray();
-            const total = await COLLECTIONS.students.count({});
+            const total = await COLLECTIONS.students.countDocuments(matches);
 
-            reply.send({ students, total, skills });
+            reply.send({ students, total, skills, time: new Date().getTime() - time_start });
         } catch (error) {
             console.error(error);
             reply.code(500);

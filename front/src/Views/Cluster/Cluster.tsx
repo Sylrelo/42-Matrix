@@ -291,7 +291,7 @@ const Clusters = () => {
     ).length;
 
     return (
-        <>
+        <div>
             <div
                 className={"search-overlay " + (showSearchOverlay ? "" : "hidden")}
                 onClick={(event) => {
@@ -416,7 +416,7 @@ const Clusters = () => {
                     </MapInteractionCSS>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

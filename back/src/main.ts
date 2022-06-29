@@ -59,6 +59,9 @@ fastify.get("/api/status", statusHandler);
         COLLECTIONS.projects = db.collection("projects");
         COLLECTIONS.logs = db.collection("logs");
 
+        await COLLECTIONS.students.createIndex({ login: 1 });
+        await COLLECTIONS.students.createIndex({ login: -1 });
+
         shared.cache = new NodeCache({ stdTTL: 3600 });
         shared.api = new FortyTwo();
         await shared.api.getToken();

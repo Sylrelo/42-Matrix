@@ -1,18 +1,36 @@
 .students-table {
-	
 	table {
 	width: 100%;
 	text-align: left;
+		.avtr {
+			width: 42px;
+			height: 42px;
+			display: block;
+			background-size: cover;
+			background-position: center center;
+			border-radius: 5px;
 
-	.avtr {
-		width: 42px;
-		height: 42px;
-		display: block;
-		background-size: cover;
-		background-position: center center;
-		border-radius: 5px;
-
-		background-color: #1d2d4a;
+			background-color: #1d2d4a;
+		}
 	}
 }
-}
+
+// .page-students {
+// 	select, input {
+// 		width: 100%;
+// 		height: 32px;
+// 		background-color: #202937;
+// 		font-weight: bold !important;
+// 		margin: 4px;
+// 		border-radius: 5px;
+// 	}
+
+// 	input {
+// 		padding: 12px !important;
+
+// 		&:disabled {
+// 			background-color: #202937;
+// 			opacity: .8;
+// 		}
+// 	}
+// }

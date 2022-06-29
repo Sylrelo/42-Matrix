@@ -25,6 +25,13 @@ import ProjectsView from "./Views/Projects/Projects";
 import RankingView from "./Views/Ranking/Ranking";
 import StatusView from "./Views/Status/Status";
 import StudentsView from "./Views/Students/Students";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+const darkTheme = createTheme({
+    palette: {
+        mode: "dark",
+    },
+});
 
 export const AppBar = () => {
     const [_, setAuth] = useRecoilState(AuthAtom);
@@ -148,27 +155,29 @@ function App() {
     return (
         <>
             {auth && <AppBar />}
-            <div className="bg-gray-900 w-screen h-screen overflow-none">
-                <div className="pt-16" />
-                <div className="h-full overflow-x-auto overflow-y-none" ref={containerRef}>
-                    <Routes>
-                        <Route path="/" element={<Login />} />
-                        {auth && (
-                            <>
-                                <Route path="/clusters" element={<Clusters />} />
-                                <Route path="/ranking" element={<RankingView />} />
-                                <Route path="/coalitions" element={<CoalitionsView />} />
-                                <Route path="/projects" element={<ProjectsView />} />
-                                <Route path="/projects/:id" element={<ProjectDetailView />} />
-                                <Route path="/status" element={<StatusView />} />
-                                <Route path="/profile/:id" element={<ProfileView />} />
-                                <Route path="/students" element={<StudentsView />} />
-                            </>
-                        )}
-                    </Routes>
-                    <div className="pb-24" />
+            <ThemeProvider theme={darkTheme}>
+                <div className="bg-gray-900 w-screen h-screen overflow-none">
+                    <div className="pt-16" />
+                    <div className="h-full overflow-x-auto overflow-y-none" ref={containerRef}>
+                        <Routes>
+                            <Route path="/" element={<Login />} />
+                            {auth && (
+                                <>
+                                    <Route path="/clusters" element={<Clusters />} />
+                                    <Route path="/ranking" element={<RankingView />} />
+                                    <Route path="/coalitions" element={<CoalitionsView />} />
+                                    <Route path="/projects" element={<ProjectsView />} />
+                                    <Route path="/projects/:id" element={<ProjectDetailView />} />
+                                    <Route path="/status" element={<StatusView />} />
+                                    <Route path="/profile/:id" element={<ProfileView />} />
+                                    <Route path="/students" element={<StudentsView />} />
+                                </>
+                            )}
+                        </Routes>
+                        <div className="pb-24" />
+                    </div>
                 </div>
-            </div>
+            </ThemeProvider>
         </>
     );
 }

@@ -81,6 +81,8 @@ fastify.get("/api/status", status_1.statusHandler);
         shared_1.COLLECTIONS.sessions = db.collection("sessions");
         shared_1.COLLECTIONS.projects = db.collection("projects");
         shared_1.COLLECTIONS.logs = db.collection("logs");
+        yield shared_1.COLLECTIONS.students.createIndex({ login: 1 });
+        yield shared_1.COLLECTIONS.students.createIndex({ login: -1 });
         shared_1.default.cache = new node_cache_1.default({ stdTTL: 3600 });
         shared_1.default.api = new _42_1.default();
         yield shared_1.default.api.getToken();
