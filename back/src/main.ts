@@ -70,22 +70,22 @@ fastify.get("/api/status", statusHandler);
         console.log("Jobs started.");
         location.Update();
 
-        if ((await COLLECTIONS.coalitions.count({ cursus_id: 21 })) < 3) {
+        if ((await COLLECTIONS.coalitions.countDocuments({ cursus_id: 21 })) < 3) {
             coalition.Update(21);
         }
 
-        if ((await COLLECTIONS.coalitions.count({ cursus_id: 9 })) < 3) {
+        if ((await COLLECTIONS.coalitions.countDocuments({ cursus_id: 9 })) < 3) {
             coalition.Update(9);
         }
 
-        if ((await COLLECTIONS.students.count({})) < 400) {
+        if ((await COLLECTIONS.students.countDocuments({})) < 400) {
             await student.GetAllStudents();
             student.UpdateWithCoalition();
             student.UpdateInactive();
             console.log("Initialisation GetAllStudents() done.");
         }
 
-        if ((await COLLECTIONS.projects.count({})) === 0) {
+        if ((await COLLECTIONS.projects.countDocuments({})) === 0) {
             await Project.Update();
             console.log("Initialisation project.Update() done.");
         }

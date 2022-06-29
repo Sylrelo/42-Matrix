@@ -47,24 +47,24 @@ const statusHandler = (request, reply) => __awaiter(void 0, void 0, void 0, func
             reply.send({});
             return;
         }
-        const projectsCount = yield shared_1.COLLECTIONS.projects.count({});
-        const recentlySeen = yield shared_1.COLLECTIONS.students.count({ last_seen: { $gt: Student_1.Student.lastseenTimeout } });
-        const activeUpdatePendingCount = yield shared_1.COLLECTIONS.students.count({
+        const projectsCount = yield shared_1.COLLECTIONS.projects.countDocuments({});
+        const recentlySeen = yield shared_1.COLLECTIONS.students.countDocuments({ last_seen: { $gt: Student_1.Student.lastseenTimeout } });
+        const activeUpdatePendingCount = yield shared_1.COLLECTIONS.students.countDocuments({
             $and: [
                 { last_seen: { $gt: Student_1.Student.lastseenTimeout } },
                 { matrix_updated_at: { $lt: Student_1.Student.updateTimeout } },
             ],
         });
-        const updateInTheLastDay = yield shared_1.COLLECTIONS.students.count({
+        const updateInTheLastDay = yield shared_1.COLLECTIONS.students.countDocuments({
             matrix_updated_at: { $gt: Student_1.Student.updateTimeout },
         });
-        const inactiveUpdatePendingCount = yield shared_1.COLLECTIONS.students.count({
+        const inactiveUpdatePendingCount = yield shared_1.COLLECTIONS.students.countDocuments({
             $or: [{ matrix_updated_at: 0 }, { matrix_updated_at: null }, { matrix_updated_at: { $exists: false } }],
         });
-        const stalkingStudent = yield shared_1.COLLECTIONS.sessions.count({
+        const stalkingStudent = yield shared_1.COLLECTIONS.sessions.countDocuments({
             last_access: { $gte: new Date().getTime() - 30 * 1000 },
         });
-        const totalStudent = yield shared_1.COLLECTIONS.students.count({});
+        const totalStudent = yield shared_1.COLLECTIONS.students.countDocuments({});
         const dbStats = yield shared_1.default.mongo.db("42matrix").stats();
         reply.code(200);
         reply.send(Object.assign(Object.assign({}, shared_1.default.status), { pendingRequest: shared_1.default.api.getTotalPendingRequest(), recentlySeen,

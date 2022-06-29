@@ -14,30 +14,30 @@ export const statusHandler = async (request: FastifyRequest, reply: FastifyReply
             return;
         }
 
-        const projectsCount = await COLLECTIONS.projects.count({});
+        const projectsCount = await COLLECTIONS.projects.countDocuments({});
 
-        const recentlySeen = await COLLECTIONS.students.count({ last_seen: { $gt: Student.lastseenTimeout } });
+        const recentlySeen = await COLLECTIONS.students.countDocuments({ last_seen: { $gt: Student.lastseenTimeout } });
 
-        const activeUpdatePendingCount = await COLLECTIONS.students.count({
+        const activeUpdatePendingCount = await COLLECTIONS.students.countDocuments({
             $and: [
                 { last_seen: { $gt: Student.lastseenTimeout } },
                 { matrix_updated_at: { $lt: Student.updateTimeout } },
             ],
         });
 
-        const updateInTheLastDay = await COLLECTIONS.students.count({
+        const updateInTheLastDay = await COLLECTIONS.students.countDocuments({
             matrix_updated_at: { $gt: Student.updateTimeout },
         });
 
-        const inactiveUpdatePendingCount = await COLLECTIONS.students.count({
+        const inactiveUpdatePendingCount = await COLLECTIONS.students.countDocuments({
             $or: [{ matrix_updated_at: 0 }, { matrix_updated_at: null }, { matrix_updated_at: { $exists: false } }],
         });
 
-        const stalkingStudent = await COLLECTIONS.sessions.count({
+        const stalkingStudent = await COLLECTIONS.sessions.countDocuments({
             last_access: { $gte: new Date().getTime() - 30 * 1000 },
         });
 
-        const totalStudent = await COLLECTIONS.students.count({});
+        const totalStudent = await COLLECTIONS.students.countDocuments({});
 
         const dbStats = await shared.mongo.db("42matrix").stats();
 

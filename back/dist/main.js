@@ -89,19 +89,19 @@ fastify.get("/api/status", status_1.statusHandler);
         startJobs();
         console.log("Jobs started.");
         App_1.location.Update();
-        if ((yield shared_1.COLLECTIONS.coalitions.count({ cursus_id: 21 })) < 3) {
+        if ((yield shared_1.COLLECTIONS.coalitions.countDocuments({ cursus_id: 21 })) < 3) {
             App_1.coalition.Update(21);
         }
-        if ((yield shared_1.COLLECTIONS.coalitions.count({ cursus_id: 9 })) < 3) {
+        if ((yield shared_1.COLLECTIONS.coalitions.countDocuments({ cursus_id: 9 })) < 3) {
             App_1.coalition.Update(9);
         }
-        if ((yield shared_1.COLLECTIONS.students.count({})) < 400) {
+        if ((yield shared_1.COLLECTIONS.students.countDocuments({})) < 400) {
             yield App_1.student.GetAllStudents();
             App_1.student.UpdateWithCoalition();
             App_1.student.UpdateInactive();
             console.log("Initialisation GetAllStudents() done.");
         }
-        if ((yield shared_1.COLLECTIONS.projects.count({})) === 0) {
+        if ((yield shared_1.COLLECTIONS.projects.countDocuments({})) === 0) {
             yield Projects_1.Project.Update();
             console.log("Initialisation project.Update() done.");
         }
