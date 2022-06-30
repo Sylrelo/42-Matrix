@@ -3,6 +3,7 @@ import shared, { COLLECTIONS } from "../shared";
 import fs from "fs";
 import security from "./security";
 import { Student } from "../Updater/Student";
+import { Stats } from "../status";
 
 export const statusHandler = async (request: FastifyRequest, reply: FastifyReply) => {
     try {
@@ -43,7 +44,7 @@ export const statusHandler = async (request: FastifyRequest, reply: FastifyReply
 
         reply.code(200);
         reply.send({
-            ...shared.status,
+            stats: Stats.Get(),
             pendingRequest: shared.api.getTotalPendingRequest(),
             recentlySeen,
             activeUpdatePendingCount,

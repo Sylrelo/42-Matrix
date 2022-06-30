@@ -1,0 +1,1 @@
+{"version":3,"file":"conf.js","sourceRoot":"","sources":["../src/conf.ts"],"names":[],"mappings":";AAAA,iBAAiB;AACjB,+EAA+E;AAC/E,kFAAkF;AAClF,6CAA6C;AAC7C,+BAA+B;AAC/B,KAAK;;AAEL,MAAM,IAAI,GAAG;IACX,GAAG,EAAE,kEAAkE;IACvE,MAAM,EAAE,kEAAkE;IAC1E,WAAW,EAAE,wBAAwB;IACrC,oBAAoB,EAAE,CAAC;IACvB,gBAAgB,EAAE,qLAAqL;CACxM,CAAC;AAEF,kBAAe,IAAI,CAAC"}

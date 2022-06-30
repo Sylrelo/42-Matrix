@@ -1,6 +1,6 @@
 import axios, { Method } from "axios";
 import shared from "./shared";
-import { newResponseTime } from "./status";
+import { Stats } from "./status";
 const API_URL = "https://api.intra.42.fr/v2/";
 
 class DeferredPromise<T> {
@@ -24,7 +24,7 @@ class DeferredPromise<T> {
         try {
             await this.promise;
         } catch (error) {
-            console.error("err");
+            console.error(error);
         } finally {
             this.done = true;
         }
@@ -123,7 +123,7 @@ class FortyTwo {
             delete this._pendingRequestObject[uri];
         } finally {
             const endTime = new Date().getTime();
-            newResponseTime(endTime - startTime);
+            Stats.Add("42Requests", endTime - startTime);
         }
     }
 

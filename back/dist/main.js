@@ -58,7 +58,7 @@ fastify.register(require("fastify-cors"), {
 });
 fastify.register(require("fastify-compress"));
 fastify.addHook("onResponse", (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
-    (0, status_2.addMatrixApiRequestStat)(reply.getResponseTime());
+    status_2.Stats.Add("matrixRequests", reply.getResponseTime());
 }));
 // fastify.get("/api/student/:id", studentRoute);
 // fastify.get("/api/admin", adminRoute);
@@ -106,6 +106,12 @@ fastify.get("/api/status", status_1.statusHandler);
         }
         if (transaction.length)
             yield shared_1.COLLECTIONS.students.bulkWrite(transaction);
+        setInterval(() => __awaiter(void 0, void 0, void 0, function* () {
+            const stalkingStudent = yield shared_1.COLLECTIONS.sessions.countDocuments({
+                last_access: { $gte: new Date().getTime() - 30 * 1000 },
+            });
+            status_2.Stats.Add("stalking", stalkingStudent);
+        }), 5000);
         startJobs();
         console.log("Jobs started.");
         App_1.location.Update();

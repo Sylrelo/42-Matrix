@@ -7,7 +7,7 @@ import { authHandler, authVerifyHandler, logoutHandler } from "./Routes/authenti
 import { RankingRoute } from "./Routes/ranking";
 import { statusHandler } from "./Routes/status";
 import shared, { COLLECTIONS } from "./shared";
-import { addMatrixApiRequestStat } from "./status";
+import { Stats } from "./status";
 import { Project } from "./Updater/Projects";
 import dotenv from "dotenv";
 import { Student } from "./Updater/Student";
@@ -25,8 +25,9 @@ fastify.register(require("fastify-cors"), {
 });
 
 fastify.register(require("fastify-compress"));
+
 fastify.addHook("onResponse", async (request, reply) => {
-    addMatrixApiRequestStat(reply.getResponseTime());
+    Stats.Add("matrixRequests", reply.getResponseTime());
 });
 
 // fastify.get("/api/student/:id", studentRoute);
@@ -86,6 +87,14 @@ fastify.get("/api/status", statusHandler);
             });
         }
         if (transaction.length) await COLLECTIONS.students.bulkWrite(transaction);
+
+        setInterval(async () => {
+            const stalkingStudent = await COLLECTIONS.sessions.countDocuments({
+                last_access: { $gte: new Date().getTime() - 30 * 1000 },
+            });
+
+            Stats.Add("stalking", stalkingStudent);
+        }, 5000);
 
         startJobs();
         console.log("Jobs started.");

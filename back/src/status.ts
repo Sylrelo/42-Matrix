@@ -1,51 +1,32 @@
 import shared, { COLLECTIONS } from "./shared";
 
-let lastHour = -1;
+interface IStats {
+    [index: string]: { [index: number]: { max: number; min: number; count: number; total: number } };
+}
+export class Stats {
+    private static lastHour = -1;
+    private static data: IStats = {};
 
-export const newResponseTime = (value: number) => {
-    const currentHour = new Date().getHours();
+    static Add(type: string, value: number) {
+        const currentHour = +new Date().getHours();
 
-    if (!shared.status.remoteApi[currentHour] || currentHour !== lastHour) {
-        shared.status.remoteApi[currentHour] = { responseTime: 0, count: 0 };
+        if (!Stats.data[type]) {
+            Stats.data[type] = {};
+        }
+
+        if (!Stats.data[type][currentHour] || currentHour !== Stats.lastHour) {
+            Stats.data[type][currentHour] = { min: 9999, max: 0, count: 0, total: 0 };
+        }
+
+        Stats.data[type][currentHour].min = Math.min(Stats.data[type][currentHour].min, value);
+        Stats.data[type][currentHour].max = Math.max(Stats.data[type][currentHour].max, value);
+        Stats.data[type][currentHour].total += value;
+        Stats.data[type][currentHour].count += 1;
+
+        Stats.lastHour = currentHour;
     }
 
-    shared.status.remoteApi[currentHour].responseTime += value;
-    shared.status.remoteApi[currentHour].count++;
-    lastHour = currentHour;
-};
-
-export const addMatrixApiRequestStat = (value: number) => {
-    const currentHour = new Date().getHours();
-
-    if (!shared.status.matrixApi[currentHour] || currentHour !== lastHour) {
-        shared.status.matrixApi[currentHour] = { responseTime: 0, count: 0 };
+    static Get() {
+        return Stats.data;
     }
-
-    shared.status.matrixApi[currentHour].responseTime += value;
-    shared.status.matrixApi[currentHour].count++;
-    lastHour = currentHour;
-};
-
-export const logConnected = (promo: number, value: number) => {
-    const currentHour = new Date().getHours();
-
-    if (!shared.loggedStudent?.[currentHour]) {
-        shared.loggedStudent[currentHour] = {};
-    }
-
-    if (!shared.loggedStudent[currentHour]?.[promo] || currentHour !== lastHour) {
-        shared.loggedStudent[currentHour][promo] = {
-            min: 0,
-            max: 0,
-            countForAvg: 0,
-            totalForAvg: 0,
-        };
-    }
-
-    shared.loggedStudent[currentHour][promo].max = Math.max(shared.loggedStudent[currentHour][promo].max, value);
-    shared.loggedStudent[currentHour][promo].min = Math.max(shared.loggedStudent[currentHour][promo].min, value);
-
-    shared.loggedStudent[currentHour][promo].totalForAvg += value;
-    shared.loggedStudent[currentHour][promo].countForAvg++;
-    lastHour = currentHour;
-};
+}

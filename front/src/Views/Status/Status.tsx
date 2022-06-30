@@ -7,6 +7,7 @@ import { CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, AreaChart, A
 const StatusView = () => {
     const [apistat, setApistat] = useState<any[]>([]);
     const [matrixStat, setMatrixStat] = useState<any[]>([]);
+    const [stalkingStats, setStalkingStats] = useState<any[]>([]);
     const [status, setStatus] = useState<any>({});
 
     const timeRef = useRef<NodeJS.Timeout | null>(null);
@@ -16,7 +17,9 @@ const StatusView = () => {
             return {
                 name: `${hour}h`,
                 count: remoteApi[hour].count,
-                time: (remoteApi[hour].responseTime / remoteApi[hour].count).toFixed(2),
+                time: (remoteApi[hour].total / remoteApi[hour].count).toFixed(2),
+                min: remoteApi[hour].min,
+                max: remoteApi[hour].max,
             };
         }
 
@@ -35,24 +38,31 @@ const StatusView = () => {
 
             const intraApiStat = [];
             const matrixApiStat = [];
+            const stalkingStats = [];
 
             const currentHour = new Date().getHours() + 1;
 
             for (let i = 0; i < 24 - currentHour; i++) {
-                if (!status.remoteApi?.[i + currentHour] && !status.matrixApi?.[i + currentHour]) {
+                if (
+                    !status.stats?.matrixRequests?.[i + currentHour] &&
+                    !status.stats?.["42Requests"]?.[i + currentHour]
+                ) {
                     continue;
                 }
-                intraApiStat.push(getRemoteStatData(i + currentHour, status.remoteApi));
-                matrixApiStat.push(getRemoteStatData(i + currentHour, status.matrixApi));
+                intraApiStat.push(getRemoteStatData(i + currentHour, status.stats?.matrixRequests));
+                matrixApiStat.push(getRemoteStatData(i + currentHour, status.stats?.["42Requests"]));
+                stalkingStats.push(getRemoteStatData(i + currentHour, status.stats?.["stalking"]));
             }
 
             for (let i = 0; i < currentHour; i++) {
-                intraApiStat.push(getRemoteStatData(i, status.remoteApi));
-                matrixApiStat.push(getRemoteStatData(i, status.matrixApi));
+                intraApiStat.push(getRemoteStatData(i, status.stats?.matrixRequests));
+                matrixApiStat.push(getRemoteStatData(i, status.stats?.["42Requests"]));
+                stalkingStats.push(getRemoteStatData(i, status.stats?.["stalking"]));
             }
 
             setApistat(intraApiStat);
             setMatrixStat(matrixApiStat);
+            setStalkingStats(stalkingStats);
         } catch (error) {
             console.error(error);
         }
@@ -185,6 +195,21 @@ const StatusView = () => {
                     <ResponsiveContainer width={"100%"} height={300}>
                         <AreaChart data={matrixStat} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
                             <Area dataKey="time" stroke="#25ae8d" fill="#25ae8d" type="monotone" />
+                            <CartesianGrid strokeDasharray="2 4" stroke="#555555" />
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <Tooltip />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
+            <div className="flex flex-col sm:flex-row">
+                <div className="grow w-full">
+                    <div className="page-subtitle">Stalking</div>
+                    <ResponsiveContainer width={"100%"} height={300}>
+                        <AreaChart data={stalkingStats} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
+                            <Area dataKey="min" stroke="#870700" fill="#870700" type="monotone" />
+                            <Area dataKey="max" stroke="#008087" fill="#008087" type="monotone" />
                             <CartesianGrid strokeDasharray="2 4" stroke="#555555" />
                             <XAxis dataKey="name" />
                             <YAxis />

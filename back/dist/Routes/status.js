@@ -39,6 +39,7 @@ exports.statusHandler = void 0;
 const shared_1 = __importStar(require("../shared"));
 const security_1 = __importDefault(require("./security"));
 const Student_1 = require("../Updater/Student");
+const status_1 = require("../status");
 const statusHandler = (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const student = yield security_1.default.checkAuth(request, reply);
@@ -67,12 +68,19 @@ const statusHandler = (request, reply) => __awaiter(void 0, void 0, void 0, func
         const totalStudent = yield shared_1.COLLECTIONS.students.countDocuments({});
         const dbStats = yield shared_1.default.mongo.db("42matrix").stats();
         reply.code(200);
-        reply.send(Object.assign(Object.assign({}, shared_1.default.status), { pendingRequest: shared_1.default.api.getTotalPendingRequest(), recentlySeen,
+        reply.send({
+            stats: status_1.Stats.Get(),
+            pendingRequest: shared_1.default.api.getTotalPendingRequest(),
+            recentlySeen,
             activeUpdatePendingCount,
             inactiveUpdatePendingCount,
             totalStudent,
             stalkingStudent,
-            updateInTheLastDay, dataSize: dbStats.dataSize, storageSize: dbStats.storageSize, projectsCount: projectsCount - 1 }));
+            updateInTheLastDay,
+            dataSize: dbStats.dataSize,
+            storageSize: dbStats.storageSize,
+            projectsCount: projectsCount - 1,
+        });
     }
     catch (error) {
         console.error(error);

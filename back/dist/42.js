@@ -31,7 +31,7 @@ class DeferredPromise {
                 yield this.promise;
             }
             catch (error) {
-                console.error("err");
+                console.error(error);
             }
             finally {
                 this.done = true;
@@ -99,7 +99,7 @@ class FortyTwo {
             }
             finally {
                 const endTime = new Date().getTime();
-                (0, status_1.newResponseTime)(endTime - startTime);
+                status_1.Stats.Add("42Requests", endTime - startTime);
             }
         });
     }

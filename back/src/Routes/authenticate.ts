@@ -1,6 +1,5 @@
 import { createHash, randomUUID } from "crypto";
 import { FastifyReply, FastifyRequest } from "fastify";
-import Sessions from "../Database/Sessions";
 import shared, { COLLECTIONS } from "../shared";
 import security from "./security";
 
