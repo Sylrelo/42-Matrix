@@ -49,14 +49,14 @@ const StatusView = () => {
                 ) {
                     continue;
                 }
-                intraApiStat.push(getRemoteStatData(i + currentHour, status.stats?.matrixRequests));
-                matrixApiStat.push(getRemoteStatData(i + currentHour, status.stats?.["42Requests"]));
+                intraApiStat.push(getRemoteStatData(i + currentHour, status.stats?.["42Requests"]));
+                matrixApiStat.push(getRemoteStatData(i + currentHour, status.stats?.["matrixRequests"]));
                 stalkingStats.push(getRemoteStatData(i + currentHour, status.stats?.["stalking"]));
             }
 
             for (let i = 0; i < currentHour; i++) {
-                intraApiStat.push(getRemoteStatData(i, status.stats?.matrixRequests));
-                matrixApiStat.push(getRemoteStatData(i, status.stats?.["42Requests"]));
+                intraApiStat.push(getRemoteStatData(i, status.stats?.["42Requests"]));
+                matrixApiStat.push(getRemoteStatData(i, status.stats?.["matrixRequests"]));
                 stalkingStats.push(getRemoteStatData(i, status.stats?.["stalking"]));
             }
 
