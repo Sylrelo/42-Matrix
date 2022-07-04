@@ -91,6 +91,7 @@ const Seat = ({ location, student, unavailable, selectedStudent }: SeatProps) =>
         if (!student) return {};
 
         if (student?.coalition) style.border = `4px solid ${student.coalition?.color}`;
+
         if (student?.image_url) style.backgroundImage = `url(${student.image_url})`;
 
         return style;
@@ -112,7 +113,6 @@ const Seat = ({ location, student, unavailable, selectedStudent }: SeatProps) =>
                             {isPool(student) && <div className="pool">Pool</div>}
                             {student?.login === "slopez" && <div className="daddymatrix">Matrix</div>}
                         </div>
-
                         <div className="login">{student?.login}</div>
                         <div className={"location " + (student ? "active" : "text-slate-500")}>{location}</div>
                     </div>
@@ -165,12 +165,19 @@ const Clusters = () => {
         };
     }, []);
 
+    const changePlaceholderImage = () => {
+        setTimeout(() => {
+            const placeholders = document.querySelectorAll(".loading-placeholder");
+
+            placeholders.forEach((placeholder) => {
+                placeholder.classList.add("notfound");
+            });
+        }, 4000);
+    };
     const _getLocations = async () => {
         try {
-            const result = await get<any>("locations");
-            // const resultStats = await get<any>("logged_stats");
-
-            // setLoggedStats(resultStats);
+            let result = await get<any>("locations");
+            changePlaceholderImage();
             setStudentLocations(result);
         } catch (error) {
             console.error(error);
@@ -265,6 +272,7 @@ const Clusters = () => {
 
     useEffect(() => {
         setInterfactiveSize();
+        changePlaceholderImage();
     }, [size, currentCluster]);
 
     const getHost = (host: string) => {

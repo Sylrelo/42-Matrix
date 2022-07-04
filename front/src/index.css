@@ -115,6 +115,11 @@ body {
     border-radius: inherit;
 }
 
+.seat.student .loading-placeholder.notfound {
+    background-image: url("/public/notfound.png");
+    background-size: cover;
+}
+
 .seat.student .loading-placeholder > .profile-image {
     border-radius: inherit;
     display: inherit;
