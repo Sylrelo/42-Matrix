@@ -35,8 +35,9 @@ export const isPool = (student: any): boolean => {
     if (!student) return false;
 
     return (
-        student.pool_month === MONTHS_NAME[new Date().getMonth()].toLowerCase() &&
-        student.pool_year === new Date().getFullYear().toString()
+        student.is_pool ||
+        (student.pool_month === MONTHS_NAME[new Date().getMonth()].toLowerCase() &&
+            student.pool_year === new Date().getFullYear().toString())
     );
 };
 

@@ -38,7 +38,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Location = void 0;
 const security_1 = __importDefault(require("../Routes/security"));
 const shared_1 = __importStar(require("../shared"));
-const utils_1 = require("../utils");
 class Location {
     constructor() {
         Location.actives = [];
@@ -51,11 +50,13 @@ class Location {
                 const studentsId = Location.actives.map((location) => location.id);
                 const suplData = (yield shared_1.COLLECTIONS.students
                     .find({ id: { $in: studentsId } })
-                    .project({ groups: 1, coalition: 1, id: 1, _id: 0 })
+                    .project({ groups: 1, coalition: 1, id: 1, matrix_is_pool: 1, _id: 0 })
                     .toArray());
                 const tmp = Location.actives.map((location) => {
-                    var _a, _b;
-                    return (Object.assign(Object.assign({}, location), { groups: (_a = suplData.find((student) => student.id === location.id)) === null || _a === void 0 ? void 0 : _a.groups, coalition: (_b = suplData.find((student) => student.id === location.id)) === null || _b === void 0 ? void 0 : _b.coalition }));
+                    var _a, _b, _c;
+                    return (Object.assign(Object.assign({}, location), { groups: (_a = suplData.find((student) => student.id === location.id)) === null || _a === void 0 ? void 0 : _a.groups, coalition: (_b = suplData.find((student) => student.id === location.id)) === null || _b === void 0 ? void 0 : _b.coalition, 
+                        //@ts-ignore
+                        is_pool: (_c = suplData.find((student) => student.id === location.id)) === null || _c === void 0 ? void 0 : _c.matrix_is_pool }));
                 });
                 reply.code(200);
                 reply.send(tmp);
@@ -82,7 +83,7 @@ class Location {
                     bulkOperations.push({
                         updateOne: {
                             filter: { id: student.id },
-                            update: { $set: Object.assign(Object.assign({}, student), { matrix_is_pool: (0, utils_1.isPool)(student) }) },
+                            update: { $set: Object.assign({}, student) },
                             upsert: true,
                         },
                     });

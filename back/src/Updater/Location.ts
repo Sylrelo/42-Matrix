@@ -32,13 +32,15 @@ export class Location {
 
             const suplData = (await COLLECTIONS.students
                 .find({ id: { $in: studentsId } })
-                .project({ groups: 1, coalition: 1, id: 1, _id: 0 })
+                .project({ groups: 1, coalition: 1, id: 1, matrix_is_pool: 1, _id: 0 })
                 .toArray()) as IStudent[];
 
             const tmp = Location.actives.map((location) => ({
                 ...location,
                 groups: suplData.find((student) => student.id === location.id)?.groups,
                 coalition: suplData.find((student) => student.id === location.id)?.coalition,
+                //@ts-ignore
+                is_pool: suplData.find((student) => student.id === location.id)?.matrix_is_pool,
             }));
 
             reply.code(200);
@@ -77,7 +79,7 @@ export class Location {
                 bulkOperations.push({
                     updateOne: {
                         filter: { id: student.id },
-                        update: { $set: { ...student, matrix_is_pool: isPool(student) } },
+                        update: { $set: { ...student } },
                         upsert: true,
                     },
                 });
