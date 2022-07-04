@@ -16,8 +16,10 @@ exports.MONTHS_NAME = [
     "December",
 ];
 const isPool = (user) => {
-    return (user.pool_month === exports.MONTHS_NAME[new Date().getMonth()].toLowerCase() &&
-        user.pool_year === new Date().getFullYear().toString());
+    var _a, _b;
+    return ((((_a = user.cursus_users) === null || _a === void 0 ? void 0 : _a.length) === 1 && ((_b = user.cursus_users) === null || _b === void 0 ? void 0 : _b.find((cursus) => cursus.cursus_id === 9)) != null) ||
+        (user.pool_month === exports.MONTHS_NAME[new Date().getMonth()].toLowerCase() &&
+            user.pool_year === new Date().getFullYear().toString()));
 };
 exports.isPool = isPool;
 //# sourceMappingURL=utils.js.map

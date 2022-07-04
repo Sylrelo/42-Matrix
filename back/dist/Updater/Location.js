@@ -72,38 +72,6 @@ class Location {
             try {
                 const studentLocations = [];
                 let apiLocations = yield shared_1.default.api.getAll("campus/9/locations?filter[active]=true&filter[primary]=true", 100, 5, 30);
-                // apiLocations.push({
-                //     end_at: "",
-                //     id: 9999999,
-                //     begin_at: "",
-                //     primary: true,
-                //     host: "z3r5p2",
-                //     campus_id: 9999999,
-                //     user: {
-                //         pool_month: "june",
-                //         pool_year: "2022",
-                //         id: 9999999,
-                //         login: "pool test",
-                //         image_url:
-                //             "https://www.gannett-cdn.com/-mm-/e6db794ee53cd5604c71d33cdc4e1c2d8dd1e9f6/c=0-97-3000-1792/local/-/media/2016/05/28/Phoenix/Phoenix/636000630435534109-uscpcent02-6pxapvk0nu0vrw8pa7y-original.jpg",
-                //     },
-                // });
-                // apiLocations.push({
-                //     end_at: "",
-                //     id: 99991,
-                //     begin_at: "",
-                //     primary: true,
-                //     host: "z3r5p6",
-                //     campus_id: 99991,
-                //     user: {
-                //         pool_month: "june",
-                //         pool_year: "2022",
-                //         id: 999991,
-                //         login: "999994",
-                //         image_url:
-                //             "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                //     },
-                // });
                 apiLocations = (apiLocations !== null && apiLocations !== void 0 ? apiLocations : []).filter((value, index, self) => { var _a; return !((_a = value.user) === null || _a === void 0 ? void 0 : _a.id) || index === self.findIndex((t) => t.user.id === value.user.id); });
                 for (const location of apiLocations) {
                     studentLocations.push(this.createDatabaseStudentObject(location));

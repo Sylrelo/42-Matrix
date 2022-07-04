@@ -38,6 +38,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Student = void 0;
 const security_1 = __importDefault(require("../Routes/security"));
 const shared_1 = __importStar(require("../shared"));
+const utils_1 = require("../utils");
 class Route {
     static GetNumberOfStudentsPerPromo() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -394,7 +395,9 @@ class Student {
                     transaction.push({
                         updateOne: {
                             filter: { id: student.id },
-                            update: { $set: Object.assign(Object.assign({}, studentData), { matrix_updated_at: new Date().getTime() }) },
+                            update: {
+                                $set: Object.assign(Object.assign({}, studentData), { matrix_updated_at: new Date().getTime(), matrix_is_pool: (0, utils_1.isPool)(studentData) }),
+                            },
                         },
                     });
                 }

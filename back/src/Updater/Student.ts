@@ -3,6 +3,7 @@ import { AnyBulkWriteOperation, Document } from "mongodb";
 import { IStudent } from "../Interfaces/IStudent";
 import security from "../Routes/security";
 import shared, { COLLECTIONS } from "../shared";
+import { isPool } from "../utils";
 
 class Route {
     static baseProject: any[] = [
@@ -377,7 +378,13 @@ export class Student {
                 transaction.push({
                     updateOne: {
                         filter: { id: student.id },
-                        update: { $set: { ...studentData, matrix_updated_at: new Date().getTime() } },
+                        update: {
+                            $set: {
+                                ...studentData,
+                                matrix_updated_at: new Date().getTime(),
+                                matrix_is_pool: isPool(studentData),
+                            },
+                        },
                     },
                 });
             }
