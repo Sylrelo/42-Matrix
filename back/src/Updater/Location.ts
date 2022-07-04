@@ -76,10 +76,16 @@ export class Location {
             Location.actives = [];
 
             for (const student of studentLocations) {
+                let updater = {};
+
+                if (isPool(student)) {
+                    updater = { matrix_is_pool: true };
+                }
+
                 bulkOperations.push({
                     updateOne: {
                         filter: { id: student.id },
-                        update: { $set: { ...student } },
+                        update: { $set: { ...student, ...updater } },
                         upsert: true,
                     },
                 });

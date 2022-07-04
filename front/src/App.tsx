@@ -57,13 +57,16 @@ export const AppBar = () => {
                                     <MapIcon size={36} />
                                 </Link>
                             </li>
-                            <li>
-                                <Link
-                                    to="/students"
-                                    className="block py-2 pr-1 pl-1 hover:bg-transparent text-gray-400  hover:bg-gray-700 hover:text-white">
-                                    <FiUsers size={20} />
-                                </Link>
-                            </li>
+                            {!isPool && (
+                                <li>
+                                    <Link
+                                        to="/students"
+                                        className="block py-2 pr-1 pl-1 hover:bg-transparent text-gray-400  hover:bg-gray-700 hover:text-white">
+                                        <FiUsers size={20} />
+                                    </Link>
+                                </li>
+                            )}
+
                             <li>
                                 <Link
                                     to="/ranking"

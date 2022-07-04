@@ -38,6 +38,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Location = void 0;
 const security_1 = __importDefault(require("../Routes/security"));
 const shared_1 = __importStar(require("../shared"));
+const utils_1 = require("../utils");
 class Location {
     constructor() {
         Location.actives = [];
@@ -80,10 +81,14 @@ class Location {
                 const bulkOperations = [];
                 Location.actives = [];
                 for (const student of studentLocations) {
+                    let updater = {};
+                    if ((0, utils_1.isPool)(student)) {
+                        updater = { matrix_is_pool: true };
+                    }
                     bulkOperations.push({
                         updateOne: {
                             filter: { id: student.id },
-                            update: { $set: Object.assign({}, student) },
+                            update: { $set: Object.assign(Object.assign({}, student), updater) },
                             upsert: true,
                         },
                     });
