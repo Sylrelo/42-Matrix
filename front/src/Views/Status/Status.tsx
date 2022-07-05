@@ -273,7 +273,7 @@ const StatusView = () => {
                     </div>
 
                     {logs.map((log) => (
-                        <div key={log._id} className="mt-2 mb-2 bg-blue-100 rounded p-2">
+                        <div key={log._id} className="mt-2 mb-2 rounded p-2">
                             [{dayjs(log.created_at).format("DD/MM HH:mm:ss")}] [{log.type}]{" "}
                             {(log.data ?? []).map((d: any) => JSON.stringify(d))}
                         </div>
