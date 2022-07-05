@@ -14,3 +14,8 @@ export const IsPool = atom({
     key: "isPool",
     default: false,
 });
+
+export const IsAdminAtom = atom({
+    key: "isAdmin",
+    default: false,
+});

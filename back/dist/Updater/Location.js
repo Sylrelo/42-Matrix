@@ -39,6 +39,7 @@ exports.Location = void 0;
 const security_1 = __importDefault(require("../Routes/security"));
 const shared_1 = __importStar(require("../shared"));
 const utils_1 = require("../utils");
+const App_1 = require("../App");
 class Location {
     constructor() {
         Location.actives = [];
@@ -47,7 +48,6 @@ class Location {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield security_1.default.checkAuth(request, reply);
-                // await location.Update();
                 const studentsId = Location.actives.map((location) => location.id);
                 const suplData = (yield shared_1.COLLECTIONS.students
                     .find({ id: { $in: studentsId } })
@@ -96,6 +96,9 @@ class Location {
                 }
                 if (bulkOperations.length)
                     yield shared_1.COLLECTIONS.students.bulkWrite(bulkOperations);
+                for (const student of studentLocations) {
+                    App_1.student.UpdateOneStudent(student.id);
+                }
             }
             catch (error) {
                 console.error(error);

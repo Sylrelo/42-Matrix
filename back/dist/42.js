@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
+const App_1 = require("./App");
 const shared_1 = __importDefault(require("./shared"));
 const status_1 = require("./status");
 const API_URL = "https://api.intra.42.fr/v2/";
@@ -58,7 +59,7 @@ class FortyTwo {
             return yield this._add(10, `${API_URL}oauth/token`, "POST", {}, {
                 grant_type: "refresh_token",
                 client_id: process.env.UID,
-                client_secret: process.env.SECRET,
+                client_secret: App_1.CONFIG.CLIENT_SECRET,
                 redirect_uri: process.env.REDIRECT_URL,
                 refresh_token: refreshToken,
             });
@@ -66,10 +67,11 @@ class FortyTwo {
     }
     authorisationPost(code) {
         return __awaiter(this, void 0, void 0, function* () {
+            // console.log(process.env.UID, process.env.SECRET, process.env.REDIRECT_URL);
             return yield this._add(10, `${API_URL}oauth/token`, "POST", {}, {
                 grant_type: "authorization_code",
                 client_id: process.env.UID,
-                client_secret: process.env.SECRET,
+                client_secret: App_1.CONFIG.CLIENT_SECRET,
                 redirect_uri: process.env.REDIRECT_URL,
                 code,
             });
@@ -250,7 +252,7 @@ class FortyTwo {
                 this._tokenData = yield this._post("https://api.intra.42.fr/oauth/token", {
                     grant_type: "client_credentials",
                     client_id: process.env.UID,
-                    client_secret: process.env.SECRET,
+                    client_secret: App_1.CONFIG.CLIENT_SECRET,
                 });
                 console.log("Got new token", this._tokenData.access_token);
             }

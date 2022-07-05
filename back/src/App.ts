@@ -5,3 +5,5 @@ import { Student } from "./Updater/Student";
 export const student = new Student();
 export const location = new Location();
 export const coalition = new Coalition();
+
+export let CONFIG = { CLIENT_SECRET: "" };

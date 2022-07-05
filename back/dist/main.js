@@ -35,18 +35,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const dotenv_1 = __importDefault(require("dotenv"));
 const fastify_1 = __importDefault(require("fastify"));
+const fs_1 = require("fs");
 const node_cache_1 = __importDefault(require("node-cache"));
 const node_schedule_1 = __importDefault(require("node-schedule"));
 const _42_1 = __importDefault(require("./42"));
 const App_1 = require("./App");
+const admin_1 = require("./Routes/admin");
 const authenticate_1 = require("./Routes/authenticate");
 const ranking_1 = require("./Routes/ranking");
 const status_1 = require("./Routes/status");
 const shared_1 = __importStar(require("./shared"));
 const status_2 = require("./status");
 const Projects_1 = require("./Updater/Projects");
-const dotenv_1 = __importDefault(require("dotenv"));
 const Student_1 = require("./Updater/Student");
 dotenv_1.default.config({ path: ".env.local" });
 dotenv_1.default.config();
@@ -61,7 +63,7 @@ fastify.addHook("onResponse", (request, reply) => __awaiter(void 0, void 0, void
     status_2.Stats.Add("matrixRequests", reply.getResponseTime());
 }));
 // fastify.get("/api/student/:id", studentRoute);
-// fastify.get("/api/admin", adminRoute);
+fastify.post("/api/admin/change_secret", admin_1.Admin.ChangeSecret);
 fastify.get("/api/students", Student_1.Student.RouteGetAllStudents);
 fastify.get("/api/locations", App_1.location.Route);
 fastify.get("/api/coalitions", App_1.coalition.Route);
@@ -75,6 +77,19 @@ fastify.get("/api/status", status_1.statusHandler);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
+        try {
+            const localConfig = yield new Promise((resolve, reject) => {
+                (0, fs_1.readFile)(".localConfig.json", (err, data) => {
+                    if (err)
+                        reject(err);
+                    resolve(data);
+                });
+            });
+            const json = JSON.parse(localConfig.toString());
+            App_1.CONFIG.CLIENT_SECRET = json === null || json === void 0 ? void 0 : json.secret;
+        }
+        catch (_) { }
+        App_1.CONFIG.CLIENT_SECRET = process.env.SECRET;
         yield shared_1.default.mongo.connect();
         const db = shared_1.default.mongo.db("42matrix");
         shared_1.COLLECTIONS.students = db.collection("students");
@@ -88,7 +103,7 @@ fastify.get("/api/status", status_1.statusHandler);
         shared_1.default.api = new _42_1.default();
         yield shared_1.default.api.getToken();
         shared_1.default.api.handlePending();
-        App_1.student.UpdateActive();
+        // student.UpdateActive();
         const studs = yield shared_1.COLLECTIONS.students.find({ "cursus_users.blackholed_at": { $exists: true } }).toArray();
         const transaction = [];
         for (const stud of studs) {

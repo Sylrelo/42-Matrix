@@ -355,6 +355,34 @@ export class Student {
         }
     }
 
+    async UpdateOneStudent(id: number) {
+        try {
+            const student = await COLLECTIONS.students.findOne(
+                {
+                    $and: [
+                        { id },
+                        {
+                            $or: [
+                                { matrix_updated_at: 0 },
+                                { matrix_updated_at: null },
+                                { matrix_updated_at: { $exists: false } },
+                                { matrix_updated_at: { $lt: Student.updateTimeout } },
+                            ],
+                        },
+                    ],
+                },
+                { projection: { _id: 0, login: 1, matrix_updated_at: 1 } }
+            );
+
+            if (!student) return;
+            console.log(new Date(), student?.login, student?.matrix_updated_at);
+
+            await this.updateDatabase([{ id: id }]);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     private async updateDatabase(students: any[]) {
         try {
             const transaction: AnyBulkWriteOperation<Document>[] = [];

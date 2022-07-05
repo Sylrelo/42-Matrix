@@ -13,7 +13,7 @@ import ListIcon from "./Assets/ListIcon";
 import MapIcon from "./Assets/MapIcon";
 import ProjectIcon from "./Assets/ProjectIcon";
 import StatusIcon from "./Assets/StatusIcon";
-import { AuthAtom, IsAuthenticatingAtom, IsPool } from "./Atoms/Auth";
+import { AuthAtom, IsAdminAtom, IsAuthenticatingAtom, IsPool } from "./Atoms/Auth";
 import { ScrollTopAtom } from "./Atoms/ScrollTop";
 import "./global.scss";
 import { post } from "./Utils/http";
@@ -117,6 +117,7 @@ function App() {
     const [auth, setAuth] = useRecoilState(AuthAtom);
     const [, setIsAuthenticating] = useRecoilState(IsAuthenticatingAtom);
     const [, setIsPool] = useRecoilState(IsPool);
+    const [, setIsAdmin] = useRecoilState(IsAdminAtom);
     const scrollTopAtom = useRecoilValue(ScrollTopAtom);
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -133,6 +134,8 @@ function App() {
             const response = await post<any>("auth_verify");
 
             setIsPool(response.is_pool);
+            setIsAdmin(response.is_admin);
+
             setAuth(true);
 
             if (location.pathname === "/") navigate("clusters");

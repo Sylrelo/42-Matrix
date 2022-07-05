@@ -1,4 +1,5 @@
 import axios, { Method } from "axios";
+import { CONFIG } from "./App";
 import shared from "./shared";
 import { Stats } from "./status";
 const API_URL = "https://api.intra.42.fr/v2/";
@@ -75,7 +76,7 @@ class FortyTwo {
             {
                 grant_type: "refresh_token",
                 client_id: process.env.UID,
-                client_secret: process.env.SECRET,
+                client_secret: CONFIG.CLIENT_SECRET,
                 redirect_uri: process.env.REDIRECT_URL,
                 refresh_token: refreshToken,
             }
@@ -83,6 +84,7 @@ class FortyTwo {
     }
 
     public async authorisationPost<T>(code: string): Promise<T> {
+        // console.log(process.env.UID, process.env.SECRET, process.env.REDIRECT_URL);
         return await this._add<T>(
             10,
             `${API_URL}oauth/token`,
@@ -91,7 +93,7 @@ class FortyTwo {
             {
                 grant_type: "authorization_code",
                 client_id: process.env.UID,
-                client_secret: process.env.SECRET,
+                client_secret: CONFIG.CLIENT_SECRET,
                 redirect_uri: process.env.REDIRECT_URL,
                 code,
             }
@@ -301,7 +303,7 @@ class FortyTwo {
             this._tokenData = await this._post<TokenData>("https://api.intra.42.fr/oauth/token", {
                 grant_type: "client_credentials",
                 client_id: process.env.UID,
-                client_secret: process.env.SECRET,
+                client_secret: CONFIG.CLIENT_SECRET,
             });
             console.log("Got new token", this._tokenData.access_token);
         } catch (error) {

@@ -1,17 +1,19 @@
+import dotenv from "dotenv";
 import Fastify from "fastify";
+import { readFile } from "fs";
+import { AnyBulkWriteOperation, Document } from "mongodb";
 import NodeCache from "node-cache";
 import schedule from "node-schedule";
 import FortyTwo from "./42";
-import { coalition, location, student } from "./App";
+import { coalition, CONFIG, location, student } from "./App";
+import { Admin } from "./Routes/admin";
 import { authHandler, authVerifyHandler, logoutHandler } from "./Routes/authenticate";
 import { RankingRoute } from "./Routes/ranking";
 import { statusHandler } from "./Routes/status";
 import shared, { COLLECTIONS } from "./shared";
 import { Stats } from "./status";
 import { Project } from "./Updater/Projects";
-import dotenv from "dotenv";
 import { Student } from "./Updater/Student";
-import { AnyBulkWriteOperation, Document } from "mongodb";
 
 dotenv.config({ path: ".env.local" });
 dotenv.config();
@@ -31,7 +33,7 @@ fastify.addHook("onResponse", async (request, reply) => {
 });
 
 // fastify.get("/api/student/:id", studentRoute);
-// fastify.get("/api/admin", adminRoute);
+fastify.post("/api/admin/change_secret", Admin.ChangeSecret);
 
 fastify.get("/api/students", Student.RouteGetAllStudents);
 
@@ -51,6 +53,20 @@ fastify.get("/api/status", statusHandler);
 
 (async () => {
     try {
+        try {
+            const localConfig: Buffer = await new Promise((resolve, reject) => {
+                readFile(".localConfig.json", (err, data) => {
+                    if (err) reject(err);
+                    resolve(data);
+                });
+            });
+
+            const json = JSON.parse(localConfig.toString());
+            CONFIG.CLIENT_SECRET = json?.secret;
+        } catch (_) {}
+
+        CONFIG.CLIENT_SECRET = process.env.SECRET;
+
         await shared.mongo.connect();
 
         const db = shared.mongo.db("42matrix");
@@ -69,7 +85,7 @@ fastify.get("/api/status", statusHandler);
         await shared.api.getToken();
         shared.api.handlePending();
 
-        student.UpdateActive();
+        // student.UpdateActive();
 
         const studs = await COLLECTIONS.students.find({ "cursus_users.blackholed_at": { $exists: true } }).toArray();
         const transaction: AnyBulkWriteOperation<Document>[] = [];

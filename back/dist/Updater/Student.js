@@ -375,6 +375,32 @@ class Student {
             }
         });
     }
+    UpdateOneStudent(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const student = yield shared_1.COLLECTIONS.students.findOne({
+                    $and: [
+                        { id },
+                        {
+                            $or: [
+                                { matrix_updated_at: 0 },
+                                { matrix_updated_at: null },
+                                { matrix_updated_at: { $exists: false } },
+                                { matrix_updated_at: { $lt: Student.updateTimeout } },
+                            ],
+                        },
+                    ],
+                }, { projection: { _id: 0, login: 1, matrix_updated_at: 1 } });
+                if (!student)
+                    return;
+                console.log(new Date(), student === null || student === void 0 ? void 0 : student.login, student === null || student === void 0 ? void 0 : student.matrix_updated_at);
+                yield this.updateDatabase([{ id: id }]);
+            }
+            catch (error) {
+                console.error(error);
+            }
+        });
+    }
     updateDatabase(students) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

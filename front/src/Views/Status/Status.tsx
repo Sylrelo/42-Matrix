@@ -1,15 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from "react";
-import { get } from "../../Utils/http";
+import { get, post } from "../../Utils/http";
 
 import { CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, AreaChart, Area } from "recharts";
+import { useRecoilValue } from "recoil";
+import { IsAdminAtom } from "../../Atoms/Auth";
 
 const StatusView = () => {
+    const isAdmin = useRecoilValue(IsAdminAtom);
+
     const [apistat, setApistat] = useState<any[]>([]);
     const [matrixStat, setMatrixStat] = useState<any[]>([]);
     const [stalkingStats, setStalkingStats] = useState<any[]>([]);
     const [status, setStatus] = useState<any>({});
-
     const timeRef = useRef<NodeJS.Timeout | null>(null);
 
     const getRemoteStatData = (hour: number, remoteApi: Record<string, any>): Record<string, any> => {
@@ -146,7 +149,6 @@ const StatusView = () => {
                     </div>
                 </div>
             }
-
             <div className="flex flex-col sm:flex-row">
                 <div className="grow w-full">
                     <div className="page-subtitle">Number of request to 42 API</div>
@@ -175,7 +177,6 @@ const StatusView = () => {
                     </ResponsiveContainer>
                 </div>
             </div>
-
             <div className="flex flex-col sm:flex-row">
                 <div className="grow w-full">
                     <div className="page-subtitle">Matrix total request</div>
@@ -218,6 +219,47 @@ const StatusView = () => {
                     </ResponsiveContainer>
                 </div>
             </div>
+
+            {isAdmin && (
+                <>
+                    <div className="mt-5 w-full">
+                        <input
+                            placeholder="New SECRET "
+                            className="p-2"
+                            type="text"
+                            style={{ width: "400px" }}
+                            onKeyUp={async (event) => {
+                                const { key, target } = event;
+                                const secret = (target as HTMLInputElement).value;
+
+                                if (key !== "Enter") return;
+
+                                try {
+                                    (target as HTMLInputElement).disabled = true;
+                                    await post("admin/change_secret", { secret });
+                                } catch (error) {
+                                    console.error(error);
+                                } finally {
+                                    (target as HTMLInputElement).disabled = false;
+                                    (target as HTMLInputElement).value = "";
+                                }
+                            }}
+                        />
+                    </div>
+                    <div>
+                        <button
+                            type="button"
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Pull
+                        </button>
+                        <button
+                            type="button"
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Restart server
+                        </button>
+                    </div>
+                </>
+            )}
         </div>
     );
 };

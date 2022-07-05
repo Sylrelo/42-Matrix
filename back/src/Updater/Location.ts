@@ -1,10 +1,10 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { AnyBulkWriteOperation, Document } from "mongodb";
-import { location } from "../App";
 import { IStudent } from "../Interfaces/IStudent";
 import security from "../Routes/security";
 import shared, { COLLECTIONS } from "../shared";
-import { isPool, MONTHS_NAME } from "../utils";
+import { isPool } from "../utils";
+import { student as Student } from "../App";
 
 export interface ILocation42 {
     end_at: null | string;
@@ -26,8 +26,6 @@ export class Location {
     async Route(request: FastifyRequest, reply: FastifyReply) {
         try {
             await security.checkAuth(request, reply);
-            // await location.Update();
-
             const studentsId = Location.actives.map((location) => location.id);
 
             const suplData = (await COLLECTIONS.students
@@ -93,6 +91,10 @@ export class Location {
             }
 
             if (bulkOperations.length) await COLLECTIONS.students.bulkWrite(bulkOperations);
+
+            for (const student of studentLocations) {
+                Student.UpdateOneStudent(student.id);
+            }
         } catch (error) {
             console.error(error);
         }
