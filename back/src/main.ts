@@ -34,6 +34,7 @@ fastify.addHook("onResponse", async (request, reply) => {
 
 // fastify.get("/api/student/:id", studentRoute);
 fastify.post("/api/admin/change_secret", Admin.ChangeSecret);
+fastify.post("/api/admin/restart", Admin.Restart);
 fastify.post("/api/admin/pull", Admin.Pull);
 
 fastify.get("/api/students", Student.RouteGetAllStudents);

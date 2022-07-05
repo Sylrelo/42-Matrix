@@ -51,6 +51,18 @@ const execPromise = (command: string) => {
 // };
 
 export class Admin {
+    static async Restart(request: FastifyRequest, reply: FastifyReply) {
+        try {
+            await security.checkAuth(request, reply, [40737]);
+
+            const res = await execPromise("pm2 restart 0");
+
+            reply.send(res);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     static async Pull(request: FastifyRequest, reply: FastifyReply) {
         try {
             await security.checkAuth(request, reply, [40737]);
@@ -59,9 +71,7 @@ export class Admin {
                 "eval $(ssh-agent) && git reset --hard origin/master && git pull && git reset --hard origin/master"
             );
 
-            console.log(res);
-
-            reply.send({});
+            reply.send(res);
         } catch (error) {
             console.error(error);
         }

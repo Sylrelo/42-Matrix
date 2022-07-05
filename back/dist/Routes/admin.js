@@ -56,13 +56,24 @@ const execPromise = (command) => {
 //     }
 // };
 class Admin {
+    static Restart(request, reply) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield security_1.default.checkAuth(request, reply, [40737]);
+                const res = yield execPromise("pm2 restart 0");
+                reply.send(res);
+            }
+            catch (error) {
+                console.error(error);
+            }
+        });
+    }
     static Pull(request, reply) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield security_1.default.checkAuth(request, reply, [40737]);
                 const res = yield execPromise("eval $(ssh-agent) && git reset --hard origin/master && git pull && git reset --hard origin/master");
-                console.log(res);
-                reply.send({});
+                reply.send(res);
             }
             catch (error) {
                 console.error(error);
