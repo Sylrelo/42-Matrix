@@ -4,6 +4,7 @@ import fs from "fs";
 import security from "./security";
 import { Student } from "../Updater/Student";
 import { Stats } from "../status";
+import { START_TIME } from "../App";
 
 export const statusHandler = async (request: FastifyRequest, reply: FastifyReply) => {
     try {
@@ -55,6 +56,7 @@ export const statusHandler = async (request: FastifyRequest, reply: FastifyReply
             dataSize: dbStats.dataSize,
             storageSize: dbStats.storageSize,
             projectsCount: projectsCount - 1,
+            startTime: START_TIME,
         });
     } catch (error) {
         console.error(error);

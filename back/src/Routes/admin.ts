@@ -82,7 +82,7 @@ export class Admin {
             await security.checkAuth(request, reply, [40737]);
 
             const res = await execPromise(
-                "eval $(ssh-agent) && git reset --hard origin/master && git pull && git reset --hard origin/master"
+                "eval $(ssh-agent) && git reset --hard origin/master && git pull origin master && git reset --hard origin/master"
             );
 
             reply.send(res);

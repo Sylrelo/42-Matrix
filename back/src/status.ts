@@ -1,5 +1,3 @@
-import shared, { COLLECTIONS } from "./shared";
-
 interface IStats {
     [index: string]: { [index: number]: { max: number; min: number; count: number; total: number } };
 }

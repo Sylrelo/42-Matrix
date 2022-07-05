@@ -87,7 +87,7 @@ class Admin {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield security_1.default.checkAuth(request, reply, [40737]);
-                const res = yield execPromise("eval $(ssh-agent) && git reset --hard origin/master && git pull && git reset --hard origin/master");
+                const res = yield execPromise("eval $(ssh-agent) && git reset --hard origin/master && git pull origin master && git reset --hard origin/master");
                 reply.send(res);
             }
             catch (error) {

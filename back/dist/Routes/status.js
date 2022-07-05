@@ -40,6 +40,7 @@ const shared_1 = __importStar(require("../shared"));
 const security_1 = __importDefault(require("./security"));
 const Student_1 = require("../Updater/Student");
 const status_1 = require("../status");
+const App_1 = require("../App");
 const statusHandler = (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const student = yield security_1.default.checkAuth(request, reply);
@@ -80,6 +81,7 @@ const statusHandler = (request, reply) => __awaiter(void 0, void 0, void 0, func
             dataSize: dbStats.dataSize,
             storageSize: dbStats.storageSize,
             projectsCount: projectsCount - 1,
+            startTime: App_1.START_TIME,
         });
     }
     catch (error) {
