@@ -16,20 +16,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Admin = void 0;
+const child_process_1 = require("child_process");
 const fs_1 = require("fs");
 const App_1 = require("../App");
 const security_1 = __importDefault(require("./security"));
-// const execPromise = (command: string) => {
-//     return new Promise((resolve, reject) => {
-//         exec(command, (err, stdout, stderr) => {
-//             if (err != null) {
-//                 reject(stderr);
-//             }
-//             console.log({ err, stdout, stderr });
-//             resolve(stdout);
-//         });
-//     });
-// };
+const execPromise = (command) => {
+    return new Promise((resolve, reject) => {
+        (0, child_process_1.exec)(command, (err, stdout, stderr) => {
+            if (err != null) {
+                reject(stderr);
+            }
+            console.log({ err, stdout, stderr });
+            resolve({ stdout, stderr });
+        });
+    });
+};
 // export const adminRoute = async (request: FastifyRequest, reply: FastifyReply) => {
 //     try {
 //         // Only "slopez" authorized for now
@@ -55,6 +56,19 @@ const security_1 = __importDefault(require("./security"));
 //     }
 // };
 class Admin {
+    static Pull(request, reply) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield security_1.default.checkAuth(request, reply, [40737]);
+                const res = yield execPromise("eval $(ssh-agent) && git reset --hard origin/master && git pull && git reset --hard origin/master");
+                console.log(res);
+                reply.send({});
+            }
+            catch (error) {
+                console.error(error);
+            }
+        });
+    }
     static ChangeSecret(request, reply) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

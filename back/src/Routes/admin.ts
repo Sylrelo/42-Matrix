@@ -2,22 +2,23 @@
 // import { FastifyReply, FastifyRequest } from "fastify";
 // import security from "./security";
 
+import { exec } from "child_process";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { writeFile } from "fs";
 import { CONFIG } from "../App";
 import security from "./security";
 
-// const execPromise = (command: string) => {
-//     return new Promise((resolve, reject) => {
-//         exec(command, (err, stdout, stderr) => {
-//             if (err != null) {
-//                 reject(stderr);
-//             }
-//             console.log({ err, stdout, stderr });
-//             resolve(stdout);
-//         });
-//     });
-// };
+const execPromise = (command: string) => {
+    return new Promise((resolve, reject) => {
+        exec(command, (err, stdout, stderr) => {
+            if (err != null) {
+                reject(stderr);
+            }
+            console.log({ err, stdout, stderr });
+            resolve({ stdout, stderr });
+        });
+    });
+};
 
 // export const adminRoute = async (request: FastifyRequest, reply: FastifyReply) => {
 //     try {
@@ -50,6 +51,22 @@ import security from "./security";
 // };
 
 export class Admin {
+    static async Pull(request: FastifyRequest, reply: FastifyReply) {
+        try {
+            await security.checkAuth(request, reply, [40737]);
+
+            const res = await execPromise(
+                "eval $(ssh-agent) && git reset --hard origin/master && git pull && git reset --hard origin/master"
+            );
+
+            console.log(res);
+
+            reply.send({});
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     static async ChangeSecret(request: FastifyRequest, reply: FastifyReply) {
         try {
             await security.checkAuth(request, reply, [40737]);
