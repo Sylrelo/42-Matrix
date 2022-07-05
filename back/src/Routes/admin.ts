@@ -6,6 +6,7 @@ import { exec } from "child_process";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { writeFile } from "fs";
 import { CONFIG } from "../App";
+import { COLLECTIONS } from "../shared";
 import security from "./security";
 
 const execPromise = (command: string) => {
@@ -51,6 +52,18 @@ const execPromise = (command: string) => {
 // };
 
 export class Admin {
+    static async GetLogs(request: FastifyRequest, reply: FastifyReply) {
+        try {
+            await security.checkAuth(request, reply, [40737]);
+
+            const logs = await COLLECTIONS.logs.find({}).sort({ created_at: -1 }).limit(40).toArray();
+            reply.send(logs);
+        } catch (error) {
+            console.error(error);
+            reply.send({});
+        }
+    }
+
     static async Restart(request: FastifyRequest, reply: FastifyReply) {
         try {
             await security.checkAuth(request, reply, [40737]);
@@ -60,6 +73,7 @@ export class Admin {
             reply.send(res);
         } catch (error) {
             console.error(error);
+            reply.send({});
         }
     }
 
@@ -74,6 +88,7 @@ export class Admin {
             reply.send(res);
         } catch (error) {
             console.error(error);
+            reply.send({});
         }
     }
 

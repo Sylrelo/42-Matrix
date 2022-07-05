@@ -36,6 +36,7 @@ fastify.addHook("onResponse", async (request, reply) => {
 fastify.post("/api/admin/change_secret", Admin.ChangeSecret);
 fastify.post("/api/admin/restart", Admin.Restart);
 fastify.post("/api/admin/pull", Admin.Pull);
+fastify.get("/api/admin/logs", Admin.GetLogs);
 
 fastify.get("/api/students", Student.RouteGetAllStudents);
 
@@ -52,6 +53,30 @@ fastify.get("/api/projects", Project.GetProjects);
 fastify.get("/api/project/:id", Project.GetProjectDetail);
 
 fastify.get("/api/status", statusHandler);
+
+const originalConsole = { ...console };
+
+global.console.log = (message: string, ...optionalParams: any[]) => {
+    try {
+        originalConsole.log(message, ...optionalParams);
+        COLLECTIONS.logs?.insertOne({
+            created_at: new Date(),
+            type: "INFO",
+            data: [message, ...optionalParams],
+        });
+    } catch (_) {}
+};
+
+global.console.error = (message: string, ...optionalParams: any[]) => {
+    try {
+        originalConsole.error(message, ...optionalParams);
+        COLLECTIONS.logs?.insertOne({
+            created_at: new Date(),
+            type: "ERROR",
+            data: [message, ...optionalParams],
+        });
+    } catch (_) {}
+};
 
 (async () => {
     try {
@@ -86,8 +111,6 @@ fastify.get("/api/status", statusHandler);
         shared.api = new FortyTwo();
         await shared.api.getToken();
         shared.api.handlePending();
-
-        // student.UpdateActive();
 
         const studs = await COLLECTIONS.students.find({ "cursus_users.blackholed_at": { $exists: true } }).toArray();
         const transaction: AnyBulkWriteOperation<Document>[] = [];

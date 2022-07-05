@@ -19,6 +19,7 @@ exports.Admin = void 0;
 const child_process_1 = require("child_process");
 const fs_1 = require("fs");
 const App_1 = require("../App");
+const shared_1 = require("../shared");
 const security_1 = __importDefault(require("./security"));
 const execPromise = (command) => {
     return new Promise((resolve, reject) => {
@@ -56,6 +57,19 @@ const execPromise = (command) => {
 //     }
 // };
 class Admin {
+    static GetLogs(request, reply) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield security_1.default.checkAuth(request, reply, [40737]);
+                const logs = yield shared_1.COLLECTIONS.logs.find({}).sort({ created_at: -1 }).limit(40).toArray();
+                reply.send(logs);
+            }
+            catch (error) {
+                console.error(error);
+                reply.send({});
+            }
+        });
+    }
     static Restart(request, reply) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -65,6 +79,7 @@ class Admin {
             }
             catch (error) {
                 console.error(error);
+                reply.send({});
             }
         });
     }
@@ -77,6 +92,7 @@ class Admin {
             }
             catch (error) {
                 console.error(error);
+                reply.send({});
             }
         });
     }

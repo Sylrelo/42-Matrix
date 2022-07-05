@@ -66,6 +66,7 @@ fastify.addHook("onResponse", (request, reply) => __awaiter(void 0, void 0, void
 fastify.post("/api/admin/change_secret", admin_1.Admin.ChangeSecret);
 fastify.post("/api/admin/restart", admin_1.Admin.Restart);
 fastify.post("/api/admin/pull", admin_1.Admin.Pull);
+fastify.get("/api/admin/logs", admin_1.Admin.GetLogs);
 fastify.get("/api/students", Student_1.Student.RouteGetAllStudents);
 fastify.get("/api/locations", App_1.location.Route);
 fastify.get("/api/coalitions", App_1.coalition.Route);
@@ -76,6 +77,31 @@ fastify.post("/api/logout", authenticate_1.logoutHandler);
 fastify.get("/api/projects", Projects_1.Project.GetProjects);
 fastify.get("/api/project/:id", Projects_1.Project.GetProjectDetail);
 fastify.get("/api/status", status_1.statusHandler);
+const originalConsole = Object.assign({}, console);
+global.console.log = (message, ...optionalParams) => {
+    var _a;
+    try {
+        originalConsole.log(message, ...optionalParams);
+        (_a = shared_1.COLLECTIONS.logs) === null || _a === void 0 ? void 0 : _a.insertOne({
+            created_at: new Date(),
+            type: "INFO",
+            data: [message, ...optionalParams],
+        });
+    }
+    catch (_) { }
+};
+global.console.error = (message, ...optionalParams) => {
+    var _a;
+    try {
+        originalConsole.error(message, ...optionalParams);
+        (_a = shared_1.COLLECTIONS.logs) === null || _a === void 0 ? void 0 : _a.insertOne({
+            created_at: new Date(),
+            type: "ERROR",
+            data: [message, ...optionalParams],
+        });
+    }
+    catch (_) { }
+};
 (() => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -105,7 +131,6 @@ fastify.get("/api/status", status_1.statusHandler);
         shared_1.default.api = new _42_1.default();
         yield shared_1.default.api.getToken();
         shared_1.default.api.handlePending();
-        // student.UpdateActive();
         const studs = yield shared_1.COLLECTIONS.students.find({ "cursus_users.blackholed_at": { $exists: true } }).toArray();
         const transaction = [];
         for (const stud of studs) {

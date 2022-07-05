@@ -5,6 +5,7 @@ import { get, post } from "../../Utils/http";
 import { CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, AreaChart, Area } from "recharts";
 import { useRecoilValue } from "recoil";
 import { IsAdminAtom } from "../../Atoms/Auth";
+import dayjs from "dayjs";
 
 const StatusView = () => {
     const isAdmin = useRecoilValue(IsAdminAtom);
@@ -13,10 +14,12 @@ const StatusView = () => {
     const [matrixStat, setMatrixStat] = useState<any[]>([]);
     const [stalkingStats, setStalkingStats] = useState<any[]>([]);
     const [status, setStatus] = useState<any>({});
+    const [logs, setLogs] = useState<any[]>([]);
+
     const timeRef = useRef<NodeJS.Timeout | null>(null);
 
     const getRemoteStatData = (hour: number, remoteApi: Record<string, any>): Record<string, any> => {
-        if (remoteApi[hour]) {
+        if (remoteApi?.[hour]) {
             return {
                 name: `${hour}h`,
                 count: remoteApi[hour].count,
@@ -36,7 +39,9 @@ const StatusView = () => {
     const getStatus = async () => {
         try {
             const status = (await get<Record<string, any>>("status")) ?? {};
+            const logs = (await get<any[]>("admin/logs")) ?? [];
 
+            setLogs(logs);
             setStatus(status);
 
             const intraApiStat = [];
@@ -107,6 +112,8 @@ const StatusView = () => {
             seconds ? `${seconds}s` : ""
         }`;
     };
+
+    console.log(logs);
 
     return (
         <div className="container mx-auto">
@@ -264,6 +271,13 @@ const StatusView = () => {
                             Restart server
                         </button>
                     </div>
+
+                    {logs.map((log) => (
+                        <div key={log._id} className="mt-2 mb-2 bg-blue-100 rounded p-2">
+                            [{dayjs(log.created_at).format("DD/MM HH:mm:ss")}] [{log.type}]{" "}
+                            {(log.data ?? []).map((d: any) => JSON.stringify(d))}
+                        </div>
+                    ))}
                 </>
             )}
         </div>
