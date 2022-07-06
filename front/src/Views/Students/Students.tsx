@@ -60,10 +60,10 @@ const StudentsView: FC = () => {
                 }));
 
                 if (tmp == null) {
-                    setFilters((old) => ({ ...old, [sortKey]: 1 }));
-                } else if (tmp === 1) {
                     setFilters((old) => ({ ...old, [sortKey]: -1 }));
                 } else if (tmp === -1) {
+                    setFilters((old) => ({ ...old, [sortKey]: 1 }));
+                } else if (tmp === 1) {
                     setFilters((old) => ({ ...old, [sortKey]: null }));
                 }
             },

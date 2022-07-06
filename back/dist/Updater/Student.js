@@ -35,10 +35,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Student = void 0;
+exports.Student = exports.StudentRoute = void 0;
 const security_1 = __importDefault(require("../Routes/security"));
 const shared_1 = __importStar(require("../shared"));
 const utils_1 = require("../utils");
+/*
+ * File need refactoring.
+ */
 class Route {
     static GetNumberOfStudentsPerPromo() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -145,6 +148,33 @@ Route.baseProject = [
         },
     },
 ];
+class StudentRoute {
+    static GetOne(request, reply) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield security_1.default.checkAuth(request, reply);
+                const param = request.params;
+                const student = yield shared_1.COLLECTIONS.students.findOne({ id: +param.id }, {
+                    projection: {
+                        _id: 0,
+                        projects_users: 1,
+                        cursus_users: 1,
+                        wallet: 1,
+                        correction_point: 1,
+                        display_name: 1,
+                        last_seen: 1,
+                    },
+                });
+                reply.send(student !== null && student !== void 0 ? student : {});
+            }
+            catch (error) {
+                console.error(error);
+                reply.send(error);
+            }
+        });
+    }
+}
+exports.StudentRoute = StudentRoute;
 class Student {
     constructor() {
         this.isAlreadyUpdating = false;

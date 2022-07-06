@@ -68,6 +68,7 @@ fastify.post("/api/admin/restart", admin_1.Admin.Restart);
 fastify.post("/api/admin/pull", admin_1.Admin.Pull);
 fastify.get("/api/admin/logs", admin_1.Admin.GetLogs);
 fastify.get("/api/students", Student_1.Student.RouteGetAllStudents);
+fastify.get("/api/student/:id", Student_1.StudentRoute.GetOne);
 fastify.get("/api/locations", App_1.location.Route);
 fastify.get("/api/coalitions", App_1.coalition.Route);
 fastify.get("/api/ranking", ranking_1.RankingRoute);

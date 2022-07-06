@@ -11,7 +11,7 @@ import "./style.scss";
 
 const ListProjects = ({ projects }: { projects: Record<string, any>[] }): JSX.Element => {
     const sortedProject = useMemo(() => {
-        projects.sort((a, b) => new Date(b.validated_at).getTime() - new Date(a.validated_at).getTime());
+        projects.sort((a, b) => new Date(b.marked_at).getTime() - new Date(a.marked_at).getTime());
         return projects;
     }, [projects]);
 
@@ -28,7 +28,7 @@ const ListProjects = ({ projects }: { projects: Record<string, any>[] }): JSX.El
                 <tbody>
                     {(sortedProject ?? []).map((project: Record<string, any>, i: number) => (
                         <tr key={i}>
-                            <td>{project.name}</td>
+                            <td>{project.project?.name}</td>
                             <td>{dayjs(project.validated_at).format("DD/MM/YYYY")}</td>
                             <td>{project.final_mark}</td>
                         </tr>
@@ -55,17 +55,17 @@ const StatsProject = ({ projects }: { projects: Record<string, any>[] }): JSX.El
             return { projects: [], status: [] };
         }
 
-        projects.sort((a, b) => new Date(a.validated_at).getTime() - new Date(b.validated_at).getTime());
+        projects.sort((a, b) => new Date(a.marked_at).getTime() - new Date(b.marked_at).getTime());
 
         for (const project of projects) {
-            if (!project.validated_at || !project.validated) {
+            if (!project.marked_at || !project["validated?"]) {
                 continue;
             }
 
             projectsTmp.push({
-                name: project.name,
+                name: project.project?.name,
                 mark: project.final_mark,
-                date: dayjs(project.validated_at).format("YY/MM/DD"),
+                date: dayjs(project.marked_at).format("YY/MM/DD"),
             });
         }
 
@@ -133,7 +133,6 @@ const StatsProject = ({ projects }: { projects: Record<string, any>[] }): JSX.El
 };
 
 const ProfileView = () => {
-    return <>Temporarily disabled, migrating from SQLite to MongoDB</>;
     const location = useLocation();
 
     const [studentData, setStudentData] = useState<Record<string, any>>({});
@@ -146,8 +145,6 @@ const ProfileView = () => {
         try {
             const response = (await get<Record<string, any>>("student/" + student.id)) ?? {};
 
-            console.log(response);
-
             setStudentData(response);
         } catch (error) {
             console.error(error);
@@ -158,6 +155,18 @@ const ProfileView = () => {
         getStudentData();
     }, []);
 
+    const cursus = useMemo(() => {
+        if (!studentData?.cursus_users) return {};
+
+        const studentCursus = studentData.cursus_users.find((cursus: Record<string, any>) => cursus.cursus_id === 21);
+
+        if (studentCursus) {
+            return studentCursus;
+        } else {
+            return studentData.cursus_users.find((cursus: Record<string, any>) => cursus.cursus_id === 9);
+        }
+    }, [studentData]);
+
     return (
         <div className="container mx-auto p-2">
             <div className="page-title">{student.login}</div>
@@ -166,27 +175,21 @@ const ProfileView = () => {
                 <div className="profile-avatar" style={{ backgroundImage: `url(${student.image_url})` }} />
                 <div className="m-2" />
                 <div className="flex flex-col profile-box">
-                    <BlockLine isMessageBold label="Name" message={studentData.student?.display_name ?? "-"} />
-                    <BlockLine isMessageBold label="Level" message={studentData.cursus?.level ?? "-"} />
-                    <BlockLine
-                        isMessageBold
-                        label="Correction points"
-                        message={studentData.student?.correction_points ?? "-"}
-                    />
-                    <BlockLine isMessageBold label="Wallets" message={studentData.student?.wallets ?? "-"} />
-                    <BlockLine
+                    <BlockLine isMessageBold label="Name" message={studentData?.display_name ?? "-"} />
+                    <BlockLine isMessageBold label="Level" message={cursus?.level ?? "-"} />
+                    <BlockLine isMessageBold label="Correction points" message={studentData?.correction_point ?? "-"} />
+                    <BlockLine isMessageBold label="Wallets" message={studentData?.wallet ?? "-"} />
+                    {/* <BlockLine
                         isMessageBold
                         label="Blackhole"
                         message={studentData.projects?.length ?? "-"}
                         postfix=" j"
-                    />
+                    /> */}
                     <BlockLine
                         isMessageBold
                         label="Last seen"
                         message={
-                            studentData.student?.last_seen
-                                ? dayjs(studentData.student?.last_seen).format("DD/MM/YYYY HH[h]mm")
-                                : "-"
+                            studentData?.last_seen ? dayjs(studentData?.last_seen).format("DD/MM/YYYY HH[h]mm") : "-"
                         }
                     />
                 </div>
@@ -196,16 +199,18 @@ const ProfileView = () => {
                 <div
                     className="level-inside"
                     style={{
-                        width: `${(studentData.cursus?.level / Math.round(studentData.cursus?.level + 1.5)) * 100}%`,
+                        width: `${(cursus?.level / Math.round(cursus?.level + 1.5)) * 100}%`,
                     }}></div>
-                <div className="level">{studentData.cursus?.level}</div>
+                <div className="level">{cursus?.level}</div>
             </div>
 
             <div className="mt-4 mb-4">
-                <StatsProject projects={studentData.projects} />
+                <StatsProject projects={studentData.projects_users} />
             </div>
             <div className="p-4">
-                <ListProjects projects={(studentData.projects ?? []).filter((project: any) => project.validated)} />
+                <ListProjects
+                    projects={(studentData.projects_users ?? []).filter((project: any) => project["validated?"])}
+                />
             </div>
         </div>
     );

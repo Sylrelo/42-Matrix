@@ -13,7 +13,7 @@ import { statusHandler } from "./Routes/status";
 import shared, { COLLECTIONS } from "./shared";
 import { Stats } from "./status";
 import { Project } from "./Updater/Projects";
-import { Student } from "./Updater/Student";
+import { Student, StudentRoute } from "./Updater/Student";
 
 dotenv.config({ path: ".env.local" });
 dotenv.config();
@@ -39,6 +39,7 @@ fastify.post("/api/admin/pull", Admin.Pull);
 fastify.get("/api/admin/logs", Admin.GetLogs);
 
 fastify.get("/api/students", Student.RouteGetAllStudents);
+fastify.get("/api/student/:id", StudentRoute.GetOne);
 
 fastify.get("/api/locations", location.Route);
 fastify.get("/api/coalitions", coalition.Route);

@@ -5,6 +5,9 @@ import security from "../Routes/security";
 import shared, { COLLECTIONS } from "../shared";
 import { isPool } from "../utils";
 
+/*
+ * File need refactoring.
+ */
 class Route {
     static baseProject: any[] = [
         {
@@ -105,6 +108,36 @@ class Route {
             return perPromo;
         } catch (error) {
             console.error(error);
+        }
+    }
+}
+
+export class StudentRoute {
+    static async GetOne(request: FastifyRequest, reply: FastifyReply) {
+        try {
+            await security.checkAuth(request, reply);
+
+            const param: Record<string, any> = request.params;
+
+            const student = await COLLECTIONS.students.findOne(
+                { id: +param.id },
+                {
+                    projection: {
+                        _id: 0,
+                        projects_users: 1,
+                        cursus_users: 1,
+                        wallet: 1,
+                        correction_point: 1,
+                        display_name: 1,
+                        last_seen: 1,
+                    },
+                }
+            );
+
+            reply.send(student ?? {});
+        } catch (error) {
+            console.error(error);
+            reply.send(error);
         }
     }
 }
