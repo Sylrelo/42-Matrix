@@ -18,6 +18,7 @@ const RankingView = () => {
     const [filters, setFilters] = useState<Record<string, boolean>>({
         showInactive: true,
         showBlackholed: true,
+        showPoolOnly: false,
     });
 
     const [pagination, setPagination] = useState({
@@ -113,7 +114,8 @@ const RankingView = () => {
     const _getRanking = async () => {
         try {
             setLoading(true);
-            const result = (await get<Record<string, any>>("ranking")) ?? [];
+            const result =
+                (await get<Record<string, any>>(`ranking?display_pool=${filters.showPoolOnly ? 1 : 0}`)) ?? [];
 
             setAvailableYears(result.availableYears.sort((a: number, b: number) => b - a));
             setStudentRanking(result.ranking);
@@ -140,7 +142,7 @@ const RankingView = () => {
 
     useEffect(() => {
         _getRanking();
-    }, []);
+    }, [filters.showPoolOnly]);
 
     const PaginationButton = ({ scrollTop, i }: { scrollTop: SetterOrUpdater<number>; i: number }) => {
         return (
@@ -318,6 +320,21 @@ const RankingView = () => {
                             show only active students
                         </option>
                     </select>
+
+                    <select
+                        className="w-100 pool-select"
+                        value={filters.showPoolOnly ? "pool" : "student"}
+                        onChange={(event) => {
+                            const value = event.target.value;
+                            setFilters((old) => ({ ...old, showPoolOnly: value === "pool" }));
+                        }}>
+                        <option value="student" key={0}>
+                            show students ranking
+                        </option>
+                        <option value="pool" key={1}>
+                            show pool ranking
+                        </option>
+                    </select>
                     {/* 
                     <select
                         className="w-100 pool-select"
@@ -362,22 +379,25 @@ const RankingView = () => {
                         <View key={"wallet-" + student.login} student={student} data="wallet" position={index} />
                     ))}
                 </div>
-                <div>
-                    <div className="rank-title min-w320">blackhole</div>
-                    {loading ? <div className="loading" /> : ""}
-                    {getCursusRanking("blackholed_at")
-                        .filter((student) => student.daysToBlackhole)
-                        .map((student, index) => (
-                            <RankItem
-                                key={"blackholed-" + student.login}
-                                student={student}
-                                dataDisplayed={`${student.daysToBlackhole} j`}
-                                data={student.daysToBlackhole}
-                                maxValueKey="blackhole"
-                                position={index}
-                            />
-                        ))}
-                </div>
+
+                {!filters.showPoolOnly && (
+                    <div>
+                        <div className="rank-title min-w320">blackhole</div>
+                        {loading ? <div className="loading" /> : ""}
+                        {getCursusRanking("blackholed_at")
+                            .filter((student) => student.daysToBlackhole)
+                            .map((student, index) => (
+                                <RankItem
+                                    key={"blackholed-" + student.login}
+                                    student={student}
+                                    dataDisplayed={`${student.daysToBlackhole} j`}
+                                    data={student.daysToBlackhole}
+                                    maxValueKey="blackhole"
+                                    position={index}
+                                />
+                            ))}
+                    </div>
+                )}
             </div>
             <div className="flex flex-col justify-items-center mt-4">
                 <Pagination />

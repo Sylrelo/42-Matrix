@@ -18,15 +18,17 @@ const security_1 = __importDefault(require("./security"));
 const RankingRoute = (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const student = yield security_1.default.checkAuth(request, reply);
+        const query = request.query;
+        const displayPool = +query.display_pool === 1 && !student.is_pool;
         let availableYears = [];
         let cursusId = 21;
         let matchFilter = {
             $or: [{ matrix_is_pool: false }, { matrix_is_pool: { $exists: false } }],
         };
-        if (student.is_pool) {
+        if (student.is_pool || displayPool) {
             matchFilter = { matrix_is_pool: true };
             cursusId = 9;
-            availableYears = yield shared_1.COLLECTIONS.students.distinct("pool_year", { matrix_is_pool: student.is_pool });
+            availableYears = yield shared_1.COLLECTIONS.students.distinct("pool_year", { matrix_is_pool: true });
         }
         else {
             availableYears = yield shared_1.COLLECTIONS.students.distinct("pool_year", {

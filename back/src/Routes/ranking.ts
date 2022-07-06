@@ -12,6 +12,9 @@ export const RankingRoute = async (request: FastifyRequest, reply: FastifyReply)
     try {
         const student = await security.checkAuth(request, reply);
 
+        const query: Record<string, any> = request.query;
+        const displayPool = +query.display_pool === 1 && !student.is_pool;
+
         let availableYears = [];
 
         let cursusId = 21;
@@ -20,10 +23,10 @@ export const RankingRoute = async (request: FastifyRequest, reply: FastifyReply)
             $or: [{ matrix_is_pool: false }, { matrix_is_pool: { $exists: false } }],
         };
 
-        if (student.is_pool) {
+        if (student.is_pool || displayPool) {
             matchFilter = { matrix_is_pool: true };
             cursusId = 9;
-            availableYears = await COLLECTIONS.students.distinct("pool_year", { matrix_is_pool: student.is_pool });
+            availableYears = await COLLECTIONS.students.distinct("pool_year", { matrix_is_pool: true });
         } else {
             availableYears = await COLLECTIONS.students.distinct("pool_year", {
                 $or: [{ matrix_is_pool: false }, { matrix_is_pool: { $exists: false } }],
