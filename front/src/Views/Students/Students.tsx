@@ -70,6 +70,16 @@ const StudentsView: FC = () => {
         };
     };
 
+    const getSortedClassname = (key: string) => {
+        if (filters[key] === 1) {
+            return "asc";
+        } else if (filters[key] === -1) {
+            return "desc";
+        } else {
+            return "sortable";
+        }
+    };
+
     const columns = useMemo(() => {
         return [
             {
@@ -84,6 +94,7 @@ const StudentsView: FC = () => {
                 title: "login",
                 dataIndex: "login",
                 width: "256px",
+                className: getSortedClassname("loginSort"),
                 render: (login: string, student: any) => (
                     <>
                         <div>{login}</div>
@@ -126,21 +137,25 @@ const StudentsView: FC = () => {
             {
                 title: "Level",
                 dataIndex: "cursus_users",
+                className: getSortedClassname("levelSort"),
                 render: (cursus: any[]) => cursus?.[0]?.level?.toFixed(2),
                 onHeaderCell: (data: any) => headerClick(data, "levelSort"),
             },
             {
                 title: "Wallet",
                 dataIndex: "wallet",
+                className: getSortedClassname("walletSort"),
                 render: (wallet: string) => wallet + " ₳",
                 onHeaderCell: (data: any) => headerClick(data, "walletSort"),
             },
             {
                 title: "Points",
                 dataIndex: "correction_point",
+                className: getSortedClassname("pointSort"),
                 onHeaderCell: (data: any) => headerClick(data, "pointSort"),
             },
             {
+                className: getSortedClassname("blackholeSort"),
                 onHeaderCell: (data: any) => headerClick(data, "blackholeSort"),
                 title: "Blackhole",
                 dataIndex: "cursus_users",
@@ -247,7 +262,7 @@ const StudentsView: FC = () => {
                     renderInput={(params) => <TextField {...params} label="Project name" />}
                 />
             </div> */}
-            <div className="flex w-full mt-3 mb-3">
+            {/* <div className="flex w-full mt-3 mb-3">
                 <div className="grow">
                     <div>Year</div>
                     <div>Students</div>
@@ -262,8 +277,8 @@ const StudentsView: FC = () => {
                         <div>{v[1].percentage}%</div>
                     </div>
                 ))}
-            </div>
-            (stats not yet full for 2017/18 promos)
+            </div> */}
+            {/* (stats not yet full for 2017/18 promos) */}
             <div className="allo students-table">
                 <div style={{ height: "3px", width: "100%" }}>
                     {loading && <LinearProgress style={{ width: "100%", height: "3px" }} />}

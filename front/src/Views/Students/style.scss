@@ -12,6 +12,23 @@
 
 			background-color: #1d2d4a;
 		}
+
+		th.asc::after{
+			content: "\2191"
+		}
+		th.desc::after{
+			content: "\2193"
+		}
+
+		th.sortable {
+			cursor: pointer;
+			position: relative;
+
+			&::after {
+				content: "\21c5";
+			}
+		}
+
 	}
 }
 
