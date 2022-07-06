@@ -75,14 +75,14 @@ const Seat = ({ location, student, unavailable, selectedStudent }: SeatProps) =>
         if (unavailable) return "unavailable ";
 
         if (student) {
-            classes += "bg-slate-700 student";
+            classes += "active-seat student";
             if (student.login === selectedStudent) classes += " focused";
             else if (selectedStudent) classes += " disabled";
 
             if (isPool(student)) classes += " pool";
             else if (!isPool(student) && isCurrentlyLoggedStudentPool) classes += " not-pool";
             return classes;
-        } else return "bg-slate-800 ";
+        } else return "inactive-seat ";
     })();
 
     const customStyle = useMemo(() => {

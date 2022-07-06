@@ -56,27 +56,27 @@ fastify.get("/api/status", statusHandler);
 
 const originalConsole = { ...console };
 
-global.console.log = (message: string, ...optionalParams: any[]) => {
-    try {
-        originalConsole.log(message, ...optionalParams);
-        COLLECTIONS.logs?.insertOne({
-            created_at: new Date(),
-            type: "INFO",
-            data: [message, ...optionalParams],
-        });
-    } catch (_) {}
-};
+// global.console.log = (message: string, ...optionalParams: any[]) => {
+//     try {
+//         originalConsole.log(message, ...optionalParams);
+//         COLLECTIONS.logs?.insertOne({
+//             created_at: new Date(),
+//             type: "INFO",
+//             data: [message, ...optionalParams],
+//         });
+//     } catch (_) {}
+// };
 
-global.console.error = (message: string, ...optionalParams: any[]) => {
-    try {
-        originalConsole.error(message, ...optionalParams);
-        COLLECTIONS.logs?.insertOne({
-            created_at: new Date(),
-            type: "ERROR",
-            data: [message, ...optionalParams],
-        });
-    } catch (_) {}
-};
+// global.console.error = (message: string, ...optionalParams: any[]) => {
+//     try {
+//         originalConsole.error(message, ...optionalParams);
+//         COLLECTIONS.logs?.insertOne({
+//             created_at: new Date(),
+//             type: "ERROR",
+//             data: [message, ...optionalParams],
+//         });
+//     } catch (_) {}
+// };
 
 (async () => {
     try {

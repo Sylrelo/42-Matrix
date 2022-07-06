@@ -78,30 +78,26 @@ fastify.get("/api/projects", Projects_1.Project.GetProjects);
 fastify.get("/api/project/:id", Projects_1.Project.GetProjectDetail);
 fastify.get("/api/status", status_1.statusHandler);
 const originalConsole = Object.assign({}, console);
-global.console.log = (message, ...optionalParams) => {
-    var _a;
-    try {
-        originalConsole.log(message, ...optionalParams);
-        (_a = shared_1.COLLECTIONS.logs) === null || _a === void 0 ? void 0 : _a.insertOne({
-            created_at: new Date(),
-            type: "INFO",
-            data: [message, ...optionalParams],
-        });
-    }
-    catch (_) { }
-};
-global.console.error = (message, ...optionalParams) => {
-    var _a;
-    try {
-        originalConsole.error(message, ...optionalParams);
-        (_a = shared_1.COLLECTIONS.logs) === null || _a === void 0 ? void 0 : _a.insertOne({
-            created_at: new Date(),
-            type: "ERROR",
-            data: [message, ...optionalParams],
-        });
-    }
-    catch (_) { }
-};
+// global.console.log = (message: string, ...optionalParams: any[]) => {
+//     try {
+//         originalConsole.log(message, ...optionalParams);
+//         COLLECTIONS.logs?.insertOne({
+//             created_at: new Date(),
+//             type: "INFO",
+//             data: [message, ...optionalParams],
+//         });
+//     } catch (_) {}
+// };
+// global.console.error = (message: string, ...optionalParams: any[]) => {
+//     try {
+//         originalConsole.error(message, ...optionalParams);
+//         COLLECTIONS.logs?.insertOne({
+//             created_at: new Date(),
+//             type: "ERROR",
+//             data: [message, ...optionalParams],
+//         });
+//     } catch (_) {}
+// };
 (() => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {

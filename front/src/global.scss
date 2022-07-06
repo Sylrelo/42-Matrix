@@ -18,3 +18,61 @@
 		}
 	}
 }
+
+.primary-container {
+    // background-color: rgb(44, 47, 49);
+	// background-color: #262e3a;
+	background-color: #101827;
+    width: 100vw;
+    height: 100vh;
+
+	.secondary-container {
+		overflow-x: auto;
+		overflow-y: hidden;
+		height: 100%;
+	}
+}
+
+// Utilities 
+.h-full {
+	height: 100%;
+}
+
+.flex {
+	display: flex;
+}
+
+.flex-col {
+	flex-direction: column;
+}
+
+.flex-row {
+	flex-direction: row;
+}
+
+.items-center {
+	justify-items: center;
+}
+
+
+
+// =============
+
+
+// @media (prefers-color-scheme: light) {
+// 	.cluster-container {
+// 		.seat {
+// 			&.inactive-seat {
+// 				background-color: rgb(205, 205, 205);
+// 			}
+		
+// 			&.active-seat {
+// 				background-color: rgb(255, 255, 255);
+// 			}
+// 		}
+// 	}
+
+// 	.primary-container {
+// 		background-color:rgb(255, 255, 255);
+// 	}
+// }

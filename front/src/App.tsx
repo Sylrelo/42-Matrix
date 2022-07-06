@@ -162,9 +162,9 @@ function App() {
         <>
             {auth && <AppBar />}
             <ThemeProvider theme={darkTheme}>
-                <div className="bg-gray-900 w-screen h-screen overflow-none">
-                    <div className="pt-16" />
-                    <div className="h-full overflow-x-auto overflow-y-none" ref={containerRef}>
+                <div className="primary-container">
+                    <div style={{ paddingTop: "52px" }} />
+                    <div className="secondary-container" ref={containerRef}>
                         <Routes>
                             <Route path="/" element={<Login />} />
                             {auth && (
