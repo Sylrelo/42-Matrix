@@ -40,7 +40,7 @@ const StudentsView: FC = () => {
     });
     const [total, setTotal] = useState(0);
     const [skills, setSkills] = useState([]);
-    const [perPromoStats, setPerPromoStats] = useState({});
+    const [, setPerPromoStats] = useState({});
 
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 

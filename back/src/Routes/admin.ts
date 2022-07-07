@@ -1,7 +1,3 @@
-// import { exec } from "child_process";
-// import { FastifyReply, FastifyRequest } from "fastify";
-// import security from "./security";
-
 import { exec } from "child_process";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { writeFile } from "fs";
@@ -20,36 +16,6 @@ const execPromise = (command: string) => {
         });
     });
 };
-
-// export const adminRoute = async (request: FastifyRequest, reply: FastifyReply) => {
-//     try {
-//         // Only "slopez" authorized for now
-//         await security.checkAuth(request, reply, [40737]);
-
-//         //@ts-ignore
-//         const type = request.query?.type;
-//         const results = [];
-
-//         if (type === "pull") {
-//             results.push(await execPromise("eval $(ssh-agent) && git reset --hard origin/master && git pull"));
-//         }
-
-//         if (type === "back") {
-//             results.push(await execPromise("yarn install && yarn run migrate && yarn build"));
-//             results.push(await execPromise("pm2 restart 3"));
-//         }
-
-//         if (type === "front") {
-//             results.push(
-//                 await execPromise('cd ../front && yarn install && NODE_OPTIONS="--max-old-space-size=4096" yarn build')
-//             );
-//         }
-
-//         reply.send(results);
-//     } catch (error) {
-//         console.error(error);
-//     }
-// };
 
 export class Admin {
     static async GetLogs(request: FastifyRequest, reply: FastifyReply) {

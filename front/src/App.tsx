@@ -165,6 +165,13 @@ function App() {
                 <div className="primary-container">
                     <div style={{ paddingTop: "52px" }} />
                     <div className="secondary-container" ref={containerRef}>
+                        {/* <div className="goose">
+                            <div className="head">
+                                <div className="eyel" />
+                                <div className="eyer" />
+                                <div className="beak" />
+                            </div>
+                        </div> */}
                         <Routes>
                             <Route path="/" element={<Login />} />
                             {auth && (

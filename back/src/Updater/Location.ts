@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { AnyBulkWriteOperation, Document } from "mongodb";
+import { AnyBulkWriteOperation } from "mongodb";
 import { IStudent } from "../Interfaces/IStudent";
 import security from "../Routes/security";
 import shared, { COLLECTIONS } from "../shared";
@@ -69,7 +69,7 @@ export class Location {
                 studentLocations.push(this.createDatabaseStudentObject(location));
             }
 
-            const bulkOperations: AnyBulkWriteOperation<Document>[] = [];
+            const bulkOperations: AnyBulkWriteOperation[] = [];
 
             Location.actives = [];
 

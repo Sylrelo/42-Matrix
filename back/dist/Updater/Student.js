@@ -46,7 +46,7 @@ class Route {
     static GetNumberOfStudentsPerPromo() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const students = yield shared_1.COLLECTIONS.students
+                return yield shared_1.COLLECTIONS.students
                     .aggregate([
                     ...this.baseProject,
                     {
@@ -57,7 +57,6 @@ class Route {
                     },
                 ])
                     .toArray();
-                return students;
             }
             catch (error) {
                 console.error(error);
@@ -67,7 +66,7 @@ class Route {
     static GetNumberOfBlackholedStudentsPerPromo() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const students = yield shared_1.COLLECTIONS.students
+                return yield shared_1.COLLECTIONS.students
                     .aggregate([
                     ...this.baseProject,
                     {
@@ -90,7 +89,6 @@ class Route {
                     },
                 ])
                     .toArray();
-                return students;
             }
             catch (error) {
                 console.error(error);
@@ -468,5 +466,6 @@ class Student {
 }
 exports.Student = Student;
 Student.updateTimeout = new Date().getTime() - 24 * 3600 * 1000;
+Student.updateTimeoutHalf = Student.updateTimeout / 2;
 Student.lastseenTimeout = new Date().getTime() - 7 * 24 * 3600 * 1000;
 //# sourceMappingURL=Student.js.map

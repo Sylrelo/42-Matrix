@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import Fastify from "fastify";
 import { readFile } from "fs";
-import { AnyBulkWriteOperation, Document } from "mongodb";
+import { AnyBulkWriteOperation } from "mongodb";
 import NodeCache from "node-cache";
 import schedule from "node-schedule";
 import FortyTwo from "./42";
@@ -55,30 +55,6 @@ fastify.get("/api/project/:id", Project.GetProjectDetail);
 
 fastify.get("/api/status", statusHandler);
 
-const originalConsole = { ...console };
-
-// global.console.log = (message: string, ...optionalParams: any[]) => {
-//     try {
-//         originalConsole.log(message, ...optionalParams);
-//         COLLECTIONS.logs?.insertOne({
-//             created_at: new Date(),
-//             type: "INFO",
-//             data: [message, ...optionalParams],
-//         });
-//     } catch (_) {}
-// };
-
-// global.console.error = (message: string, ...optionalParams: any[]) => {
-//     try {
-//         originalConsole.error(message, ...optionalParams);
-//         COLLECTIONS.logs?.insertOne({
-//             created_at: new Date(),
-//             type: "ERROR",
-//             data: [message, ...optionalParams],
-//         });
-//     } catch (_) {}
-// };
-
 (async () => {
     try {
         try {
@@ -113,8 +89,11 @@ const originalConsole = { ...console };
         await shared.api.getToken();
         shared.api.handlePending();
 
+        // console.log(await shared.api.get("campus/9/events?sort=-begin_at"));
+        // await shared.api.getAll<any[]>("events/10713/events_users?");
+
         const studs = await COLLECTIONS.students.find({ "cursus_users.blackholed_at": { $exists: true } }).toArray();
-        const transaction: AnyBulkWriteOperation<Document>[] = [];
+        const transaction: AnyBulkWriteOperation[] = [];
         for (const stud of studs) {
             const cursuses = stud.cursus_users ?? [];
             for (const cursus of cursuses) {
@@ -140,14 +119,14 @@ const originalConsole = { ...console };
 
         startJobs();
         console.log("Jobs started.");
-        location.Update();
+        await location.Update();
 
         if ((await COLLECTIONS.coalitions.countDocuments({ cursus_id: 21 })) < 3) {
-            coalition.Update(21);
+            await coalition.Update(21);
         }
 
         if ((await COLLECTIONS.coalitions.countDocuments({ cursus_id: 9 })) < 3) {
-            coalition.Update(9);
+            await coalition.Update(9);
         }
 
         if ((await COLLECTIONS.students.countDocuments({})) < 400) {

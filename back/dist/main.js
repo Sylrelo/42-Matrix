@@ -78,27 +78,6 @@ fastify.post("/api/logout", authenticate_1.logoutHandler);
 fastify.get("/api/projects", Projects_1.Project.GetProjects);
 fastify.get("/api/project/:id", Projects_1.Project.GetProjectDetail);
 fastify.get("/api/status", status_1.statusHandler);
-const originalConsole = Object.assign({}, console);
-// global.console.log = (message: string, ...optionalParams: any[]) => {
-//     try {
-//         originalConsole.log(message, ...optionalParams);
-//         COLLECTIONS.logs?.insertOne({
-//             created_at: new Date(),
-//             type: "INFO",
-//             data: [message, ...optionalParams],
-//         });
-//     } catch (_) {}
-// };
-// global.console.error = (message: string, ...optionalParams: any[]) => {
-//     try {
-//         originalConsole.error(message, ...optionalParams);
-//         COLLECTIONS.logs?.insertOne({
-//             created_at: new Date(),
-//             type: "ERROR",
-//             data: [message, ...optionalParams],
-//         });
-//     } catch (_) {}
-// };
 (() => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -128,6 +107,8 @@ const originalConsole = Object.assign({}, console);
         shared_1.default.api = new _42_1.default();
         yield shared_1.default.api.getToken();
         shared_1.default.api.handlePending();
+        // console.log(await shared.api.get("campus/9/events?sort=-begin_at"));
+        // await shared.api.getAll<any[]>("events/10713/events_users?");
         const studs = yield shared_1.COLLECTIONS.students.find({ "cursus_users.blackholed_at": { $exists: true } }).toArray();
         const transaction = [];
         for (const stud of studs) {
@@ -153,12 +134,12 @@ const originalConsole = Object.assign({}, console);
         }), 5000);
         startJobs();
         console.log("Jobs started.");
-        App_1.location.Update();
+        yield App_1.location.Update();
         if ((yield shared_1.COLLECTIONS.coalitions.countDocuments({ cursus_id: 21 })) < 3) {
-            App_1.coalition.Update(21);
+            yield App_1.coalition.Update(21);
         }
         if ((yield shared_1.COLLECTIONS.coalitions.countDocuments({ cursus_id: 9 })) < 3) {
-            App_1.coalition.Update(9);
+            yield App_1.coalition.Update(9);
         }
         if ((yield shared_1.COLLECTIONS.students.countDocuments({})) < 400) {
             yield App_1.student.GetAllStudents();

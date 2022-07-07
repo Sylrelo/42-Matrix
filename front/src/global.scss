@@ -55,6 +55,50 @@
 }
 
 
+// THE GOOSE
+
+.goose {
+	position: absolute;
+	top: 120px;
+	left: 40px;
+	display: block;
+	background-color: white;
+	width: 110px;
+	height: 50px;
+	border-radius: 25px;
+
+	.head {
+		position: absolute;
+		bottom: 2px;
+		left: 2px;
+		display: block;
+		background-color: #ffffff;
+		width: 32px;
+		height: 70px;
+		border-radius: 25px;
+
+		.eyel {
+			position: absolute;
+			top: 2px;
+			left: 2px;
+			background-color: #000000;
+			display: block;
+			width: 12px;
+			height: 12px;
+			border-radius: 50%;
+		}
+		.eyer {
+			position: absolute;
+			top: 2px;
+			right: 2px;
+			background-color: #000000;
+			display: block;
+			width: 12px;
+			height: 12px;
+			border-radius: 50%;
+		}
+	}
+}
 
 // =============
 

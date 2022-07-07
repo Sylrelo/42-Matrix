@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { AnyBulkWriteOperation, Document } from "mongodb";
+import { AnyBulkWriteOperation } from "mongodb";
 import security from "../Routes/security";
 import shared, { COLLECTIONS } from "../shared";
 
@@ -53,7 +53,7 @@ export class Coalition {
                 `blocs?filter[campus_id]=9&filter[cursus_id]=${cursus_id}&sort=id`
             );
 
-            const bulkOperations: AnyBulkWriteOperation<Document>[] = [];
+            const bulkOperations: AnyBulkWriteOperation[] = [];
 
             for (const coalition of bloc?.[0].coalitions ?? []) {
                 delete coalition.user_id;

@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { AnyBulkWriteOperation, Document } from "mongodb";
+import { AnyBulkWriteOperation } from "mongodb";
 import { IStudent } from "../Interfaces/IStudent";
 import security from "../Routes/security";
 import shared, { COLLECTIONS } from "../shared";
@@ -40,7 +40,7 @@ class Route {
 
     static async GetNumberOfStudentsPerPromo() {
         try {
-            const students = await COLLECTIONS.students
+            return await COLLECTIONS.students
                 .aggregate([
                     ...this.baseProject,
                     {
@@ -51,8 +51,6 @@ class Route {
                     },
                 ])
                 .toArray();
-
-            return students;
         } catch (error) {
             console.error(error);
         }
@@ -60,7 +58,7 @@ class Route {
 
     static async GetNumberOfBlackholedStudentsPerPromo() {
         try {
-            const students = await COLLECTIONS.students
+            return await COLLECTIONS.students
                 .aggregate([
                     ...this.baseProject,
                     {
@@ -83,8 +81,6 @@ class Route {
                     },
                 ])
                 .toArray();
-
-            return students;
         } catch (error) {
             console.error(error);
         }
@@ -146,6 +142,7 @@ export class Student {
     private isAlreadyUpdatingInactive: Boolean = false;
 
     static updateTimeout = new Date().getTime() - 24 * 3600 * 1000;
+    static updateTimeoutHalf = Student.updateTimeout / 2;
     static lastseenTimeout = new Date().getTime() - 7 * 24 * 3600 * 1000;
 
     static async RouteGetAllStudents(request: FastifyRequest, reply: FastifyReply) {
@@ -327,7 +324,7 @@ export class Student {
             for (const coalition of coalitions) {
                 const students = await shared.api.getAll<any[]>(`/coalitions/${coalition.id}/users?`, 100);
 
-                const bulkOperations: AnyBulkWriteOperation<Document>[] = [];
+                const bulkOperations: AnyBulkWriteOperation[] = [];
 
                 for (const student of students) {
                     let filter = {};
@@ -370,7 +367,7 @@ export class Student {
 
             console.log(`Student's count : `, students.length);
 
-            const transaction: AnyBulkWriteOperation<Document>[] = [];
+            const transaction: AnyBulkWriteOperation[] = [];
 
             for (const student of students) {
                 transaction.push({
@@ -418,7 +415,7 @@ export class Student {
 
     private async updateDatabase(students: any[]) {
         try {
-            const transaction: AnyBulkWriteOperation<Document>[] = [];
+            const transaction: AnyBulkWriteOperation[] = [];
 
             console.log(students.length, "to update.");
 
