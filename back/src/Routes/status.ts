@@ -18,17 +18,19 @@ export const statusHandler = async (request: FastifyRequest, reply: FastifyReply
 
         const projectsCount = await COLLECTIONS.projects.countDocuments({});
 
-        const recentlySeen = await COLLECTIONS.students.countDocuments({ last_seen: { $gt: Student.lastseenTimeout } });
+        const recentlySeen = await COLLECTIONS.students.countDocuments({
+            last_seen: { $gt: Student.GetLastseenTimeout() },
+        });
 
         const activeUpdatePendingCount = await COLLECTIONS.students.countDocuments({
             $and: [
-                { last_seen: { $gt: Student.lastseenTimeout } },
-                { matrix_updated_at: { $lt: Student.updateTimeout } },
+                { last_seen: { $gt: Student.GetLastseenTimeout() } },
+                { matrix_updated_at: { $lt: Student.GetUpdateTimeout() } },
             ],
         });
 
         const updateInTheLastDay = await COLLECTIONS.students.countDocuments({
-            matrix_updated_at: { $gt: Student.updateTimeout },
+            matrix_updated_at: { $gt: Student.GetUpdateTimeout() },
         });
 
         const inactiveUpdatePendingCount = await COLLECTIONS.students.countDocuments({

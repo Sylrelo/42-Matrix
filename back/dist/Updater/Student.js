@@ -178,6 +178,15 @@ class Student {
         this.isAlreadyUpdating = false;
         this.isAlreadyUpdatingInactive = false;
     }
+    // static updateTimeout = new Date().getTime() - 24 * 3600 * 1000;
+    // static updateTimeoutHalf = Student.updateTimeout / 2;
+    // static lastseenTimeout = new Date().getTime() - 7 * 24 * 3600 * 1000;
+    static GetUpdateTimeout() {
+        return new Date().getTime() - 24 * 3600 * 1000;
+    }
+    static GetLastseenTimeout() {
+        return new Date().getTime() - 7 * 24 * 3600 * 1000;
+    }
     static RouteGetAllStudents(request, reply) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -293,8 +302,8 @@ class Student {
                 const students = (yield shared_1.COLLECTIONS.students
                     .find({
                     $and: [
-                        { last_seen: { $gt: Student.lastseenTimeout } },
-                        { matrix_updated_at: { $lt: Student.updateTimeout } },
+                        { last_seen: { $gt: Student.GetLastseenTimeout() } },
+                        { matrix_updated_at: { $lt: Student.GetUpdateTimeout() } },
                     ],
                 })
                     .project({ id: 1 })
@@ -414,7 +423,7 @@ class Student {
                                 { matrix_updated_at: 0 },
                                 { matrix_updated_at: null },
                                 { matrix_updated_at: { $exists: false } },
-                                { matrix_updated_at: { $lt: Student.updateTimeout } },
+                                { matrix_updated_at: { $lt: Student.GetUpdateTimeout() } },
                             ],
                         },
                     ],
@@ -465,7 +474,4 @@ class Student {
     }
 }
 exports.Student = Student;
-Student.updateTimeout = new Date().getTime() - 24 * 3600 * 1000;
-Student.updateTimeoutHalf = Student.updateTimeout / 2;
-Student.lastseenTimeout = new Date().getTime() - 7 * 24 * 3600 * 1000;
 //# sourceMappingURL=Student.js.map

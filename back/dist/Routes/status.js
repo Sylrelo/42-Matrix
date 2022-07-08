@@ -50,15 +50,17 @@ const statusHandler = (request, reply) => __awaiter(void 0, void 0, void 0, func
             return;
         }
         const projectsCount = yield shared_1.COLLECTIONS.projects.countDocuments({});
-        const recentlySeen = yield shared_1.COLLECTIONS.students.countDocuments({ last_seen: { $gt: Student_1.Student.lastseenTimeout } });
+        const recentlySeen = yield shared_1.COLLECTIONS.students.countDocuments({
+            last_seen: { $gt: Student_1.Student.GetLastseenTimeout() },
+        });
         const activeUpdatePendingCount = yield shared_1.COLLECTIONS.students.countDocuments({
             $and: [
-                { last_seen: { $gt: Student_1.Student.lastseenTimeout } },
-                { matrix_updated_at: { $lt: Student_1.Student.updateTimeout } },
+                { last_seen: { $gt: Student_1.Student.GetLastseenTimeout() } },
+                { matrix_updated_at: { $lt: Student_1.Student.GetUpdateTimeout() } },
             ],
         });
         const updateInTheLastDay = yield shared_1.COLLECTIONS.students.countDocuments({
-            matrix_updated_at: { $gt: Student_1.Student.updateTimeout },
+            matrix_updated_at: { $gt: Student_1.Student.GetUpdateTimeout() },
         });
         const inactiveUpdatePendingCount = yield shared_1.COLLECTIONS.students.countDocuments({
             $or: [{ matrix_updated_at: 0 }, { matrix_updated_at: null }, { matrix_updated_at: { $exists: false } }],

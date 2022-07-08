@@ -141,9 +141,17 @@ export class Student {
     private isAlreadyUpdating: Boolean = false;
     private isAlreadyUpdatingInactive: Boolean = false;
 
-    static updateTimeout = new Date().getTime() - 24 * 3600 * 1000;
-    static updateTimeoutHalf = Student.updateTimeout / 2;
-    static lastseenTimeout = new Date().getTime() - 7 * 24 * 3600 * 1000;
+    // static updateTimeout = new Date().getTime() - 24 * 3600 * 1000;
+    // static updateTimeoutHalf = Student.updateTimeout / 2;
+    // static lastseenTimeout = new Date().getTime() - 7 * 24 * 3600 * 1000;
+
+    static GetUpdateTimeout() {
+        return new Date().getTime() - 24 * 3600 * 1000;
+    }
+
+    static GetLastseenTimeout() {
+        return new Date().getTime() - 7 * 24 * 3600 * 1000;
+    }
 
     static async RouteGetAllStudents(request: FastifyRequest, reply: FastifyReply) {
         try {
@@ -265,8 +273,8 @@ export class Student {
             const students = (await COLLECTIONS.students
                 .find({
                     $and: [
-                        { last_seen: { $gt: Student.lastseenTimeout } },
-                        { matrix_updated_at: { $lt: Student.updateTimeout } },
+                        { last_seen: { $gt: Student.GetLastseenTimeout() } },
+                        { matrix_updated_at: { $lt: Student.GetUpdateTimeout() } },
                     ],
                 })
                 .project({ id: 1 })
@@ -396,7 +404,7 @@ export class Student {
                                 { matrix_updated_at: 0 },
                                 { matrix_updated_at: null },
                                 { matrix_updated_at: { $exists: false } },
-                                { matrix_updated_at: { $lt: Student.updateTimeout } },
+                                { matrix_updated_at: { $lt: Student.GetUpdateTimeout() } },
                             ],
                         },
                     ],
