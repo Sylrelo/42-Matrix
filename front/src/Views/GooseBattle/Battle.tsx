@@ -7,6 +7,7 @@ const BattleGoose = () => {
 
     const playersRef = useRef<any>({});
     const projectilesRef = useRef<any[]>([]);
+    const selfRef = useRef<string>("");
 
     const resourcesRef = useRef<Record<string, any>>({});
 
@@ -48,15 +49,36 @@ const BattleGoose = () => {
         setPlayers(playerObject);
     };
 
-    const handleKeyboardEvent = (event: KeyboardEvent) => {
-        const key = event.key;
+    const keyboardRef = useRef([0, 0, 0, 0]);
 
-        if (key === "w") socket?.send(JSON.stringify({ event: "FORCE", position: [0, -1.0, 0] }));
-        if (key === "s") socket?.send(JSON.stringify({ event: "FORCE", position: [0, 1.0, 0] }));
-        if (key === "a") socket?.send(JSON.stringify({ event: "FORCE", position: [-1, 0, 0] }));
-        if (key === "d") socket?.send(JSON.stringify({ event: "FORCE", position: [1, 0, 0] }));
+    const handleKeyboardEvent = () => {
+        let move = [0, 0, 0];
 
-        if (key === " ") socket?.send(JSON.stringify({ event: "FIRE" }));
+        if (keyboardRef.current[0]) move = [0, -2.0, 0];
+        if (keyboardRef.current[1]) move = [0, 2.0, 0];
+        if (keyboardRef.current[2]) move = [-2, 0, 0];
+        if (keyboardRef.current[3]) move = [2, 0, 0];
+
+        // const player = playersRef.current[selfRef.current];
+
+        // if (player) {
+        //     const rot = player.sprite?.rotation;
+
+        //     if (rot) {
+        //         const nx = move[0] * Math.cos(rot) + move[1] * Math.sin(rot);
+        //         const ny = move[1] * Math.sin(rot) - move[0] * Math.cos(rot);
+
+        //         move[0] = nx;
+        //         move[1] = ny;
+
+        //         console.log(move);
+        //     }
+        // }
+        if (move[0] || move[1]) {
+            socket?.send(JSON.stringify({ event: "FORCE", position: move }));
+        }
+
+        // if (key === " ") socket?.send(JSON.stringify({ event: "FIRE" }));
     };
 
     const socket = useMemo(() => {
@@ -65,14 +87,30 @@ const BattleGoose = () => {
         if (sck == null) {
             return null;
         }
+        document.addEventListener("keydown", (event) => {
+            const { key } = event;
+            if (key === "w") keyboardRef.current[0] = 1;
+            if (key === "s") keyboardRef.current[1] = 1;
+            if (key === "a") keyboardRef.current[2] = 1;
+            if (key === "d") keyboardRef.current[3] = 1;
+            if (key === " ") socket?.send(JSON.stringify({ event: "FIRE" }));
+        });
+        document.addEventListener("keyup", (event) => {
+            const { key } = event;
+            if (key === "w") keyboardRef.current[0] = 0;
+            if (key === "s") keyboardRef.current[1] = 0;
+            if (key === "a") keyboardRef.current[2] = 0;
+            if (key === "d") keyboardRef.current[3] = 0;
+        });
 
-        document.addEventListener("keydown", handleKeyboardEvent);
+        // document.addEventListener("keydown", handleKeyboardEvent);
 
         setTimeout(() => {
             document.getElementById("pixi-container")?.appendChild(pixapp.view);
             const loader = PIXI.Loader.shared;
 
-            loader.add("logo", "logo192.png");
+            loader.add("logo", "test.png");
+            loader.add("fireball", "gif.gif");
 
             loader.load((loader, resources) => {
                 resourcesRef.current = resources;
@@ -80,36 +118,53 @@ const BattleGoose = () => {
                 // setTimeout(() => {
                 //     socket?.send(JSON.stringify({ event: "INIT" }));
                 // }, 200);
+
+                // const mouse = pixapp.plugin.interaction.mouse;
+
+                const mouse = [0, 0];
+
+                pixapp.view.addEventListener("mousemove", (event) => {
+                    mouse[0] = event.offsetX;
+                    mouse[1] = event.offsetY;
+                });
+
                 let elapsed = 0.0;
                 pixapp.ticker.add((delta: number) => {
                     elapsed += delta;
 
-                    for (const uid in playersRef.current) {
-                        if (playersRef.current[uid].sprite) {
-                            playersRef.current[uid].sprite.position.x = playersRef.current[uid].position[0];
-                            playersRef.current[uid].sprite.position.y = playersRef.current[uid].position[1];
-                        } else {
-                            console.log("Adding new sprite");
-                            const sprite = new PIXI.Sprite(resourcesRef.current.logo.texture);
+                    handleKeyboardEvent();
 
+                    for (const uid in playersRef.current) {
+                        if (!playersRef.current[uid].sprite) {
+                            const sprite = new PIXI.Sprite(resourcesRef.current.logo.texture);
                             playersRef.current[uid].sprite = sprite;
+                            (playersRef.current[uid].sprite as PIXI.Sprite).anchor.set(0.5, 0.5);
                             pixapp.stage.addChild(sprite);
                         }
+
+                        const player = playersRef.current[uid];
+
+                        player.sprite.position.x = player.position[0];
+                        player.sprite.position.y = player.position[1];
+
+                        const dx = mouse[0] - player.position[0];
+                        const dy = mouse[1] - player.position[1];
+
+                        player.sprite.rotation = Math.atan2(dy, dx);
                     }
 
                     for (const uid in projectilesRef.current) {
                         const projectile = projectilesRef.current[uid];
 
-                        if (projectile.sprite) {
-                            projectile.sprite.position.x = projectile.position[0];
-                            projectile.sprite.position.y = projectile.position[1];
-                        } else {
-                            const sprite = new PIXI.Sprite(resourcesRef.current.logo.texture);
+                        if (!projectile.sprite) {
+                            const sprite = new PIXI.Sprite(resourcesRef.current.fireball.texture);
                             projectile.sprite = sprite;
-                            projectile.sprite.position.x = projectile.position[0];
-                            projectile.sprite.position.y = projectile.position[1];
+                            (projectile.sprite as PIXI.Sprite).scale.set(0.5, 0.5);
+                            (projectile.sprite as PIXI.Sprite).anchor.set(0.5, 0.5);
                             pixapp.stage.addChild(sprite);
                         }
+                        projectile.sprite.position.x = projectile.position[0];
+                        projectile.sprite.position.y = projectile.position[1];
                     }
 
                     // console.log(pixapp.stage.children);
@@ -157,6 +212,10 @@ const BattleGoose = () => {
                 delete tmp[data.uuid];
 
                 setProjectiles(tmp);
+            }
+            if (data.event === "SELF") {
+                selfRef.current = data.uuid;
+                console.log(data.uuid);
             }
 
             switch (data.event) {
