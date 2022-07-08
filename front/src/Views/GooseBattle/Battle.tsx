@@ -109,7 +109,7 @@ const BattleGoose = () => {
             document.getElementById("pixi-container")?.appendChild(pixapp.view);
             const loader = PIXI.Loader.shared;
 
-            loader.add("logo", "test.png");
+            loader.add("logo", "goose-1.png");
             loader.add("fireball", "gif.gif");
 
             loader.load((loader, resources) => {
@@ -135,14 +135,15 @@ const BattleGoose = () => {
                     handleKeyboardEvent();
 
                     for (const uid in playersRef.current) {
+                        const player = playersRef.current[uid];
+
                         if (!playersRef.current[uid].sprite) {
                             const sprite = new PIXI.Sprite(resourcesRef.current.logo.texture);
                             playersRef.current[uid].sprite = sprite;
-                            (playersRef.current[uid].sprite as PIXI.Sprite).anchor.set(0.5, 0.5);
+                            (player.sprite as PIXI.Sprite).scale.set(4.0, 4.0);
+                            (player.sprite as PIXI.Sprite).anchor.set(0.5, 0.5);
                             pixapp.stage.addChild(sprite);
                         }
-
-                        const player = playersRef.current[uid];
 
                         player.sprite.position.x = player.position[0];
                         player.sprite.position.y = player.position[1];
@@ -151,6 +152,12 @@ const BattleGoose = () => {
                         const dy = mouse[1] - player.position[1];
 
                         player.sprite.rotation = Math.atan2(dy, dx);
+
+                        if (player.sprite.rotation < -1) {
+                            player.sprite.scale.y = -4;
+                        } else {
+                            player.sprite.scale.y = 4;
+                        }
                     }
 
                     for (const uid in projectilesRef.current) {
