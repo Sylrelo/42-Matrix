@@ -26,6 +26,7 @@ import RankingView from "./Views/Ranking/Ranking";
 import StatusView from "./Views/Status/Status";
 import StudentsView from "./Views/Students/Students";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import BattleGoose from "./Views/GooseBattle/Battle";
 
 const darkTheme = createTheme({
     palette: {
@@ -127,6 +128,7 @@ function App() {
 
     const _tryAuth = async () => {
         try {
+            return;
             if (document.location.href.includes("?code=")) return;
 
             setIsAuthenticating(true);
@@ -158,6 +160,7 @@ function App() {
         containerRef.current?.scroll(0, 0);
     }, [location, scrollTopAtom]);
 
+    return <BattleGoose />;
     return (
         <>
             {auth && <AppBar />}

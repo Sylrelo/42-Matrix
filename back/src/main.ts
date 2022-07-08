@@ -89,8 +89,11 @@ fastify.get("/api/status", statusHandler);
         await shared.api.getToken();
         shared.api.handlePending();
 
-        // console.log(await shared.api.get("campus/9/events?sort=-begin_at"));
-        // await shared.api.getAll<any[]>("events/10713/events_users?");
+        // // console.log(await shared.api.get("campus/9/events?sort=-begin_at"));
+        // const allo = await shared.api.get<any>("events/10713/events_users");
+
+        // console.log(allo);
+        // return;
 
         const studs = await COLLECTIONS.students.find({ "cursus_users.blackholed_at": { $exists: true } }).toArray();
         const transaction: AnyBulkWriteOperation[] = [];
