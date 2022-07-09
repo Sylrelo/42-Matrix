@@ -148,10 +148,21 @@ const BattleGoose = () => {
                         player.sprite.position.x = player.position[0];
                         player.sprite.position.y = player.position[1];
 
-                        const dx = mouse[0] - player.position[0];
-                        const dy = mouse[1] - player.position[1];
+                        if (uid === selfRef.current) {
+                            const dx = mouse[0] - player.position[0];
+                            const dy = mouse[1] - player.position[1];
 
-                        player.sprite.rotation = Math.atan2(dy, dx);
+                            player.sprite.rotation = Math.atan2(dy, dx);
+                            socket?.send(
+                                JSON.stringify({
+                                    event: "ROTATION",
+                                    rotation: player.sprite.rotation,
+                                    direction: [dx, dy, 0],
+                                })
+                            );
+                        } else {
+                            player.sprite.rotation = player.rotation;
+                        }
 
                         if (player.sprite.rotation < -1) {
                             player.sprite.scale.y = -4;
@@ -172,6 +183,8 @@ const BattleGoose = () => {
                         }
                         projectile.sprite.position.x = projectile.position[0];
                         projectile.sprite.position.y = projectile.position[1];
+                        projectile.sprite.rotation = projectile.rotation;
+                        // console.log(projectile);
                     }
 
                     // console.log(pixapp.stage.children);
@@ -196,7 +209,8 @@ const BattleGoose = () => {
                     tmp[data.data.uuid] = {
                         sprite: null, //PIXI.Sprite.from(resourcesRef.current.logo.texture),
                         position: data.data.position,
-                        uid: data.data.uid,
+                        uuid: data.data.uuid,
+                        rotation: data.data.rotation,
                     };
                 } else {
                     tmp[data.data.uuid].position[0] = data.data.position[0];
@@ -235,11 +249,13 @@ const BattleGoose = () => {
                         tmp[data.data.uuid] = {
                             sprite: null, //PIXI.Sprite.from(resourcesRef.current.logo.texture),
                             position: data.data.position,
+                            rotation: data.data.rotation,
                             uid: data.data.uid,
                         };
                     } else {
                         tmp[data.data.uuid].position[0] = data.data.position[0];
                         tmp[data.data.uuid].position[1] = data.data.position[1];
+                        tmp[data.data.uuid].rotation = data.data.rotation;
                     }
 
                     setPlayers(tmp);
