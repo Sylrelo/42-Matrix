@@ -299,6 +299,10 @@ const Clusters = () => {
         (location: Record<string, any>) => location.location.includes("z3") || location.location.includes("z4")
     ).length;
 
+    const piscineuxCount: number = useMemo(() => {
+        return studentLocations.filter((location: Record<string, any>) => location.is_pool).length;
+    }, [studentLocations]);
+
     return (
         <div>
             <div
@@ -405,6 +409,13 @@ const Clusters = () => {
                                     }
                                     label="Total"
                                 />
+
+                                {piscineuxCount > 0 && (
+                                    <BlockLine
+                                        message={<span className="font-bold">{`${piscineuxCount} piscineux`}</span>}
+                                        label=""
+                                    />
+                                )}
                             </div>
                             {/* <div className="w-5 h-5" />
                             <LoggedStats loggedStats={loggedStats} /> */}
