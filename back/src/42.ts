@@ -126,6 +126,7 @@ class FortyTwo {
         } finally {
             const endTime = new Date().getTime();
             Stats.Add("42Requests", endTime - startTime);
+            Stats.LogRoute(uri);
         }
     }
 

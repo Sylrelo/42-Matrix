@@ -1,9 +1,32 @@
 interface IStats {
     [index: string]: { [index: number]: { max: number; min: number; count: number; total: number } };
 }
+
+interface IRouteStats {
+    [index: number]: { [route: string]: number };
+}
+
 export class Stats {
     private static lastHour = -1;
     private static data: IStats = {};
+
+    private static lastRouteHours = -1;
+    private static routeStats: IRouteStats = {}
+
+    static LogRoute(route: string) {
+        const currentHour = +new Date().getHours();
+
+        if (!Stats.routeStats[currentHour] || currentHour !== Stats.lastRouteHours) {
+            Stats.routeStats[currentHour] = {};
+        }
+
+        if (!Stats.routeStats[currentHour][route]) {
+            Stats.routeStats[currentHour][route] = 0;
+        }
+
+        Stats.routeStats[currentHour][route] += 1;
+        Stats.lastRouteHours = currentHour;
+    }
 
     static Add(type: string, value: number) {
         const currentHour = +new Date().getHours();
@@ -26,5 +49,9 @@ export class Stats {
 
     static Get() {
         return Stats.data;
+    }
+
+    static GetRouteStats() {
+        return Stats.routeStats
     }
 }

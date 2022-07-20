@@ -73,6 +73,7 @@ const statusHandler = (request, reply) => __awaiter(void 0, void 0, void 0, func
         reply.code(200);
         reply.send({
             stats: status_1.Stats.Get(),
+            routeStats: status_1.Stats.GetRouteStats(),
             pendingRequest: shared_1.default.api.getTotalPendingRequest(),
             recentlySeen,
             activeUpdatePendingCount,

@@ -2,6 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Stats = void 0;
 class Stats {
+    static LogRoute(route) {
+        const currentHour = +new Date().getHours();
+        if (!Stats.routeStats[currentHour] || currentHour !== Stats.lastRouteHours) {
+            Stats.routeStats[currentHour] = {};
+        }
+        if (!Stats.routeStats[currentHour][route]) {
+            Stats.routeStats[currentHour][route] = 0;
+        }
+        Stats.routeStats[currentHour][route] += 1;
+        Stats.lastRouteHours = currentHour;
+    }
     static Add(type, value) {
         const currentHour = +new Date().getHours();
         if (!Stats.data[type]) {
@@ -19,8 +30,13 @@ class Stats {
     static Get() {
         return Stats.data;
     }
+    static GetRouteStats() {
+        return Stats.routeStats;
+    }
 }
 exports.Stats = Stats;
 Stats.lastHour = -1;
 Stats.data = {};
+Stats.lastRouteHours = -1;
+Stats.routeStats = {};
 //# sourceMappingURL=status.js.map

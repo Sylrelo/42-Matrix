@@ -1,11 +1,56 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef, useState } from "react";
+import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { get, post } from "../../Utils/http";
 
-import { CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, AreaChart, Area } from "recharts";
+import Table from "rc-table";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useRecoilValue } from "recoil";
 import { IsAdminAtom } from "../../Atoms/Auth";
-import dayjs from "dayjs";
+
+const columns = [
+    { title: "Dest", dataIndex: 0, align: "left" },
+    { title: "Count", dataIndex: 1, align: "left", className: "font-bold" },
+];
+
+const RouteHit: FC<{ data: any }> = ({ data }) => {
+    const [selectedHour, setSelectedHour] = useState<number>(new Date().getHours());
+
+    const array = useMemo(() => {
+        if (!data?.[selectedHour]) return [];
+
+        const result = Object.entries(data[selectedHour]).map((v) => [
+            v[0].replace("https://api.intra.42.fr/v2/", ""),
+            v[1],
+        ]);
+
+        result.push(["Total", result.reduce((acc, prev: any) => prev[1] + acc, 0)]);
+
+        return result;
+    }, [data, selectedHour]);
+
+    return (
+        <div>
+            <select
+                className="w-100 pool-select"
+                onChange={(evt) => {
+                    setSelectedHour(+evt.target.value);
+                }}>
+                {Object.keys(data ?? {}).map((h: any, k) => (
+                    <option value={h} key={k}>
+                        {h} h
+                    </option>
+                ))}
+            </select>
+
+            <Table
+                style={{ width: "100%" }}
+                //@ts-ignore
+                columns={columns}
+                data={array}
+            />
+        </div>
+    );
+};
 
 const StatusView = () => {
     const isAdmin = useRecoilValue(IsAdminAtom);
@@ -14,7 +59,7 @@ const StatusView = () => {
     const [matrixStat, setMatrixStat] = useState<any[]>([]);
     const [stalkingStats, setStalkingStats] = useState<any[]>([]);
     const [status, setStatus] = useState<any>({});
-    const [logs, setLogs] = useState<any[]>([]);
+    // const [logs, setLogs] = useState<any[]>([]);
 
     const timeRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -39,9 +84,9 @@ const StatusView = () => {
     const getStatus = async () => {
         try {
             const status = (await get<Record<string, any>>("status")) ?? {};
-            const logs = (await get<any[]>("admin/logs")) ?? [];
+            // const logs = (await get<any[]>("admin/logs")) ?? [];
 
-            setLogs(logs);
+            // setLogs(logs);
             setStatus(status);
 
             const intraApiStat = [];
@@ -112,8 +157,6 @@ const StatusView = () => {
             seconds ? `${seconds}s` : ""
         }`;
     };
-
-    console.log(logs);
 
     return (
         <div className="container mx-auto">
@@ -272,12 +315,14 @@ const StatusView = () => {
                         </button>
                     </div>
 
-                    {logs.map((log) => (
+                    {/* {logs.map((log) => (
                         <div key={log._id} className="mt-2 mb-2 rounded p-2">
                             [{dayjs(log.created_at).format("DD/MM HH:mm:ss")}] [{log.type}]{" "}
                             {(log.data ?? []).map((d: any) => JSON.stringify(d))}
                         </div>
-                    ))}
+                    ))} */}
+
+                    <RouteHit data={status.routeStats} />
                 </>
             )}
         </div>

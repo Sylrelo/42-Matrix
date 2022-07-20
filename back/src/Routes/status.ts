@@ -48,6 +48,7 @@ export const statusHandler = async (request: FastifyRequest, reply: FastifyReply
         reply.code(200);
         reply.send({
             stats: Stats.Get(),
+            routeStats: Stats.GetRouteStats(),
             pendingRequest: shared.api.getTotalPendingRequest(),
             recentlySeen,
             activeUpdatePendingCount,

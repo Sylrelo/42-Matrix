@@ -186,3 +186,4 @@ fastify.listen(8080, (err, address) => {
     if (err) throw err;
     console.log(address);
 });
+

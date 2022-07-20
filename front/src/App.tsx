@@ -128,7 +128,6 @@ function App() {
 
     const _tryAuth = async () => {
         try {
-            return;
             if (document.location.href.includes("?code=")) return;
 
             setIsAuthenticating(true);
@@ -160,7 +159,6 @@ function App() {
         containerRef.current?.scroll(0, 0);
     }, [location, scrollTopAtom]);
 
-    return <BattleGoose />;
     return (
         <>
             {auth && <AppBar />}
