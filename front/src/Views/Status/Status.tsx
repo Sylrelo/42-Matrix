@@ -8,8 +8,8 @@ import { useRecoilValue } from "recoil";
 import { IsAdminAtom } from "../../Atoms/Auth";
 
 const columns = [
-    { title: "Dest", dataIndex: 0, align: "left" },
-    { title: "Count", dataIndex: 1, align: "left", className: "font-bold" },
+    { title: "Dest", dataIndex: "route", align: "left" },
+    { title: "Count", dataIndex: "count", align: "left", className: "font-bold" },
 ];
 
 const RouteHit: FC<{ data: any }> = ({ data }) => {
@@ -18,12 +18,17 @@ const RouteHit: FC<{ data: any }> = ({ data }) => {
     const array = useMemo(() => {
         if (!data?.[selectedHour]) return [];
 
-        const result = Object.entries(data[selectedHour]).map((v) => [
-            v[0].replace("https://api.intra.42.fr/v2/", ""),
-            v[1],
-        ]);
+        const result = Object.entries(data[selectedHour]).map((v) => ({
+            route: v[0].replace("https://api.intra.42.fr/v2/", ""),
+            count: v[1],
+            key: `${selectedHour}-${v[0]}-${v[1]}`,
+        }));
 
-        result.push(["Total", result.reduce((acc, prev: any) => prev[1] + acc, 0)]);
+        result.push({
+            route: "Total",
+            count: result.reduce((acc, prev: any) => prev.count + acc, 0),
+            key: `total${selectedHour}`,
+        });
 
         return result;
     }, [data, selectedHour]);
