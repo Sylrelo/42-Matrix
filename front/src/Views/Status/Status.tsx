@@ -30,12 +30,15 @@ const RouteHit: FC<{ data: any }> = ({ data }) => {
             key: `total${selectedHour}`,
         });
 
+        result.sort((a: any, b: any) => b.count - a.count);
+
         return result;
     }, [data, selectedHour]);
 
     return (
         <div>
             <select
+                value={selectedHour}
                 className="w-100 pool-select"
                 onChange={(evt) => {
                     setSelectedHour(+evt.target.value);
