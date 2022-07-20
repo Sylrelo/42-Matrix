@@ -9,11 +9,21 @@ import { IsAdminAtom } from "../../Atoms/Auth";
 
 const columns = [
     { title: "Dest", dataIndex: "route", align: "left" },
-    { title: "Count", dataIndex: "count", align: "left", className: "font-bold" },
+    { title: "Count", dataIndex: "count", align: "center", className: "font-bold" },
 ];
 
 const RouteHit: FC<{ data: any }> = ({ data }) => {
     const [selectedHour, setSelectedHour] = useState<number>(new Date().getHours());
+
+    const createRowStat = (result: any[], include: string, name: string) => {
+        return {
+            route: name,
+            key: `${selectedHour}-${name}`,
+            count: result
+                .filter((route: any) => route.route.startsWith(include))
+                .reduce((acc, prev: any) => prev.count + acc, 0),
+        };
+    };
 
     const array = useMemo(() => {
         if (!data?.[selectedHour]) return [];
@@ -24,13 +34,15 @@ const RouteHit: FC<{ data: any }> = ({ data }) => {
             key: `${selectedHour}-${v[0]}-${v[1]}`,
         }));
 
+        result.sort((a: any, b: any) => b.count - a.count);
+
+        result.push(createRowStat(result, "campus/9/locations", "Total locations update"));
+        result.push(createRowStat(result, "users/", "Total users update"));
         result.push({
             route: "Total",
             count: result.reduce((acc, prev: any) => prev.count + acc, 0),
             key: `total${selectedHour}`,
         });
-
-        result.sort((a: any, b: any) => b.count - a.count);
 
         return result;
     }, [data, selectedHour]);
