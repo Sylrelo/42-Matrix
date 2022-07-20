@@ -36,13 +36,13 @@ const RouteHit: FC<{ data: any }> = ({ data }) => {
 
         result.sort((a: any, b: any) => b.count - a.count);
 
-        result.push(createRowStat(result, "campus/9/locations", "Total locations update"));
-        result.push(createRowStat(result, "users/", "Total users update"));
         result.push({
             route: "Total",
             count: result.reduce((acc, prev: any) => prev.count + acc, 0),
             key: `total${selectedHour}`,
         });
+        result.push(createRowStat(result, "campus/9/locations", "Total locations update"));
+        result.push(createRowStat(result, "users/", "Total users update"));
 
         return result;
     }, [data, selectedHour]);
