@@ -300,7 +300,7 @@ const Clusters = () => {
     ).length;
 
     const piscineuxCount: number = useMemo(() => {
-        return studentLocations.filter((location: Record<string, any>) => location.is_pool).length;
+        return studentLocations?.filter((location: Record<string, any>) => location.is_pool)?.length ?? 0;
     }, [studentLocations]);
 
     return (
