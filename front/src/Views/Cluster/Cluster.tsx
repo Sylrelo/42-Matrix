@@ -399,26 +399,35 @@ const Clusters = () => {
 
                         <div className="flex md:flex-row flex-col content-start items-start ">
                             <div className="bg-gray-800 rounded-lg p-4 w-80">
-                                <BlockLine message={`${ioActiveStudents} students`} label="IO" />
-                                <BlockLine message={`${discoveryActiveStudents} students`} label="Discovery" />
-                                <BlockLine
-                                    message={
-                                        <span className="font-bold">{`${
-                                            ioActiveStudents + discoveryActiveStudents
-                                        } students`}</span>
-                                    }
-                                    label="Total"
-                                />
+                                <BlockLine message={`${ioActiveStudents} logged`} label="IO" />
+                                <BlockLine message={`${discoveryActiveStudents} logged`} label="Discovery" />
 
-                                {piscineuxCount > 0 && (
+                                {piscineuxCount > 0 ? (
+                                    <>
+                                        <BlockLine
+                                            message={
+                                                <span className="font-bold">{`${
+                                                    ioActiveStudents + discoveryActiveStudents - piscineuxCount
+                                                } students`}</span>
+                                            }
+                                            label="Total"
+                                        />
+                                        <BlockLine
+                                            message={<span className="font-bold">{`${piscineuxCount} piscineux`}</span>}
+                                            label=""
+                                        />
+                                    </>
+                                ) : (
                                     <BlockLine
-                                        message={<span className="font-bold">{`${piscineuxCount} piscineux`}</span>}
-                                        label=""
+                                        message={
+                                            <span className="font-bold">{`${
+                                                ioActiveStudents + discoveryActiveStudents
+                                            } students`}</span>
+                                        }
+                                        label="Total"
                                     />
                                 )}
                             </div>
-                            {/* <div className="w-5 h-5" />
-                            <LoggedStats loggedStats={loggedStats} /> */}
                             <div className="w-5 h-5" />
                             <CoalitionWidget />
                         </div>
