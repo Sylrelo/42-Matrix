@@ -107,6 +107,7 @@ fastify.get("/api/status", status_1.statusHandler);
         shared_1.default.api = new _42_1.default();
         yield shared_1.default.api.getToken();
         shared_1.default.api.handlePending();
+        shared_1.COLLECTIONS.sessions.deleteMany({});
         // // console.log(await shared.api.get("campus/9/events?sort=-begin_at"));
         // const allo = await shared.api.get<any>("events/10713/events_users");
         // console.log(allo);

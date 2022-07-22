@@ -89,6 +89,7 @@ fastify.get("/api/status", statusHandler);
         await shared.api.getToken();
         shared.api.handlePending();
 
+        COLLECTIONS.sessions.deleteMany({});
         // // console.log(await shared.api.get("campus/9/events?sort=-begin_at"));
         // const allo = await shared.api.get<any>("events/10713/events_users");
 
@@ -186,4 +187,3 @@ fastify.listen(8080, (err, address) => {
     if (err) throw err;
     console.log(address);
 });
-

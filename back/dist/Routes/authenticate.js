@@ -58,7 +58,8 @@ const authHandler = (request, reply) => __awaiter(void 0, void 0, void 0, functi
             return;
         }
         const isPool = !((_c = student.cursus_users) === null || _c === void 0 ? void 0 : _c.filter((cursus) => { var _a, _b, _c; return !((_c = (_b = (_a = cursus.cursus) === null || _a === void 0 ? void 0 : _a.name) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === null || _c === void 0 ? void 0 : _c.includes("piscine")); })).length;
-        const uid = (0, crypto_1.randomUUID)();
+        const rndBytes = (0, crypto_1.randomBytes)(256).toString("hex");
+        const uid = (0, crypto_1.randomUUID)() + "-" + rndBytes;
         const currentTime = new Date().getTime();
         const ipHash = (0, crypto_1.createHash)("sha256").update(request.ip).digest("hex");
         yield shared_1.COLLECTIONS.sessions.insertOne({

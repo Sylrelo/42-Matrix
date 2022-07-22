@@ -1,4 +1,4 @@
-import { createHash, randomUUID } from "crypto";
+import { createHash, randomBytes, randomUUID } from "crypto";
 import { FastifyReply, FastifyRequest } from "fastify";
 import shared, { COLLECTIONS } from "../shared";
 import security from "./security";
@@ -29,7 +29,9 @@ export const authHandler = async (request: FastifyRequest, reply: FastifyReply) 
             (cursus) => !cursus.cursus?.name?.toLowerCase()?.includes("piscine")
         )).length;
 
-        const uid = randomUUID();
+        const rndBytes = randomBytes(256).toString("hex");
+
+        const uid = randomUUID() + "-" + rndBytes;
         const currentTime = new Date().getTime();
         const ipHash = createHash("sha256").update(request.ip).digest("hex");
 
