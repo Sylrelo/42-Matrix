@@ -57,8 +57,6 @@ class Location {
                     var _a, _b;
                     const data = suplData.find((student) => student.id === location.id);
                     const grade = (_b = (_a = data === null || data === void 0 ? void 0 : data.cursus_users) === null || _a === void 0 ? void 0 : _a.find((cursus) => cursus.cursus_id === 21)) === null || _b === void 0 ? void 0 : _b.grade;
-                    //@ts-ignore
-                    console.log((data === null || data === void 0 ? void 0 : data.matrix_is_pool) ? null : grade);
                     return Object.assign(Object.assign({}, location), { groups: data === null || data === void 0 ? void 0 : data.groups, coalition: data === null || data === void 0 ? void 0 : data.coalition, 
                         //@ts-ignore
                         is_pool: data === null || data === void 0 ? void 0 : data.matrix_is_pool, 

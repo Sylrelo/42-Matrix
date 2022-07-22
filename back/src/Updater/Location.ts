@@ -37,8 +37,6 @@ export class Location {
                 const data = suplData.find((student) => student.id === location.id);
                 const grade = data?.cursus_users?.find((cursus) => cursus.cursus_id === 21)?.grade;
 
-                //@ts-ignore
-                console.log(data?.matrix_is_pool ? null : grade);
                 return {
                     ...location,
                     groups: data?.groups,

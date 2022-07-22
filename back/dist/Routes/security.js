@@ -14,6 +14,7 @@ const shared_1 = require("../shared");
 const isUidValid = (request, uid, authorizedStudent = []) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const session = yield shared_1.COLLECTIONS.sessions.findOne({ uid });
+        console.log(uid, session);
         if (!session)
             return null;
         if (authorizedStudent.length && !authorizedStudent.includes(session.student_id)) {
