@@ -10,7 +10,6 @@ const isUidValid = async (
     try {
         const session = await COLLECTIONS.sessions.findOne({ uid });
 
-        console.log(uid, session);
         if (!session) return null;
 
         if (authorizedStudent.length && !authorizedStudent.includes(session.student_id)) {

@@ -168,18 +168,13 @@ class FortyTwo {
             }
         });
     }
-    getUser(bearerToken, url, priority, ttl) {
+    getUser(bearerToken, url) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const cachedResponse = yield shared_1.default.cache.get(url);
-                if (cachedResponse) {
-                    return cachedResponse;
-                }
-                const response = yield this._add(priority !== null && priority !== void 0 ? priority : 1, `${API_URL}${url}`, "GET", {
+                const response = yield this._add(4, `${API_URL}${url}`, "GET", {
                     Authorization: `Bearer ${bearerToken}`,
                     "Content-Type": "application/json",
                 });
-                shared_1.default.cache.set(url, response, ttl);
                 return response;
             }
             catch (error) {

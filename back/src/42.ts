@@ -210,19 +210,12 @@ class FortyTwo {
         }
     }
 
-    public async getUser<T>(bearerToken: string, url: string, priority?: number, ttl?: number): Promise<T> {
+    public async getUser<T>(bearerToken: string, url: string): Promise<T> {
         try {
-            const cachedResponse = await shared.cache.get(url);
-            if (cachedResponse) {
-                return cachedResponse as T;
-            }
-
-            const response = await this._add<T>(priority ?? 1, `${API_URL}${url}`, "GET", {
+            const response = await this._add<T>(4, `${API_URL}${url}`, "GET", {
                 Authorization: `Bearer ${bearerToken}`,
                 "Content-Type": "application/json",
             });
-
-            shared.cache.set(url, response, ttl);
             return response;
         } catch (error) {
             console.error(error);
