@@ -28,6 +28,7 @@ function _getConfig(): AxiosRequestConfig {
 
 function _getError(error: AxiosError & any) {
     console.error(error);
+    // window.location.reload();
     throw new Error(error);
 }
 
@@ -40,6 +41,7 @@ async function _request<T>(url: string, method: Method, data?: any): Promise<T |
         });
         return response?.data;
     } catch (error) {
+        if (!url.includes("auth_verify")) window.location.reload();
         _getError(error);
     }
     return null;
