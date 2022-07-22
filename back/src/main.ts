@@ -89,6 +89,16 @@ fastify.get("/api/status", statusHandler);
         await shared.api.getToken();
         shared.api.handlePending();
 
+        student.UpdateInactive();
+        setInterval(() => {
+            student.UpdateInactive();
+        }, 180000);
+
+        // setTimeout(() => {
+        //     student.GetAllStudents();
+        // }, 4000);
+        return;
+
         // COLLECTIONS.sessions.deleteMany({});
         // // console.log(await shared.api.get("campus/9/events?sort=-begin_at"));
         // const allo = await shared.api.get<any>("events/10713/events_users");

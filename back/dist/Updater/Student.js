@@ -392,7 +392,13 @@ class Student {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 console.log("Student.GetAllStudents");
-                const students = yield shared_1.default.api.getAll("achievements/218/users?filter[primary_campus_id]=9", 100, 1, 30);
+                const students = yield shared_1.default.api.getAll("campus/9/users?", 100, 1, 30);
+                // const students = await shared.api.getAll<IStudent[]>(
+                //     "achievements/218/users?filter[primary_campus_id]=9",
+                //     100,
+                //     1,
+                //     30
+                // );
                 console.log(`Student's count : `, students.length);
                 const transaction = [];
                 for (const student of students) {
