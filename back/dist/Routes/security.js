@@ -33,7 +33,11 @@ const isUidValid = (request, uid, authorizedStudent = []) => __awaiter(void 0, v
         yield shared_1.COLLECTIONS.sessions.updateOne({ uid }, { $set: { last_access: new Date().getTime(), ip_hash: ipHash } });
         const student = yield shared_1.COLLECTIONS.students.findOne({ id: session.student_id });
         const admins = [40737];
-        return { is_pool: student === null || student === void 0 ? void 0 : student.matrix_is_pool, is_admin: admins.includes(session.student_id) };
+        return {
+            is_pool: student === null || student === void 0 ? void 0 : student.matrix_is_pool,
+            is_admin: admins.includes(+session.student_id),
+            student_id: +session.student_id,
+        };
     }
     catch (error) {
         console.error(error);

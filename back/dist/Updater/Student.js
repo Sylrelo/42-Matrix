@@ -430,7 +430,6 @@ class Student {
                 }, { projection: { _id: 0, login: 1, matrix_updated_at: 1 } });
                 if (!student)
                     return;
-                console.log(new Date(), student === null || student === void 0 ? void 0 : student.login, student === null || student === void 0 ? void 0 : student.matrix_updated_at);
                 yield this.updateDatabase([{ id: id }]);
             }
             catch (error) {

@@ -413,7 +413,6 @@ export class Student {
             );
 
             if (!student) return;
-            console.log(new Date(), student?.login, student?.matrix_updated_at);
 
             await this.updateDatabase([{ id: id }]);
         } catch (error) {

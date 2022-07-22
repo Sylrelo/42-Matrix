@@ -36,7 +36,11 @@ const isUidValid = async (
 
         const admins = [40737];
 
-        return { is_pool: student?.matrix_is_pool, is_admin: admins.includes(session.student_id) };
+        return {
+            is_pool: student?.matrix_is_pool,
+            is_admin: admins.includes(+session.student_id),
+            student_id: +session.student_id,
+        };
     } catch (error) {
         console.error(error);
     }
