@@ -51,13 +51,19 @@ class Location {
                 const studentsId = Location.actives.map((location) => location.id);
                 const suplData = (yield shared_1.COLLECTIONS.students
                     .find({ id: { $in: studentsId } })
-                    .project({ groups: 1, coalition: 1, id: 1, matrix_is_pool: 1, _id: 0 })
+                    .project({ groups: 1, coalition: 1, id: 1, matrix_is_pool: 1, cursus_users: 1, _id: 0 })
                     .toArray());
                 const tmp = Location.actives.map((location) => {
-                    var _a, _b, _c;
-                    return (Object.assign(Object.assign({}, location), { groups: (_a = suplData.find((student) => student.id === location.id)) === null || _a === void 0 ? void 0 : _a.groups, coalition: (_b = suplData.find((student) => student.id === location.id)) === null || _b === void 0 ? void 0 : _b.coalition, 
+                    var _a, _b;
+                    const data = suplData.find((student) => student.id === location.id);
+                    const grade = (_b = (_a = data === null || data === void 0 ? void 0 : data.cursus_users) === null || _a === void 0 ? void 0 : _a.find((cursus) => cursus.cursus_id === 21)) === null || _b === void 0 ? void 0 : _b.grade;
+                    //@ts-ignore
+                    console.log((data === null || data === void 0 ? void 0 : data.matrix_is_pool) ? null : grade);
+                    return Object.assign(Object.assign({}, location), { groups: data === null || data === void 0 ? void 0 : data.groups, coalition: data === null || data === void 0 ? void 0 : data.coalition, 
                         //@ts-ignore
-                        is_pool: (_c = suplData.find((student) => student.id === location.id)) === null || _c === void 0 ? void 0 : _c.matrix_is_pool }));
+                        is_pool: data === null || data === void 0 ? void 0 : data.matrix_is_pool, 
+                        //@ts-ignore
+                        is_precc: (data === null || data === void 0 ? void 0 : data.matrix_is_pool) ? null : grade !== "Member" });
                 });
                 reply.code(200);
                 reply.send(tmp);

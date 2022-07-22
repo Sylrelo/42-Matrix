@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { AnyBulkWriteOperation } from "mongodb";
+import { AnyBulkWriteOperation, MongoCursorInUseError } from "mongodb";
 import { IStudent } from "../Interfaces/IStudent";
 import security from "../Routes/security";
 import shared, { COLLECTIONS } from "../shared";
@@ -30,16 +30,25 @@ export class Location {
 
             const suplData = (await COLLECTIONS.students
                 .find({ id: { $in: studentsId } })
-                .project({ groups: 1, coalition: 1, id: 1, matrix_is_pool: 1, _id: 0 })
+                .project({ groups: 1, coalition: 1, id: 1, matrix_is_pool: 1, cursus_users: 1, _id: 0 })
                 .toArray()) as IStudent[];
 
-            const tmp = Location.actives.map((location) => ({
-                ...location,
-                groups: suplData.find((student) => student.id === location.id)?.groups,
-                coalition: suplData.find((student) => student.id === location.id)?.coalition,
+            const tmp = Location.actives.map((location) => {
+                const data = suplData.find((student) => student.id === location.id);
+                const grade = data?.cursus_users?.find((cursus) => cursus.cursus_id === 21)?.grade;
+
                 //@ts-ignore
-                is_pool: suplData.find((student) => student.id === location.id)?.matrix_is_pool,
-            }));
+                console.log(data?.matrix_is_pool ? null : grade);
+                return {
+                    ...location,
+                    groups: data?.groups,
+                    coalition: data?.coalition,
+                    //@ts-ignore
+                    is_pool: data?.matrix_is_pool,
+                    //@ts-ignore
+                    is_precc: data?.matrix_is_pool ? null : grade !== "Member",
+                };
+            });
 
             reply.code(200);
             reply.send(tmp);

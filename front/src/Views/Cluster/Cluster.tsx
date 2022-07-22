@@ -303,6 +303,10 @@ const Clusters = () => {
         return studentLocations?.filter((location: Record<string, any>) => location.is_pool)?.length ?? 0;
     }, [studentLocations]);
 
+    const preccCount = studentLocations?.filter((location: Record<string, any>) => location.is_precc)?.length ?? 0;
+
+    const studentsCount = ioActiveStudents + discoveryActiveStudents - piscineuxCount;
+
     return (
         <div>
             <div
@@ -406,9 +410,9 @@ const Clusters = () => {
                                     <>
                                         <BlockLine
                                             message={
-                                                <span className="font-bold">{`${
-                                                    ioActiveStudents + discoveryActiveStudents - piscineuxCount
-                                                } students`}</span>
+                                                <span className="font-bold">{`${studentsCount} students (${preccCount} / ${
+                                                    studentsCount - preccCount
+                                                })`}</span>
                                             }
                                             label="Total"
                                         />
