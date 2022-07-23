@@ -1,4 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
+import { TEST_ACCOUNT } from "../App";
 import { IStudent } from "../Interfaces/IStudent";
 import { COLLECTIONS } from "../shared";
 import security from "./security";
@@ -36,6 +37,7 @@ export const RankingRoute = async (request: FastifyRequest, reply: FastifyReply)
         const ranking: IStudent[] = await COLLECTIONS.students
             .aggregate([
                 { $match: matchFilter },
+                { $match: { login: { $nin: TEST_ACCOUNT } } },
                 {
                     $project: {
                         _id: 0,

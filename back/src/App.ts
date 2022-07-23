@@ -8,3 +8,5 @@ export const coalition = new Coalition();
 
 export const START_TIME = +new Date();
 export let CONFIG = { CLIENT_SECRET: "" };
+
+export const TEST_ACCOUNT = ["chmaubla", "kilo", "nrandom", "amauvingh"];

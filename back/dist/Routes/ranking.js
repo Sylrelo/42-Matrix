@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RankingRoute = void 0;
+const App_1 = require("../App");
 const shared_1 = require("../shared");
 const security_1 = __importDefault(require("./security"));
 const RankingRoute = (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
@@ -38,6 +39,7 @@ const RankingRoute = (request, reply) => __awaiter(void 0, void 0, void 0, funct
         const ranking = yield shared_1.COLLECTIONS.students
             .aggregate([
             { $match: matchFilter },
+            { $match: { login: { $nin: App_1.TEST_ACCOUNT } } },
             {
                 $project: {
                     _id: 0,

@@ -36,6 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Student = exports.StudentRoute = void 0;
+const App_1 = require("../App");
 const security_1 = __importDefault(require("../Routes/security"));
 const shared_1 = __importStar(require("../shared"));
 const utils_1 = require("../utils");
@@ -211,7 +212,7 @@ class Student {
                 const basePipeline = [
                     {
                         $match: {
-                            login: { $not: /3b3-/ },
+                            $and: [{ login: { $not: /3b3-/ } }, { login: { $nin: App_1.TEST_ACCOUNT } }],
                         },
                     },
                     {

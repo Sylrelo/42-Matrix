@@ -106,9 +106,8 @@ const Seat = ({ location, student, unavailable, selectedStudent }: SeatProps) =>
                     <div className="profile-image " style={customStyle}>
                         <div className={isPool(student) ? "pool-filter" : ""} />
                         {student && student?.is_precc === false && (
-                            <div className="weshfrere">
-                                {" "}
-                                <BsFillPatchCheckFill />{" "}
+                            <div className="post-cc-badge">
+                                <BsFillPatchCheckFill title="Post Common Core" size={16} />
                             </div>
                         )}
 
@@ -419,9 +418,15 @@ const Clusters = () => {
                                     <>
                                         <BlockLine
                                             message={
-                                                <span className="font-bold">{`${studentsCount} students (${preccCount} / ${
-                                                    studentsCount - preccCount
-                                                })`}</span>
+                                                <span className="font-bold">
+                                                    {studentsCount} students ({studentsCount - preccCount}{" "}
+                                                    <BsFillPatchCheckFill
+                                                        style={{ display: "inline" }}
+                                                        size={14}
+                                                        title="Post Common Core"
+                                                    />
+                                                    )
+                                                </span>
                                             }
                                             label="Total"
                                         />

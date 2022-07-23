@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { AnyBulkWriteOperation } from "mongodb";
+import { TEST_ACCOUNT } from "../App";
 import { IStudent } from "../Interfaces/IStudent";
 import security from "../Routes/security";
 import shared, { COLLECTIONS } from "../shared";
@@ -182,7 +183,7 @@ export class Student {
             const basePipeline = [
                 {
                     $match: {
-                        login: { $not: /3b3-/ },
+                        $and: [{ login: { $not: /3b3-/ } }, { login: { $nin: TEST_ACCOUNT } }],
                     },
                 },
                 {
