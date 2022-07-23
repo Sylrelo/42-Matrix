@@ -24,8 +24,9 @@ const client = new mongodb_1.MongoClient(uri);
         for (const student of students) {
             for (const project of (_a = student.projects_users) !== null && _a !== void 0 ? _a : []) {
                 // console.log(!project.marked_at, !project.marked, !project.cursus_ids.includes(21));
-                // if (!project.project.name.includes("atrix")) continue;
-                if (!project.marked_at ||
+                // if (!project.project.name.includes("doom")) continue;
+                if (project.final_mark === 0 ||
+                    !project.marked_at ||
                     !project.marked ||
                     (!project.cursus_ids.includes(21) && !project.cursus_ids.includes(9))) {
                     continue;

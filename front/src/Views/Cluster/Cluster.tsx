@@ -16,6 +16,8 @@ import CoalitionWidget from "../Coalitions/Widget";
 import { useRecoilValue } from "recoil";
 import { IsPool } from "../../Atoms/Auth";
 
+import { BsFillPatchCheckFill } from "react-icons/bs";
+
 export const MONTHS_NAME = [
     "January",
     "February",
@@ -103,6 +105,13 @@ const Seat = ({ location, student, unavailable, selectedStudent }: SeatProps) =>
                 <div className="loading-placeholder">
                     <div className="profile-image " style={customStyle}>
                         <div className={isPool(student) ? "pool-filter" : ""} />
+                        {student && student?.is_precc === false && (
+                            <div className="weshfrere">
+                                {" "}
+                                <BsFillPatchCheckFill />{" "}
+                            </div>
+                        )}
+
                         <div className="group-badges">
                             {(student?.groups ?? []).map((group: any) => (
                                 <div key={group.id} className={group.name}>
