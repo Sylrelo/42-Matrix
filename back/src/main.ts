@@ -74,6 +74,7 @@ fastify.get("/api/status", statusHandler);
         await shared.mongo.connect();
 
         const db = shared.mongo.db("42matrix");
+        // await db.authenticate("root", "example");
 
         COLLECTIONS.students = db.collection("students");
         COLLECTIONS.coalitions = db.collection("coalitions");

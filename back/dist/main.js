@@ -96,6 +96,7 @@ fastify.get("/api/status", status_1.statusHandler);
         App_1.CONFIG.CLIENT_SECRET = process.env.SECRET;
         yield shared_1.default.mongo.connect();
         const db = shared_1.default.mongo.db("42matrix");
+        // await db.authenticate("root", "example");
         shared_1.COLLECTIONS.students = db.collection("students");
         shared_1.COLLECTIONS.coalitions = db.collection("coalitions");
         shared_1.COLLECTIONS.sessions = db.collection("sessions");

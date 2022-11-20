@@ -33,7 +33,7 @@ export class Coalition {
                 .find({ cursus_id: student.is_pool ? 9 : 21 })
                 .sort({ matrix_created_at: -1, id: 1 })
                 .project({ _id: 0, score: 1, name: 1, color: 1 })
-                .limit(3)
+                .limit(4)
                 .toArray();
 
             reply.code(200);

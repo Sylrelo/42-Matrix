@@ -1,8 +1,14 @@
 import NodeCache from "node-cache";
 import FortyTwo from "./42";
 import { Collection, MongoClient } from "mongodb";
+import { exit } from "process";
 
-const uri = "mongodb://127.0.0.1:27017";
+if (!process.env?.MONGO_USER || !process.env?.MONGO_HOST || !process.env?.MONGO_PASSWORD) {
+    console.log("Wrong environment variables.");
+    exit(1);
+}
+
+const uri = `mongodb://${process.env?.MONGO_USER}:${process.env?.MONGO_PASSWORD}@${process.env?.MONGO_HOST}:27017?directConnection=true`;
 
 const client = new MongoClient(uri);
 
