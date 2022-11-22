@@ -336,6 +336,11 @@ const Clusters = () => {
                     const target = event.target;
 
                     //@ts-ignore
+                    if (window.plausible) {
+                        //@ts-ignore
+                        window.plausible("Searchbox");
+                    }
+                    //@ts-ignore
                     if (target.classList.contains("search-overlay")) {
                         setShowSearchOverlay(false);
                         setSelectedStudent("");
