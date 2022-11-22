@@ -126,6 +126,10 @@ function App() {
     const location = useLocation();
     const navigate = useNavigate();
 
+    useEffect(() => {
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
+    }, [location]);
+
     const _tryAuth = async () => {
         try {
             if (document.location.href.includes("?code=")) return;

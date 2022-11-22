@@ -283,6 +283,19 @@ const Clusters = () => {
         changePlaceholderImage();
     }, [size, currentCluster]);
 
+    useEffect(() => {
+        //@ts-ignore
+        if (!window.plausible) return;
+
+        if (currentCluster === 1) {
+            //@ts-ignore
+            window.plausible("Cluster-Discovery");
+        } else {
+            //@ts-ignore
+            window.plausible("Cluster-IO");
+        }
+    }, [currentCluster]);
+
     const getHost = (host: string) => {
         const matches = host.match(/z([0-9]+)r([0-9]+)p([0-9]+)/);
 
