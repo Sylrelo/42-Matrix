@@ -432,37 +432,30 @@ const Clusters = () => {
                                 <BlockLine message={`${ioActiveStudents} logged`} label="IO" />
                                 <BlockLine message={`${discoveryActiveStudents} logged`} label="Discovery" />
 
-                                {piscineuxCount > 0 ? (
+                                {piscineuxCount > 0 && (
                                     <>
-                                        <BlockLine
-                                            message={
-                                                <span className="font-bold">
-                                                    {studentsCount} students ({studentsCount - preccCount}{" "}
-                                                    <BsFillPatchCheckFill
-                                                        style={{ display: "inline" }}
-                                                        size={14}
-                                                        title="Post Common Core"
-                                                    />
-                                                    )
-                                                </span>
-                                            }
-                                            label="Total"
-                                        />
                                         <BlockLine
                                             message={<span className="font-bold">{`${piscineuxCount} piscineux`}</span>}
                                             label=""
                                         />
                                     </>
-                                ) : (
-                                    <BlockLine
-                                        message={
-                                            <span className="font-bold">{`${
-                                                ioActiveStudents + discoveryActiveStudents
-                                            } students`}</span>
-                                        }
-                                        label="Total"
-                                    />
                                 )}
+
+                                <div>&nbsp;</div>
+                                <BlockLine
+                                    message={
+                                        <span className="font-bold">
+                                            {studentsCount} students ({studentsCount - preccCount}{" "}
+                                            <BsFillPatchCheckFill
+                                                style={{ display: "inline" }}
+                                                size={14}
+                                                title="Post Common Core"
+                                            />
+                                            )
+                                        </span>
+                                    }
+                                    label="Total"
+                                />
                             </div>
                             <div className="w-5 h-5" />
                             <CoalitionWidget />
