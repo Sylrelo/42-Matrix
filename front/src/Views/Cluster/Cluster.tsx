@@ -94,7 +94,7 @@ const Seat = ({ location, student, unavailable, selectedStudent }: SeatProps) =>
 
         if (student?.coalition) style.border = `4px solid ${student.coalition?.color}`;
 
-        if (student?.image_url) style.backgroundImage = `url(${student.image_url})`;
+        if (student?.image?.versions?.small) style.backgroundImage = `url(${student.image?.versions?.small})`;
 
         return style;
     }, [student]);
@@ -372,7 +372,7 @@ const Clusters = () => {
                                 }}>
                                 <div
                                     className="search-avatar"
-                                    style={{ backgroundImage: `url(${student.image_url})` }}
+                                    style={{ backgroundImage: `url(${student.image?.versions?.medium})` }}
                                 />
                                 <div className="search-bar">
                                     <div className="search-login">{student.login}</div>

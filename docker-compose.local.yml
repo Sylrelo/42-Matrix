@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  matrix-backend:
+    image: "node:16"
+    user: "node"
+    working_dir: /home/node/app
+    restart: unless-stopped
+    environment:
+      NODE_ENV: prod
+      MONGO_USER: root
+      MONGO_PASSWORD: example
+      MONGO_HOST: mongo
+    volumes:
+      - ./back:/home/node/app
+    ports:
+      - "8900:8080"
+    command: "yarn run launch"
+    networks:
+      - default
+
+  mongo:
+    image: mongo
+    command:
+      - '--wiredTigerCacheSizeGB'
+      - '0.25'
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - default
+
+
+networks:
+  default:

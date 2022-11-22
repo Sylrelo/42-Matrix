@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosRequestHeaders, Method } from "axios";
 import LocalStore from "./storage";
 
-let API_URL = "http://localhost:8080/api/";
+let API_URL = "http://localhost:8900/api/";
 
 export let REDIRECT_URL =
     "https://api.intra.42.fr/oauth/authorize?client_id=78203081c23848d53d5d1fad26e1c2ccbc7bc388788f54a71235d4103547e0e7&redirect_uri=http%3A%2F%2Flocalhost%3A3000&response_type=code";

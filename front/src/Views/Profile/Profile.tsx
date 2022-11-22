@@ -172,7 +172,7 @@ const ProfileView = () => {
             <div className="page-title">{student.login}</div>
 
             <div className="flex flex-col md:flex-row">
-                <div className="profile-avatar" style={{ backgroundImage: `url(${student.image_url})` }} />
+                <div className="profile-avatar" style={{ backgroundImage: `url(${student.image?.versions?.medium})` }} />
                 <div className="m-2" />
                 <div className="flex flex-col profile-box">
                     <BlockLine isMessageBold label="Name" message={studentData?.display_name ?? "-"} />

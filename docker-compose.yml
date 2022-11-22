@@ -1,20 +1,30 @@
 version: '3.9'
 
 services:
-  matrix-backend:
+  matrixbackend:
+    container_name: matrix-backend
     image: "node:16"
-    user: "node"
+    # networks:
+    #   - reverseproxynetwork
     working_dir: /home/node/app
     restart: unless-stopped
+    depends_on:
+      - mongo
     environment:
       NODE_ENV: prod
       MONGO_USER: root
-      MONGO_PASSWORD: example
+      MONGO_PASSWORD: platypus
       MONGO_HOST: mongo
     volumes:
       - ./back:/home/node/app
-    ports:
-      - "8900:8080"
+    networks:
+      - nginx
+      - mongo
+      - default
+    expose:
+      - "8080:8080"
+    # ports:
+    #   - "8080:8080"
     command: "yarn run launch"
 
   mongo:
@@ -22,7 +32,25 @@ services:
     command:
       - '--wiredTigerCacheSizeGB'
       - '0.25'
+    # networks:
+    #   - reverseproxynetwork
     restart: unless-stopped
+    networks:
+      - mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_PASSWORD: platypus
+
+networks:
+  nginx:
+    name: nginx_network
+    external: true
+  mongo:
+    name: mongo_global
+    attachable: true
+    internal: true 
+  default:
+# networks:
+#   reverseproxynetwork:
+#     attachable: true
+#     name: reverseproxynetwork

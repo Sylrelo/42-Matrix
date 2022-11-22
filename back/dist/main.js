@@ -196,7 +196,7 @@ function startJobs() {
         shared_1.default.api.getToken();
     }, 2000);
 }
-fastify.listen(8080, (err, address) => {
+fastify.listen({ port: 8080, host: "0.0.0.0" }, (err, address) => {
     if (err)
         throw err;
     console.log(address);

@@ -111,8 +111,7 @@ export class Location {
         return {
             id: location.user.id,
             login: location.user.login,
-            image_url: location.user.image_url,
-            new_image_url: location.user.new_image_url,
+            image: location.user.image,
             display_name: location.user.displayname,
             correction_point: location.user.correction_point ?? 0,
             wallet: location.user.wallet ?? 0,

@@ -230,7 +230,7 @@ const RankingView = () => {
                     <div className="abosorbed_at">
                         Absorbed since {dayjs(student?.cursus_users?.[0]?.blackholed_at).format("YYYY/MM/DD")}
                     </div>
-                    <div className="avatar" style={{ backgroundImage: `url(${student.image_url})` }}></div>
+                    <div className="avatar" style={{ backgroundImage: `url(${student.image?.versions?.medium})` }}></div>
                     <div className="login-name">{student.login}</div>
                     <div className="data">{data === "level" ? student[data]?.toFixed(2) : student[data]}</div>
                     <div className="position">{position + 1 + pagination.perPage * pagination.currentPage}</div>

@@ -114,8 +114,7 @@ class Location {
         return {
             id: location.user.id,
             login: location.user.login,
-            image_url: location.user.image_url,
-            new_image_url: location.user.new_image_url,
+            image: location.user.image,
             display_name: location.user.displayname,
             correction_point: (_a = location.user.correction_point) !== null && _a !== void 0 ? _a : 0,
             wallet: (_b = location.user.wallet) !== null && _b !== void 0 ? _b : 0,

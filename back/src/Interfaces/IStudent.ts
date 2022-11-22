@@ -9,6 +9,7 @@ export interface IStudent {
     level?: number;
     login?: string;
     new_image_url?: string;
+    image?: Record<string, any>;
     pool_year?: string;
     wallets?: number;
     test?: string;
