@@ -47,7 +47,7 @@ const RankingRoute = (request, reply) => __awaiter(void 0, void 0, void 0, funct
                     login: 1,
                     wallet: 1,
                     correction_point: 1,
-                    image_url: 1,
+                    image: 1,
                     pool_year: 1,
                     last_seen: 1,
                     cursus_users: {
@@ -67,7 +67,7 @@ const RankingRoute = (request, reply) => __awaiter(void 0, void 0, void 0, funct
                     correction_point: 1,
                     pool_year: 1,
                     last_seen: 1,
-                    image_url: 1,
+                    image: 1,
                     "cursus_users.level": 1,
                     "cursus_users.blackholed_at": 1,
                 },

@@ -45,7 +45,7 @@ export const RankingRoute = async (request: FastifyRequest, reply: FastifyReply)
                         login: 1,
                         wallet: 1,
                         correction_point: 1,
-                        image_url: 1,
+                        image: 1,
                         pool_year: 1,
                         last_seen: 1,
                         cursus_users: {
@@ -65,7 +65,7 @@ export const RankingRoute = async (request: FastifyRequest, reply: FastifyReply)
                         correction_point: 1,
                         pool_year: 1,
                         last_seen: 1,
-                        image_url: 1,
+                        image: 1,
                         "cursus_users.level": 1,
                         "cursus_users.blackholed_at": 1,
                     },
