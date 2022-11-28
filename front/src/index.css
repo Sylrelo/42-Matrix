@@ -35,6 +35,8 @@ body {
 
 .interative-container {
     position: relative;
+    /* width: 75%; */
+    /* background-color: #330000; */
 }
 
 .interface-container {
@@ -58,7 +60,6 @@ body {
     width: 128px;
     height: 128px;
 }
-
 
 .seat {
     display: block;
@@ -125,7 +126,7 @@ body {
     border-radius: 5px;
     padding-left: 5px;
     padding-right: 5px;
-    background-color: rgba(255, 255, 255, .7);
+    background-color: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(2px);
     max-width: 80%;
 }

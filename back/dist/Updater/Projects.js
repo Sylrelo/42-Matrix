@@ -59,6 +59,7 @@ class Project {
                         $project: {
                             login: 1,
                             image_url: 1,
+                            image: 1,
                             projects_users: {
                                 $filter: {
                                     input: "$projects_users",

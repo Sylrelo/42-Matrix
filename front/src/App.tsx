@@ -16,7 +16,7 @@ import StatusIcon from "./Assets/StatusIcon";
 import { AuthAtom, IsAdminAtom, IsAuthenticatingAtom, IsPool } from "./Atoms/Auth";
 import { ScrollTopAtom } from "./Atoms/ScrollTop";
 import "./global.scss";
-import { post } from "./Utils/http";
+import { get, post } from "./Utils/http";
 import LocalStore from "./Utils/storage";
 import CoalitionsView from "./Views/Coalitions/Coalitions";
 import ProfileView from "./Views/Profile/Profile";
@@ -26,7 +26,6 @@ import RankingView from "./Views/Ranking/Ranking";
 import StatusView from "./Views/Status/Status";
 import StudentsView from "./Views/Students/Students";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import BattleGoose from "./Views/GooseBattle/Battle";
 
 const darkTheme = createTheme({
     palette: {

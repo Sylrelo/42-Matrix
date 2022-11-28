@@ -17,6 +17,7 @@ import { useRecoilValue } from "recoil";
 import { IsPool } from "../../Atoms/Auth";
 
 import { BsFillPatchCheckFill } from "react-icons/bs";
+import LastActions from "./Actions";
 
 export const MONTHS_NAME = [
     "January",
@@ -273,6 +274,7 @@ const Clusters = () => {
                 // x: 0,
                 y: 0,
                 x: (size.width - 1920 * minRatio) / 2,
+                // x: 0,
                 // y: (test - 1920 * minRatio) / 2,
             },
         });
@@ -459,19 +461,30 @@ const Clusters = () => {
                             </div>
                             <div className="w-5 h-5" />
                             <CoalitionWidget />
+                            <div className="w-5 h-5" />
+                            <div
+                                className="bg-gray-800 rounded-lg p-2 w-80 last-action-mc"
+                                style={{ overflow: "auto", height: "128px" }}>
+                                <LastActions />
+                            </div>
                         </div>
                         <div className="mt-4" />
                     </div>
                 </div>
 
-                <div className="interative-container" ref={interactiveContainerRef}>
-                    <MapInteractionCSS maxScale={5} value={testInter} onChange={(value: any) => setIntestInte(value)}>
-                        <div className="cluster-container">
-                            {currentCluster === 1
-                                ? _generateCluster("z4", 12, 7, "z3", 13, 6)
-                                : _generateCluster("z2", 12, 8, "z1", 12, 5)}
-                        </div>
-                    </MapInteractionCSS>
+                <div>
+                    <div className="interative-container" ref={interactiveContainerRef}>
+                        <MapInteractionCSS
+                            maxScale={5}
+                            value={testInter}
+                            onChange={(value: any) => setIntestInte(value)}>
+                            <div className="cluster-container">
+                                {currentCluster === 1
+                                    ? _generateCluster("z4", 12, 7, "z3", 13, 6)
+                                    : _generateCluster("z2", 12, 8, "z1", 12, 5)}
+                            </div>
+                        </MapInteractionCSS>
+                    </div>
                 </div>
             </div>
         </div>

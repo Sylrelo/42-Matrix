@@ -1,0 +1,15 @@
+.actions-container {
+    // background-color: #220000;
+
+    .action {
+        font-size: 14px;
+        .name {
+            font-weight: bold;
+        }
+
+        .project-markedat {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+    }
+}

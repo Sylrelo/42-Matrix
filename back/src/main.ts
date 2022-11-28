@@ -8,6 +8,7 @@ import FortyTwo from "./42";
 import { coalition, CONFIG, location, student } from "./App";
 import { Admin } from "./Routes/admin";
 import { authHandler, authVerifyHandler, logoutHandler } from "./Routes/authenticate";
+import { LastActionsRoute } from "./Routes/lastActions";
 import { RankingRoute } from "./Routes/ranking";
 import { statusHandler } from "./Routes/status";
 import shared, { COLLECTIONS } from "./shared";
@@ -40,6 +41,8 @@ fastify.get("/api/admin/logs", Admin.GetLogs);
 
 fastify.get("/api/students", Student.RouteGetAllStudents);
 fastify.get("/api/student/:id", StudentRoute.GetOne);
+
+fastify.get("/api/actions", LastActionsRoute.Get);
 
 fastify.get("/api/locations", location.Route);
 fastify.get("/api/coalitions", coalition.Route);
@@ -194,7 +197,7 @@ function startJobs() {
     }, 2000);
 }
 
-fastify.listen({port: 8080, host: "0.0.0.0"}, (err, address) => {
+fastify.listen({ port: 8080, host: "0.0.0.0" }, (err, address) => {
     if (err) throw err;
     console.log(address);
 });
