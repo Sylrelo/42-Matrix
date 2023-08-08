@@ -8,16 +8,16 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 //@ts-ignore
 import { MapInteractionCSS } from "react-map-interaction";
-import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import SearchIcon from "../../Assets/sarchIcon";
+import { IsPool } from "../../Atoms/Auth";
 import BlockLine from "../../Components/BlockLine";
 import { get } from "../../Utils/http";
 import CoalitionWidget from "../Coalitions/Widget";
-import { useRecoilValue } from "recoil";
-import { IsPool } from "../../Atoms/Auth";
 
 import { BsFillPatchCheckFill } from "react-icons/bs";
 import LastActions from "./Actions";
+import { useLocation } from "react-router-dom";
 
 export const MONTHS_NAME = [
     "January",
@@ -95,43 +95,49 @@ const Seat = ({ location, student, unavailable, selectedStudent }: SeatProps) =>
 
         if (student?.coalition) style.border = `4px solid ${student.coalition?.color}`;
 
-        if (student?.image?.versions?.small) style.backgroundImage = `url(${student.image?.versions?.small})`;
+        if (student?.image?.versions?.medium) style.backgroundImage = `url(${student.image?.versions?.medium})`;
+        else if (student?.image?.versions?.small) style.backgroundImage = `url(${student.image?.versions?.small})`;
 
         return style;
     }, [student]);
 
     return (
-        <Link to={"/profile/" + student?.id} state={{ ...student }}>
-            <div className={"seat " + getClass}>
-                <div className="loading-placeholder">
-                    <div className="profile-image " style={customStyle}>
-                        <div className={isPool(student) ? "pool-filter" : ""} />
-                        {student && student?.is_precc === false && (
-                            <div className="post-cc-badge">
-                                <BsFillPatchCheckFill title="Post Common Core" size={16} />
-                            </div>
-                        )}
-
-                        <div className="group-badges">
-                            {(student?.groups ?? []).map((group: any) => (
-                                <div key={group.id} className={group.name}>
-                                    {group.name}
-                                </div>
-                            ))}
-
-                            {isPool(student) && <div className="pool">Pool</div>}
-                            {student?.login === "slopez" && <div className="daddymatrix">Matrix</div>}
+        <div
+            className={"seat " + getClass}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+                window.open("https://profile.intra.42.fr/users/" + student.login);
+            }}>
+            <div className="loading-placeholder">
+                <div className="profile-image " style={customStyle}>
+                    <div className={isPool(student) ? "pool-filter" : ""} />
+                    {student && student?.is_precc === false && (
+                        <div className="post-cc-badge">
+                            <BsFillPatchCheckFill title="Post Common Core" size={16} />
                         </div>
-                        <div className="login">{student?.login}</div>
-                        <div className={"location " + (student ? "active" : "text-slate-500")}>{location}</div>
+                    )}
+
+                    <div className="group-badges">
+                        {(student?.groups ?? []).map((group: any) => (
+                            <div key={group.id} className={group.name}>
+                                {group.name}
+                            </div>
+                        ))}
+
+                        {isPool(student) && <div className="pool">Pool</div>}
+                        {student?.login === "slopez" && <div className="daddymatrix">Matrix</div>}
                     </div>
+                    <div className="login">{student?.login}</div>
+                    <div className={"location " + (student ? "active" : "text-slate-500")}>{location}</div>
                 </div>
             </div>
-        </Link>
+        </div>
     );
 };
 
 const Clusters = () => {
+    const location = useLocation();
+
     const [studentLocations, setStudentLocations] = useState([]);
     // const [_, setLoggedStats] = useState({});
 
@@ -262,18 +268,20 @@ const Clusters = () => {
     };
 
     const setInterfactiveSize = () => {
-        let minRatio = Math.min(size.width, size.height) / 1920.0;
+        const totSize = location.pathname === "/overview" ? 1920 * 2 : 1920;
+
+        // let minRatio = Math.min(size.width, size.height) / totSize;
+        // console.log(minRatio, size.width, size.height);
 
         const test = size.height - (interfaceContainerRef.current?.offsetHeight! + 41 ?? 0);
-
-        minRatio = Math.min(size.width, test) / 1920.0;
+        const minRatio = Math.min(size.width, test) / 1920;
 
         setIntestInte({
             scale: minRatio,
             translation: {
                 // x: 0,
                 y: 0,
-                x: (size.width - 1920 * minRatio) / 2,
+                x: (size.width - totSize * minRatio) / 2,
                 // x: 0,
                 // y: (test - 1920 * minRatio) / 2,
             },
@@ -283,7 +291,7 @@ const Clusters = () => {
     useEffect(() => {
         setInterfactiveSize();
         changePlaceholderImage();
-    }, [size, currentCluster]);
+    }, [size, currentCluster, location.pathname]);
 
     useEffect(() => {
         //@ts-ignore
@@ -389,7 +397,7 @@ const Clusters = () => {
                 <div className="interface-container" ref={interfaceContainerRef}>
                     <div className="  flex flex-col items-center ">
                         <div className="w-80 mt-4 mb-4">
-                            <ul className="  text-center text-gray-500 rounded-lg shadow flex text-gray-400">
+                            <ul className="  text-center text-gray-500 rounded-lg shadow flex text-gray-400 hidden">
                                 <li className="w-full">
                                     <button
                                         onClick={() => {
@@ -414,7 +422,6 @@ const Clusters = () => {
                                         Discovery
                                     </button>
                                 </li>
-
                                 <li>
                                     <button
                                         onClick={() => {
@@ -478,12 +485,28 @@ const Clusters = () => {
                             maxScale={5}
                             value={testInter}
                             onChange={(value: any) => setIntestInte(value)}>
-                            <div className="cluster-container">
-                                {currentCluster === 1
-                                    ? _generateCluster("z4", 12, 7, "z3", 13, 6)
-                                    : _generateCluster("z2", 12, 8, "z1", 12, 5)}
-                            </div>
+                            {location.pathname === "/overview" ? (
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                    }}>
+                                    <div className="cluster-container">
+                                        {_generateCluster("z4", 12, 7, "z3", 13, 6)}
+                                    </div>
+                                    <div className="cluster-container">
+                                        {_generateCluster("z2", 12, 8, "z1", 12, 5)}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="cluster-container">
+                                    {currentCluster === 1
+                                        ? _generateCluster("z4", 12, 7, "z3", 13, 6)
+                                        : _generateCluster("z2", 12, 8, "z1", 12, 5)}
+                                </div>
+                            )}
                         </MapInteractionCSS>
+                        {/* <div className="cluster-container">{_generateCluster("z2", 12, 8, "z1", 12, 5)}</div> */}
                     </div>
                 </div>
             </div>

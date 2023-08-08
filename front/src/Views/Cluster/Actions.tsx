@@ -29,7 +29,7 @@ const LastActions = () => {
     return (
         <div className="actions-container">
             {actions.map((action) => (
-                <div className="action">
+                <div className="action" key={action?.login + +new Date()}>
                     <div className="project-markedat">
                         {action.projects_users.marked_at
                             ? dayjs(action.projects_users.marked_at).format("DD/MM HH:mm")

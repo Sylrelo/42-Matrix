@@ -41,9 +41,10 @@
         }
 
         &.pool {
+            display: none;
             background-color: #ffffff;
             color: black;
-            width: 52px;
+            // width: 52px;
         }
     }
 }

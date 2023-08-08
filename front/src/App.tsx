@@ -164,10 +164,10 @@ function App() {
 
     return (
         <>
-            {auth && <AppBar />}
+            {auth && location.pathname !== "/overview" && <AppBar />}
             <ThemeProvider theme={darkTheme}>
                 <div className="primary-container">
-                    <div style={{ paddingTop: "52px" }} />
+                    {location.pathname !== "/overview" && <div style={{ paddingTop: "52px" }} />}
                     <div className="secondary-container" ref={containerRef}>
                         {/* <div className="goose">
                             <div className="head">
@@ -181,12 +181,13 @@ function App() {
                             {auth && (
                                 <>
                                     <Route path="/clusters" element={<Clusters />} />
+                                    <Route path="/overview" element={<Clusters />} />
                                     <Route path="/ranking" element={<RankingView />} />
                                     <Route path="/coalitions" element={<CoalitionsView />} />
                                     <Route path="/projects" element={<ProjectsView />} />
                                     <Route path="/projects/:id" element={<ProjectDetailView />} />
                                     <Route path="/status" element={<StatusView />} />
-                                    <Route path="/profile/:id" element={<ProfileView />} />
+                                    {/* <Route path="/profile/:id" element={<ProfileView />} /> */}
                                     <Route path="/students" element={<StudentsView />} />
                                 </>
                             )}
