@@ -397,7 +397,11 @@ const Clusters = () => {
                 <div className="interface-container" ref={interfaceContainerRef}>
                     <div className="  flex flex-col items-center ">
                         <div className="w-80 mt-4 mb-4">
-                            <ul className="  text-center text-gray-500 rounded-lg shadow flex text-gray-400 hidden">
+                            <ul
+                                className={
+                                    "text-center text-gray-500 rounded-lg shadow flex text-gray-400 " +
+                                    (location.pathname === "/overview" ? "hidden" : "")
+                                }>
                                 <li className="w-full">
                                     <button
                                         onClick={() => {
@@ -490,6 +494,7 @@ const Clusters = () => {
                                     style={{
                                         display: "flex",
                                         justifyContent: "center",
+                                        gap: "10px",
                                     }}>
                                     <div className="cluster-container">
                                         {_generateCluster("z4", 12, 7, "z3", 13, 6)}
