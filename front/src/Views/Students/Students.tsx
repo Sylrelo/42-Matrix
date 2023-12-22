@@ -99,7 +99,7 @@ const StudentsView: FC = () => {
                     <>
                         <div>{login}</div>
                         <div>
-                            {student.last_name?.toUpperCase()} {student.first_name}
+                            {student.last_name?.toUpperCase()} {student.usual_fist_name}
                         </div>
                     </>
                 ),

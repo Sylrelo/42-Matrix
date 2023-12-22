@@ -203,7 +203,8 @@ export class Student {
                         image: 1,
                         wallet: 1,
                         correction_point: 1,
-                        first_name: 1,
+                        // first_name: 1,
+                        usual_fist_name: 1,
                         last_name: 1,
                         matrix_updated_at: 1,
                         last_seen: 1,
@@ -438,7 +439,6 @@ export class Student {
                 delete studentData?.patroning;
                 delete studentData?.patroned;
                 delete studentData?.phone;
-                delete studentData?.usual_first_name;
                 delete studentData?.usual_full_name;
                 delete studentData?.partnerships;
                 delete studentData?.email;
