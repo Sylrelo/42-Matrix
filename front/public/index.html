@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Cluster map for 42Lyon students"
-    />
+    <meta name="description" content="Cluster map for 42Lyon students" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -25,10 +23,21 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <script defer data-domain="42.slopez.dev" src="https://owa.niavlys.one/nundle.js"></script>
-    <script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
+    <script>window.plausible = window.plausible || function () { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
 
+    <script src="%PUBLIC_URL%/snowstorm-min.js"></script>
+    <script>
+
+      snowStorm.animationInterval = 500;
+      snowStorm.followMouse = true;
+      snowStorm.useTwinkleEffect = true;
+
+      snowStorm.vMaxX = 4;
+      snowStorm.vMaxY = 2;
+    </script>
     <title>Matrix</title>
   </head>
+
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
@@ -45,4 +54,5 @@
     <!-- <script src="https://pixijs.download/release/pixi.js"></script> -->
 
   </body>
+
 </html>
