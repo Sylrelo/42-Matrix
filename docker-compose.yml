@@ -4,8 +4,6 @@ services:
   matrixbackend:
     container_name: matrix-backend
     image: "node:16"
-    # networks:
-    #   - reverseproxynetwork
     working_dir: /home/node/app
     restart: unless-stopped
     depends_on:
@@ -16,24 +14,35 @@ services:
       MONGO_PASSWORD: platypus
       MONGO_HOST: mongo
     volumes:
-      - ./back:/home/node/app
+      - ./back:/home/node/app:z
     networks:
-      - nginx
+      - int_traefik
       - mongo
-      - default
-    expose:
-      - "8080:8080"
-    # ports:
-    #   - "8080:8080"
+      - net_default
+    #expose:
+    #  - "8080:8080"
     command: "yarn run launch"
+    labels:
+      traefik.http.routers.42matrix-back.rule: (Host(`42.slopez.dev`) && PathPrefix(`/api`))
+      traefik.http.services.42matrix-back.loadbalancer.server.port: 8080
+      traefik.enable: true
+
+
+  matrixfrontend:
+    image: matrix-front
+    restart: unless-stopped
+    networks:
+      - int_traefik
+    labels:
+      traefik.http.routers.42matrix-front.rule: (Host(`42.slopez.dev`))
+      traefik.http.services.42matrix-front.loadbalancer.server.port: 3000
+      traefik.enable: true
 
   mongo:
-    image: mongo
+    image: mongo:4.4.18
     command:
       - '--wiredTigerCacheSizeGB'
       - '0.25'
-    # networks:
-    #   - reverseproxynetwork
     restart: unless-stopped
     networks:
       - mongo
@@ -42,15 +51,9 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: platypus
 
 networks:
-  nginx:
-    name: nginx_network
-    external: true
+  int_traefik:
   mongo:
     name: mongo_global
     attachable: true
-    internal: true 
-  default:
-# networks:
-#   reverseproxynetwork:
-#     attachable: true
-#     name: reverseproxynetwork
+    internal: true
+  net_default:

@@ -147,17 +147,17 @@ fastify.get("/api/status", statusHandler);
             await coalition.Update(9);
         }
 
-        if ((await COLLECTIONS.students.countDocuments({})) < 400) {
-            await student.GetAllStudents();
-            student.UpdateWithCoalition();
-            student.UpdateInactive();
-            console.log("Initialisation GetAllStudents() done.");
-        }
+        // if ((await COLLECTIONS.students.countDocuments({})) < 400) {
+        //     await student.GetAllStudents();
+        //     student.UpdateWithCoalition();
+        //     student.UpdateInactive();
+        //     console.log("Initialisation GetAllStudents() done.");
+        // }
 
-        if ((await COLLECTIONS.projects.countDocuments({})) === 0) {
-            await Project.Update();
-            console.log("Initialisation project.Update() done.");
-        }
+        // if ((await COLLECTIONS.projects.countDocuments({})) === 0) {
+        //     await Project.Update();
+        //     console.log("Initialisation project.Update() done.");
+        // }
     } catch (error) {
         console.error(error);
         await shared.mongo.close();
@@ -166,26 +166,26 @@ fastify.get("/api/status", statusHandler);
 
 function startJobs() {
     // Every 10 minutes
-    schedule.scheduleJob("*/10 * * * *", () => {
-        student.UpdateInactive();
-        student.UpdateActive();
-    });
+    // schedule.scheduleJob("*/10 * * * *", () => {
+    //     student.UpdateInactive();
+    //     student.UpdateActive();
+    // });
 
     // Everyday at 23h42
-    schedule.scheduleJob("42 23 * * *", () => {
-        coalition.Update(21);
-        coalition.Update(9);
-    });
+    // schedule.scheduleJob("42 23 * * *", () => {
+    //     coalition.Update(21);
+    //     coalition.Update(9);
+    // });
 
     // Every sunday
-    schedule.scheduleJob("0 6 * * *", () => {
-        Project.Update();
-    });
+    // schedule.scheduleJob("0 6 * * *", () => {
+    //     Project.Update();
+    // });
 
     // Every month at 4 am
     schedule.scheduleJob("0 4 * 1-12 *", () => {
         student.UpdateWithCoalition();
-        student.GetAllStudents();
+        // student.GetAllStudents();
     });
 
     setInterval(() => {

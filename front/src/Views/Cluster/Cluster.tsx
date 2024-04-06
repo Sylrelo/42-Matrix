@@ -470,8 +470,8 @@ const Clusters = () => {
                                     label="Total"
                                 />
                             </div>
-                            <div className="w-5 h-5" />
-                            <CoalitionWidget />
+                            {/* <div className="w-5 h-5" />
+                            <CoalitionWidget /> */}
                             <div className="w-5 h-5" />
                             <div
                                 className="bg-gray-800 rounded-lg p-2 w-80 last-action-mc"
