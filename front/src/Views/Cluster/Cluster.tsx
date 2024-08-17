@@ -176,6 +176,7 @@ const Clusters = () => {
 
         return () => {
             window.removeEventListener("resize", _onResize);
+            //@ts-ignore
             clearInterval(intervalRef.current as NodeJS.Timer);
         };
     }, []);
